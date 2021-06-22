@@ -1,0 +1,81 @@
+<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>{{l("")}}</span>
+                </h4>
+                <button type="button" class="close" (click)="close()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="m-stack m-stack--hor m-stack--general m-stack--demo">
+                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <h6>{{l("LocationName")}} :</h6>
+                        {{item.station.locationName}}
+                    </div>
+                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <h6>{{l("Latitude")}} :</h6>
+                        {{item.station.latitude}}
+                    </div>
+                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <h6>{{l("Longitude")}} :</h6>
+                        {{item.station.longitude}}
+                    </div>
+                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <h6>{{l("IsStop")}} :</h6>
+                        {{item.station.isStop}}
+                    </div>
+                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <h6>{{l("StationCode")}} :</h6>
+                        {{item.station.stationCode}}
+                    </div>
+                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <h6>{{l("LocationNameHebrew")}} :</h6>
+                        {{item.station.locationNameHebrew}}
+                    </div>
+                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <h6>{{l("Type")}} :</h6>
+                        {{item.station.type}}
+                    </div>
+                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <h6>{{l("isMark")}} :</h6>
+                        {{item.station.isMark}}
+                    </div>
+                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <h6>{{l("IsSave")}} :</h6>
+                        {{item.station.isSave}}
+                    </div>
+                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <h6>{{l("checkDistance")}} :</h6>
+                        {{item.station.checkDistance}}
+                    </div>
+                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <h6>{{l("IsPath")}} :</h6>
+                        {{item.station.isPath}}
+                    </div>
+                    <div class="m-separator m-separator--dashed"></div>
+
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button [disabled]="saving" type="button" class="btn btn-primary blue" (click)="close()">{{l("Close")}}</button>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,98 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>{{l("Details")}}</span>
+                </h4>
+                <button type="button" class="close" (click)="close()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <h6>{{l("InternalID")}} :</h6>
+                        {{ item.vehicles.internalID }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("VehicleNumber")}} :</h6>
+                        {{ item.vehicles.vehicleNumber }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("ShortVehicleNumber")}} :</h6>
+                        {{ item.vehicles.shortVehicleNumber }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("VehicleType")}} :</h6>
+                        {{ item.vehicles.vehicleType }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Status")}} :</h6>
+                        {{ item.vehicles.status }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("StatusDate")}} :</h6>
+                        {{ item.vehicles.statusDate |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Parking")}} :</h6>
+                        {{ item.vehicles.parking }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Garage")}} :</h6>
+                        {{ item.vehicles.garage }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("KM")}} :</h6>
+                        {{ item.vehicles.km }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("TestDate")}} :</h6>
+                        {{ item.vehicles.testDate |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("InsuranceDate")}} :</h6>
+                        {{ item.vehicles.insuranceDate |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("LastHandleDate")}} :</h6>
+                        {{ item.vehicles.lastHandleDate |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("NextHandleDate")}} :</h6>
+                        {{ item.vehicles.nextHandleDate |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Updated")}} :</h6>
+                        {{ item.vehicles.updated |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("OperatorID")}} :</h6>
+                        {{ item.vehicles.operatorID }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("IsBusInTrip")}} :</h6>
+                        {{ item.vehicles.isBusInTrip }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("IsBusInTripLastUpdated")}} :</h6>
+                        {{ item.vehicles.isBusInTripLastUpdated |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+
+                    <div class="col-6 mb-3">
+                        <h6>({{l("VehiclesType")}}) {{l("TypeDescription")}} :</h6>
+                        {{item.vehiclesTypeTypeDescription}}
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button [disabled]="saving" type="button" class="btn btn-primary blue" (click)="close()">{{l("Close")}}</button>
+            </div>
+        </div>
+    </div>
+
+</div>

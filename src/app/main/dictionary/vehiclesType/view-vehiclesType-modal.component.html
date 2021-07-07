@@ -1,0 +1,91 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>{{l("Details")}}</span>
+                </h4>
+                <button type="button" class="close" (click)="close()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <h6>{{l("TypeDescription")}} :</h6>
+                        {{ item.vehiclesType.typeDescription }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Manufacturer")}} :</h6>
+                        {{ item.vehiclesType.manufacturer }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("MotorType")}} :</h6>
+                        {{ item.vehiclesType.motorType }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("PassengersCount")}} :</h6>
+                        {{ item.vehiclesType.passengersCount }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("DoorsCount")}} :</h6>
+                        {{ item.vehiclesType.doorsCount }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("DoorsTypes")}} :</h6>
+                        {{ item.vehiclesType.doorsTypes }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("GarageFrequencyKM")}} :</h6>
+                        {{ item.vehiclesType.garageFrequencyKM }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("SeatsNumber")}} :</h6>
+                        {{ item.vehiclesType.seatsNumber }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("NoInterurban")}} :</h6>
+                        <div *ngIf="item.vehiclesType.noInterurban" class="text-left"><i class="fa fa-check-circle kt--font-success"
+                                title="True"></i></div>
+                        <div *ngIf="!item.vehiclesType.noInterurban" class="text-left"><i class="fa fa-times-circle" title="False"></i></div>
+                    </div>                    <div class="col-6 mb-3">
+                        <h6>{{l("BusType")}} :</h6>
+                        {{ item.vehiclesType.busType }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("TiresCount")}} :</h6>
+                        {{ item.vehiclesType.tiresCount }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Status")}} :</h6>
+                        {{ item.vehiclesType.status }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("ModifiedBy")}} :</h6>
+                        {{ item.vehiclesType.modifiedBy }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("ModificationDate")}} :</h6>
+                        {{ item.vehiclesType.modificationDate |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("CreatedBy")}} :</h6>
+                        {{ item.vehiclesType.createdBy }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("CreationDate")}} :</h6>
+                        {{ item.vehiclesType.creationDate |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button [disabled]="saving" type="button" class="btn btn-primary blue" (click)="close()">{{l("Close")}}</button>
+            </div>
+        </div>
+    </div>
+
+</div>

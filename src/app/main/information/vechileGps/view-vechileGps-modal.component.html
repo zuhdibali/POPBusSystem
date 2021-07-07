@@ -1,0 +1,78 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>{{l("Details")}}</span>
+                </h4>
+                <button type="button" class="close" (click)="close()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <h6>{{l("VechileID")}} :</h6>
+                        {{ item.vechileGps.vechileID }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Latitude")}} :</h6>
+                        {{ item.vechileGps.latitude }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Longitude")}} :</h6>
+                        {{ item.vechileGps.longitude }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("angle")}} :</h6>
+                        {{ item.vechileGps.angle }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("LocationDateTime")}} :</h6>
+                        {{ item.vechileGps.locationDateTime |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Satellites")}} :</h6>
+                        {{ item.vechileGps.satellites }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Hdop")}} :</h6>
+                        {{ item.vechileGps.hdop }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Created")}} :</h6>
+                        {{ item.vechileGps.created |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Modified")}} :</h6>
+                        {{ item.vechileGps.modified |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("GPSSpeed")}} :</h6>
+                        {{ item.vechileGps.gpsSpeed }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Speed")}} :</h6>
+                        {{ item.vechileGps.speed }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Bearing")}} :</h6>
+                        {{ item.vechileGps.bearing }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("VehicleNumber")}} :</h6>
+                        {{ item.vechileGps.vehicleNumber }}
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button [disabled]="saving" type="button" class="btn btn-primary blue" (click)="close()">{{l("Close")}}</button>
+            </div>
+        </div>
+    </div>
+
+</div>

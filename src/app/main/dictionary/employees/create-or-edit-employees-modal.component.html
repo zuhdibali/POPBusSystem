@@ -1,0 +1,167 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #employeesForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="employees.id">{{l("EditEmployees")}}</span>
+                        <span *ngIf="!employees.id">{{l("CreateNewEmployees")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                 
+
+					<div class="form-group m-form__group">
+                        <label for="EmployeeTypeDescription">{{l("EmployeeType")}}</label>
+                        <div class="input-group">
+                            <input class="form-control" id="EmployeeTypeDescription" name="employeeTypeDescription" [(ngModel)]="employeeTypeDescription" type="text" disabled>     
+                            <div class="input-group-append">
+                                <button class="btn btn-primary blue" (click)="openSelectEmployeeTypeModal()" type="button"><i class="fa fa-search"></i> {{l("Pick")}}</button>
+                            </div> <div class="input-group-prepend">
+                                <button class="btn btn-danger btn-icon" type="button" (click)="setEmployeeTypeIdNull()"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <input class="form-control" name="employees.employeeTypeId" [(ngModel)]="employees.employeeTypeId" type="text"  hidden>
+		 
+					<div class="form-group m-form__group">
+                        <label for="BranchesDescription">{{l("Branches")}}</label>
+                        <div class="input-group">
+                            <input class="form-control" id="BranchesDescription" name="branchesDescription" [(ngModel)]="branchesDescription" type="text" disabled>     
+                            <div class="input-group-append">
+                                <button class="btn btn-primary blue" (click)="openSelectBranchesModal()" type="button"><i class="fa fa-search"></i> {{l("Pick")}}</button>
+                            </div> <div class="input-group-prepend">
+                                <button class="btn btn-danger btn-icon" type="button" (click)="setBranchesIdNull()"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <input class="form-control" name="employees.branchesId" [(ngModel)]="employees.branchesId" type="text"  hidden>
+		 
+
+								<div class="form-group">
+									<label for="Employees_UserName">{{l("UserName")}} *</label>
+									<input type="text" #Employees_UserName="ngModel" id="Employees_UserName" class="form-control" [(ngModel)]="employees.userName" name="UserName"   minlength="0"  maxlength="15"  required/>
+								    <validation-messages [formCtrl]="Employees_UserName"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_FirstName">{{l("FirstName")}} *</label>
+									<input type="text" #Employees_FirstName="ngModel" id="Employees_FirstName" class="form-control" [(ngModel)]="employees.firstName" name="FirstName"   minlength="0"  maxlength="15"  required/>
+								    <validation-messages [formCtrl]="Employees_FirstName"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_LastName">{{l("LastName")}} *</label>
+									<input type="text" #Employees_LastName="ngModel" id="Employees_LastName" class="form-control" [(ngModel)]="employees.lastName" name="LastName"   minlength="0"  maxlength="15"  required/>
+								    <validation-messages [formCtrl]="Employees_LastName"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_Cellular">{{l("Cellular")}}</label>
+									<input type="text" #Employees_Cellular="ngModel" id="Employees_Cellular" class="form-control" [(ngModel)]="employees.cellular" name="Cellular"   minlength="0"  maxlength="15" />
+								    <validation-messages [formCtrl]="Employees_Cellular"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_Gender">{{l("Gender")}}</label>
+									<input type="text" #Employees_Gender="ngModel" id="Employees_Gender" class="form-control" [(ngModel)]="employees.gender" name="Gender"   minlength="0"  maxlength="15" />
+								    <validation-messages [formCtrl]="Employees_Gender"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_Email">{{l("Email")}}</label>
+									<input type="text" #Employees_Email="ngModel" id="Employees_Email" class="form-control" [(ngModel)]="employees.email" name="Email"   minlength="0"  maxlength="50" />
+								    <validation-messages [formCtrl]="Employees_Email"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_EmployeeIDNumber">{{l("EmployeeIDNumber")}} *</label>
+									<input type="text" #Employees_EmployeeIDNumber="ngModel" id="Employees_EmployeeIDNumber" class="form-control" [(ngModel)]="employees.employeeIDNumber" name="EmployeeIDNumber"   minlength="0"  maxlength="25"  required/>
+								    <validation-messages [formCtrl]="Employees_EmployeeIDNumber"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_EmployeeNumber">{{l("EmployeeNumber")}} *</label>
+									<input type="text" #Employees_EmployeeNumber="ngModel" id="Employees_EmployeeNumber" class="form-control" [(ngModel)]="employees.employeeNumber" name="EmployeeNumber"   minlength="0"  maxlength="15"  required/>
+								    <validation-messages [formCtrl]="Employees_EmployeeNumber"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_Password">{{l("Password")}}</label>
+									<input type="number" #Employees_Password="ngModel" id="Employees_Password" class="form-control" [(ngModel)]="employees.password" name="Password"   />
+									<validation-messages [formCtrl]="Employees_Password"></validation-messages>
+								</div>
+					
+								<br/><div class="m-checkbox-list">
+									<label for="Employees_IsActive" class="kt-checkbox">
+										<input id="Employees_IsActive" #Employees_IsActive="ngModel" type="checkbox" name="IsActive" [(ngModel)]="employees.isActive"> 
+										{{l("IsActive")}}
+										<span></span>
+									</label>
+									<validation-messages [formCtrl]="Employees_IsActive"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_CardNumberTicketing">{{l("CardNumberTicketing")}}</label>
+									<input type="number" #Employees_CardNumberTicketing="ngModel" id="Employees_CardNumberTicketing" class="form-control" [(ngModel)]="employees.cardNumberTicketing" name="CardNumberTicketing"   />
+									<validation-messages [formCtrl]="Employees_CardNumberTicketing"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_EmailAddress">{{l("EmailAddress")}}</label>
+									<input type="text" #Employees_EmailAddress="ngModel" id="Employees_EmailAddress" class="form-control" [(ngModel)]="employees.emailAddress" name="EmailAddress"   minlength="0"  maxlength="50" />
+								    <validation-messages [formCtrl]="Employees_EmailAddress"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_PercentageOfPosition">{{l("PercentageOfPosition")}}</label>
+									<input type="number" #Employees_PercentageOfPosition="ngModel" id="Employees_PercentageOfPosition" class="form-control" [(ngModel)]="employees.percentageOfPosition" name="PercentageOfPosition"   />
+									<validation-messages [formCtrl]="Employees_PercentageOfPosition"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_WorkStartDate">{{l("WorkStartDate")}}</label>
+									 <input class="form-control m-input" #Employees_WorkStartDate type="datetime" bsDatepicker [(ngModel)]="workStartDate" id="Employees_WorkStartDate" name="Employees_WorkStartDate">
+									<validation-messages [formCtrl]="Employees_WorkStartDate"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_WorkEndDate">{{l("WorkEndDate")}}</label>
+									 <input class="form-control m-input" #Employees_WorkEndDate type="datetime" bsDatepicker [(ngModel)]="workEndDate" id="Employees_WorkEndDate" name="Employees_WorkEndDate">
+									<validation-messages [formCtrl]="Employees_WorkEndDate"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_DateOfBirth">{{l("DateOfBirth")}}</label>
+									 <input class="form-control m-input" #Employees_DateOfBirth type="datetime" bsDatepicker [(ngModel)]="dateOfBirth" id="Employees_DateOfBirth" name="Employees_DateOfBirth">
+									<validation-messages [formCtrl]="Employees_DateOfBirth"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_BankAccountNumber">{{l("BankAccountNumber")}}</label>
+									<input type="text" #Employees_BankAccountNumber="ngModel" id="Employees_BankAccountNumber" class="form-control" [(ngModel)]="employees.bankAccountNumber" name="BankAccountNumber"   minlength="0"  maxlength="20" />
+								    <validation-messages [formCtrl]="Employees_BankAccountNumber"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Employees_jobTitle">{{l("jobTitle")}}</label>
+									<input type="text" #Employees_jobTitle="ngModel" id="Employees_jobTitle" class="form-control" [(ngModel)]="employees.jobTitle" name="jobTitle"   minlength="0"  maxlength="50" />
+								    <validation-messages [formCtrl]="Employees_jobTitle"></validation-messages>
+								</div>
+					
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default" (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!employeesForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{l("Save")}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+<employeesEmployeeTypeLookupTableModal #employeesEmployeeTypeLookupTableModal (modalSave)="getNewEmployeeTypeId()"></employeesEmployeeTypeLookupTableModal>
+		 <employeesBranchesLookupTableModal #employeesBranchesLookupTableModal (modalSave)="getNewBranchesId()"></employeesBranchesLookupTableModal>
+		 
+</div>

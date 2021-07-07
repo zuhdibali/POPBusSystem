@@ -1,0 +1,127 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #vehiclesTypeForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="vehiclesType.id">{{l("EditVehiclesType")}}</span>
+                        <span *ngIf="!vehiclesType.id">{{l("CreateNewVehiclesType")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                 
+
+
+								<div class="form-group">
+									<label for="VehiclesType_TypeDescription">{{l("TypeDescription")}} *</label>
+									<input type="text" #VehiclesType_TypeDescription="ngModel" id="VehiclesType_TypeDescription" class="form-control" [(ngModel)]="vehiclesType.typeDescription" name="TypeDescription"   minlength="0"  maxlength="100"  required/>
+								    <validation-messages [formCtrl]="VehiclesType_TypeDescription"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_Manufacturer">{{l("Manufacturer")}}</label>
+									<input type="number" #VehiclesType_Manufacturer="ngModel" id="VehiclesType_Manufacturer" class="form-control" [(ngModel)]="vehiclesType.manufacturer" name="Manufacturer"    required/>
+									<validation-messages [formCtrl]="VehiclesType_Manufacturer"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_MotorType">{{l("MotorType")}}</label>
+									<input type="number" #VehiclesType_MotorType="ngModel" id="VehiclesType_MotorType" class="form-control" [(ngModel)]="vehiclesType.motorType" name="MotorType"   />
+									<validation-messages [formCtrl]="VehiclesType_MotorType"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_PassengersCount">{{l("PassengersCount")}}</label>
+									<input type="number" #VehiclesType_PassengersCount="ngModel" id="VehiclesType_PassengersCount" class="form-control" [(ngModel)]="vehiclesType.passengersCount" name="PassengersCount"   />
+									<validation-messages [formCtrl]="VehiclesType_PassengersCount"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_DoorsCount">{{l("DoorsCount")}}</label>
+									<input type="number" #VehiclesType_DoorsCount="ngModel" id="VehiclesType_DoorsCount" class="form-control" [(ngModel)]="vehiclesType.doorsCount" name="DoorsCount"   />
+									<validation-messages [formCtrl]="VehiclesType_DoorsCount"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_DoorsTypes">{{l("DoorsTypes")}}</label>
+									<input type="number" #VehiclesType_DoorsTypes="ngModel" id="VehiclesType_DoorsTypes" class="form-control" [(ngModel)]="vehiclesType.doorsTypes" name="DoorsTypes"   />
+									<validation-messages [formCtrl]="VehiclesType_DoorsTypes"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_GarageFrequencyKM">{{l("GarageFrequencyKM")}}</label>
+									<input type="number" #VehiclesType_GarageFrequencyKM="ngModel" id="VehiclesType_GarageFrequencyKM" class="form-control" [(ngModel)]="vehiclesType.garageFrequencyKM" name="GarageFrequencyKM"   />
+									<validation-messages [formCtrl]="VehiclesType_GarageFrequencyKM"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_SeatsNumber">{{l("SeatsNumber")}}</label>
+									<input type="number" #VehiclesType_SeatsNumber="ngModel" id="VehiclesType_SeatsNumber" class="form-control" [(ngModel)]="vehiclesType.seatsNumber" name="SeatsNumber"   />
+									<validation-messages [formCtrl]="VehiclesType_SeatsNumber"></validation-messages>
+								</div>
+					
+								<br/><div class="m-checkbox-list">
+									<label for="VehiclesType_NoInterurban" class="kt-checkbox">
+										<input id="VehiclesType_NoInterurban" #VehiclesType_NoInterurban="ngModel" type="checkbox" name="NoInterurban" [(ngModel)]="vehiclesType.noInterurban"> 
+										{{l("NoInterurban")}}
+										<span></span>
+									</label>
+									<validation-messages [formCtrl]="VehiclesType_NoInterurban"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_BusType">{{l("BusType")}}</label>
+									<input type="number" #VehiclesType_BusType="ngModel" id="VehiclesType_BusType" class="form-control" [(ngModel)]="vehiclesType.busType" name="BusType"   />
+									<validation-messages [formCtrl]="VehiclesType_BusType"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_TiresCount">{{l("TiresCount")}}</label>
+									<input type="number" #VehiclesType_TiresCount="ngModel" id="VehiclesType_TiresCount" class="form-control" [(ngModel)]="vehiclesType.tiresCount" name="TiresCount"   />
+									<validation-messages [formCtrl]="VehiclesType_TiresCount"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_Status">{{l("Status")}}</label>
+									<input type="number" #VehiclesType_Status="ngModel" id="VehiclesType_Status" class="form-control" [(ngModel)]="vehiclesType.status" name="Status"    required/>
+									<validation-messages [formCtrl]="VehiclesType_Status"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_ModifiedBy">{{l("ModifiedBy")}}</label>
+									<input type="number" #VehiclesType_ModifiedBy="ngModel" id="VehiclesType_ModifiedBy" class="form-control" [(ngModel)]="vehiclesType.modifiedBy" name="ModifiedBy"   />
+									<validation-messages [formCtrl]="VehiclesType_ModifiedBy"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_ModificationDate">{{l("ModificationDate")}}</label>
+									 <input class="form-control m-input" #VehiclesType_ModificationDate type="datetime" bsDatepicker [(ngModel)]="modificationDate" id="VehiclesType_ModificationDate" name="VehiclesType_ModificationDate">
+									<validation-messages [formCtrl]="VehiclesType_ModificationDate"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_CreatedBy">{{l("CreatedBy")}}</label>
+									<input type="number" #VehiclesType_CreatedBy="ngModel" id="VehiclesType_CreatedBy" class="form-control" [(ngModel)]="vehiclesType.createdBy" name="CreatedBy"   />
+									<validation-messages [formCtrl]="VehiclesType_CreatedBy"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VehiclesType_CreationDate">{{l("CreationDate")}}</label>
+									 <input class="form-control m-input" #VehiclesType_CreationDate type="datetime" bsDatepicker [(ngModel)]="creationDate" id="VehiclesType_CreationDate" name="VehiclesType_CreationDate">
+									<validation-messages [formCtrl]="VehiclesType_CreationDate"></validation-messages>
+								</div>
+					
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default" (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!vehiclesTypeForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{l("Save")}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

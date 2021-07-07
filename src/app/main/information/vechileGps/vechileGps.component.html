@@ -1,0 +1,371 @@
+﻿<div [@routerTransition]>
+  
+  
+  
+                <div class="kt-subheader kt-grid__item">
+                  
+                    <div class="kt-subheader__main">
+                        <h3 class="kt-subheader__title">
+                            <span>{{l("VechileGps")}}</span>
+                        </h3>
+                        <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                        <span class="kt-subheader__desc">
+                            {{l("VechileGpsHeaderInfo")}}
+                        </span>
+                    </div>
+                    <div class="kt-subheader__toolbar">
+                        <div class="kt-subheader__wrapper">
+            				<button (click)="exportToExcel()" class="btn btn-outline-success"><i class="fa fa-file-excel"></i> {{l("ExportToExcel")}}</button>
+                <button *ngIf="isGranted('Pages.VechileGps.Create')" (click)="createVechileGps()" 
+            			class="btn btn-primary blue"><i class="fa fa-plus"></i> {{l("CreateNewVechileGps")}}</button>
+                        </div>
+                    </div>
+                  
+                </div>
+            
+    
+    <div class="kt-content">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__body">
+                <form class="kt-form" autocomplete="off">
+                    <div>
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <div class="form-group m-form__group align-items-center">
+                                    <div class="input-group">
+                                        <input [(ngModel)]="filterText" name="filterText" autoFocus class="form-control m-input" [placeholder]="l('SearchWithThreeDot')" type="text">
+                                        <span class="input-group-btn">
+                                            <button (click)="getVechileGps()" class="btn btn-primary" type="submit"><i class="flaticon-search-1"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+						 <div class="row" [hidden]="!advancedFiltersAreShown">
+						 	<div class="col-md-12">
+						         <div class="kt-separator kt-separator--border-dashed"></div>
+						     </div>
+
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinVechileIDFilter">{{l("MinMax")}} {{l("VechileID")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinVechileIDFilter" [(ngModel)]="minVechileIDFilter" placeholder="{{l('MinValue')}}" name="minVechileIDFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxVechileIDFilter" placeholder="{{l('MaxValue')}}" name="maxVechileIDFilter" />
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinLatitudeFilter">{{l("MinMax")}} {{l("Latitude")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinLatitudeFilter" [(ngModel)]="minLatitudeFilter" placeholder="{{l('MinValue')}}" name="minLatitudeFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxLatitudeFilter" placeholder="{{l('MaxValue')}}" name="maxLatitudeFilter" />
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinLongitudeFilter">{{l("MinMax")}} {{l("Longitude")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinLongitudeFilter" [(ngModel)]="minLongitudeFilter" placeholder="{{l('MinValue')}}" name="minLongitudeFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxLongitudeFilter" placeholder="{{l('MaxValue')}}" name="maxLongitudeFilter" />
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinangleFilter">{{l("MinMax")}} {{l("angle")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinangleFilter" [(ngModel)]="minangleFilter" placeholder="{{l('MinValue')}}" name="minangleFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxangleFilter" placeholder="{{l('MaxValue')}}" name="maxangleFilter" />
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label  for="MinLocationDateTimeFilter">{{l("LocationDateTimeRange")}}</label>
+									<div class="input-group">
+                                        <input class="form-control m-input" id="MinLocationDateTimeFilter" name="MinLocationDateTimeFilter" type="datetime" bsDatepicker  placeholder="{{l('MinValue')}}" [(ngModel)]="minLocationDateTimeFilter">
+			                            <span style="line-height: 40px;padding: 0 15px 0 15px;"> &mdash; </span>
+                                        <input class="form-control m-input" id="MaxLocationDateTimeFilter" name="MaxLocationDateTimeFilter" type="datetime" bsDatepicker  placeholder="{{l('MaxValue')}}" [(ngModel)]="maxLocationDateTimeFilter">
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinSatellitesFilter">{{l("MinMax")}} {{l("Satellites")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinSatellitesFilter" [(ngModel)]="minSatellitesFilter" placeholder="{{l('MinValue')}}" name="minSatellitesFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxSatellitesFilter" placeholder="{{l('MaxValue')}}" name="maxSatellitesFilter" />
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinHdopFilter">{{l("MinMax")}} {{l("Hdop")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinHdopFilter" [(ngModel)]="minHdopFilter" placeholder="{{l('MinValue')}}" name="minHdopFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxHdopFilter" placeholder="{{l('MaxValue')}}" name="maxHdopFilter" />
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label  for="MinCreatedFilter">{{l("CreatedRange")}}</label>
+									<div class="input-group">
+                                        <input class="form-control m-input" id="MinCreatedFilter" name="MinCreatedFilter" type="datetime" bsDatepicker  placeholder="{{l('MinValue')}}" [(ngModel)]="minCreatedFilter">
+			                            <span style="line-height: 40px;padding: 0 15px 0 15px;"> &mdash; </span>
+                                        <input class="form-control m-input" id="MaxCreatedFilter" name="MaxCreatedFilter" type="datetime" bsDatepicker  placeholder="{{l('MaxValue')}}" [(ngModel)]="maxCreatedFilter">
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label  for="MinModifiedFilter">{{l("ModifiedRange")}}</label>
+									<div class="input-group">
+                                        <input class="form-control m-input" id="MinModifiedFilter" name="MinModifiedFilter" type="datetime" bsDatepicker  placeholder="{{l('MinValue')}}" [(ngModel)]="minModifiedFilter">
+			                            <span style="line-height: 40px;padding: 0 15px 0 15px;"> &mdash; </span>
+                                        <input class="form-control m-input" id="MaxModifiedFilter" name="MaxModifiedFilter" type="datetime" bsDatepicker  placeholder="{{l('MaxValue')}}" [(ngModel)]="maxModifiedFilter">
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinGPSSpeedFilter">{{l("MinMax")}} {{l("GPSSpeed")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinGPSSpeedFilter" [(ngModel)]="minGPSSpeedFilter" placeholder="{{l('MinValue')}}" name="minGPSSpeedFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxGPSSpeedFilter" placeholder="{{l('MaxValue')}}" name="maxGPSSpeedFilter" />
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinSpeedFilter">{{l("MinMax")}} {{l("Speed")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinSpeedFilter" [(ngModel)]="minSpeedFilter" placeholder="{{l('MinValue')}}" name="minSpeedFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxSpeedFilter" placeholder="{{l('MaxValue')}}" name="maxSpeedFilter" />
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinBearingFilter">{{l("MinMax")}} {{l("Bearing")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinBearingFilter" [(ngModel)]="minBearingFilter" placeholder="{{l('MinValue')}}" name="minBearingFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxBearingFilter" placeholder="{{l('MaxValue')}}" name="maxBearingFilter" />
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinVehicleNumberFilter">{{l("MinMax")}} {{l("VehicleNumber")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinVehicleNumberFilter" [(ngModel)]="minVehicleNumberFilter" placeholder="{{l('MinValue')}}" name="minVehicleNumberFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxVehicleNumberFilter" placeholder="{{l('MaxValue')}}" name="maxVehicleNumberFilter" />
+									</div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-12">
+                                <span class="clickable-item text-muted" *ngIf="!advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-down"></i> {{l("ShowAdvancedFilters")}}</span>
+                                <span class="clickable-item text-muted" *ngIf="advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-up"></i> {{l("HideAdvancedFilters")}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row align-items-center">
+                    <!--<Primeng-Datatable-Start>-->
+                    <div class="primeng-datatable-container col-12"
+                         [busyIf]="primengTableHelper.isLoading">
+                        <p-table #dataTable
+                                     (onLazyLoad)="getVechileGps($event)"
+                                     [value]="primengTableHelper.records"
+                                     rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                     [paginator]="false"
+                                     [lazy]="true"
+                                     [scrollable]="true"
+                                     ScrollWidth="100%"
+                                     [responsive]="primengTableHelper.isResponsive"
+                                     [resizableColumns]="primengTableHelper.resizableColumns">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 130px" [hidden]="!isGrantedAny('Pages.VechileGps.Edit', 'Pages.VechileGps.Delete')">{{l('Actions')}}</th>
+                                    <th style="width: 150px" pSortableColumn="vechileID">
+                                        {{l('VechileID')}}
+                                        <p-sortIcon field="vechileGps.vechileID"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="latitude">
+                                        {{l('Latitude')}}
+                                        <p-sortIcon field="vechileGps.latitude"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="longitude">
+                                        {{l('Longitude')}}
+                                        <p-sortIcon field="vechileGps.longitude"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="angle">
+                                        {{l('angle')}}
+                                        <p-sortIcon field="vechileGps.angle"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="locationDateTime">
+                                        {{l('LocationDateTime')}}
+                                        <p-sortIcon field="vechileGps.locationDateTime"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="satellites">
+                                        {{l('Satellites')}}
+                                        <p-sortIcon field="vechileGps.satellites"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="hdop">
+                                        {{l('Hdop')}}
+                                        <p-sortIcon field="vechileGps.hdop"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="created">
+                                        {{l('Created')}}
+                                        <p-sortIcon field="vechileGps.created"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="modified">
+                                        {{l('Modified')}}
+                                        <p-sortIcon field="vechileGps.modified"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="gpsSpeed">
+                                        {{l('GPSSpeed')}}
+                                        <p-sortIcon field="vechileGps.gpsSpeed"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="speed">
+                                        {{l('Speed')}}
+                                        <p-sortIcon field="vechileGps.speed"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="bearing">
+                                        {{l('Bearing')}}
+                                        <p-sortIcon field="vechileGps.bearing"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="vehicleNumber">
+                                        {{l('VehicleNumber')}}
+                                        <p-sortIcon field="vechileGps.vehicleNumber"></p-sortIcon>
+                                    </th>
+
+                                </tr>
+                            </ng-template>                           
+							<ng-template pTemplate="body" let-record="$implicit" let-i="rowIndex">
+                                <tr>
+                                    <td style="width: 130px"
+                                        [hidden]="!isGrantedAny('Pages.VechileGps.Edit', 'Pages.VechileGps.Delete')">
+                                       <div class="btn-group dropdown" dropdown container="body">
+                                            <button class="dropdown-toggle btn btn-sm btn-primary" dropdownToggle>
+                                                <i class="fa fa-cog"></i><span class="caret"></span> {{l("Actions")}}
+                                            </button>
+												<ul class="dropdown-menu"  *dropdownMenu>
+												<li>
+													<a href="javascript:;" 
+														(click)="viewVechileGpsModal.show(record)">{{l('View')}}</a>
+												</li>
+												<li>
+                                                <a href="javascript:;" *ngIf="permission.isGranted('Pages.VechileGps.Edit')" 
+														(click)="createOrEditVechileGpsModal.show(record.vechileGps.id)">{{l('Edit')}}</a>												
+                                                </li>
+												<li>
+											        <a  href="javascript:;" *ngIf="permission.isGranted('Pages.VechileGps.Delete')"
+														(click)="deleteVechileGps(record.vechileGps)">{{l('Delete')}}</a>
+												</li>
+                                                <li>
+                                                    <a href="javascript:;" *ngIf="entityHistoryEnabled"  
+                                                       (click)="showHistory(record.vechileGps)">{{l('History')}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('VechileID')}}</span>
+											{{record.vechileGps.vechileID}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Latitude')}}</span>
+											{{record.vechileGps.latitude}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Longitude')}}</span>
+											{{record.vechileGps.longitude}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('angle')}}</span>
+											{{record.vechileGps.angle}}
+										</td>
+                                    <td style="width:150px">
+										<span class="ui-column-title"> {{l('LocationDateTime')}}</span>
+                                        <span *ngIf="record.vechileGps.locationDateTime">
+											{{record.vechileGps.locationDateTime |  momentFormat:'L' }}
+                                        </span>
+                                        <span *ngIf="!record.vechileGps.locationDateTime">-</span>
+                                    </td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Satellites')}}</span>
+											{{record.vechileGps.satellites}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Hdop')}}</span>
+											{{record.vechileGps.hdop}}
+										</td>
+                                    <td style="width:150px">
+										<span class="ui-column-title"> {{l('Created')}}</span>
+                                        <span *ngIf="record.vechileGps.created">
+											{{record.vechileGps.created |  momentFormat:'L' }}
+                                        </span>
+                                        <span *ngIf="!record.vechileGps.created">-</span>
+                                    </td>
+                                    <td style="width:150px">
+										<span class="ui-column-title"> {{l('Modified')}}</span>
+                                        <span *ngIf="record.vechileGps.modified">
+											{{record.vechileGps.modified |  momentFormat:'L' }}
+                                        </span>
+                                        <span *ngIf="!record.vechileGps.modified">-</span>
+                                    </td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('GPSSpeed')}}</span>
+											{{record.vechileGps.gpsSpeed}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Speed')}}</span>
+											{{record.vechileGps.speed}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Bearing')}}</span>
+											{{record.vechileGps.bearing}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('VehicleNumber')}}</span>
+											{{record.vechileGps.vehicleNumber}}
+										</td>
+
+                                </tr>
+                               
+                            </ng-template>
+                        </p-table>
+						<div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                            {{l('NoData')}}
+                        </div>
+                        <div class="primeng-paging-container">
+                            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                         #paginator
+                                         (onPageChange)="getVechileGps($event)"
+                                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
+                                         [showCurrentPageReport]="true"
+                                         [currentPageReportTemplate]="'TotalRecordsCount' | localize:primengTableHelper.totalRecordsCount"    
+                            >
+                            </p-paginator>
+                        </div>
+                    </div>
+                    <!--<Primeng-Datatable-End>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <createOrEditVechileGpsModal #createOrEditVechileGpsModal (modalSave)="getVechileGps()"></createOrEditVechileGpsModal>    
+    <viewVechileGpsModal #viewVechileGpsModal></viewVechileGpsModal>
+     <entityTypeHistoryModal #entityTypeHistoryModal></entityTypeHistoryModal>
+  
+</div>

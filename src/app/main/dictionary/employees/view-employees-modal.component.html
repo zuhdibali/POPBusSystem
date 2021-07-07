@@ -1,0 +1,107 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>{{l("Details")}}</span>
+                </h4>
+                <button type="button" class="close" (click)="close()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <h6>{{l("UserName")}} :</h6>
+                        {{ item.employees.userName }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("FirstName")}} :</h6>
+                        {{ item.employees.firstName }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("LastName")}} :</h6>
+                        {{ item.employees.lastName }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Cellular")}} :</h6>
+                        {{ item.employees.cellular }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Gender")}} :</h6>
+                        {{ item.employees.gender }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Email")}} :</h6>
+                        {{ item.employees.email }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("EmployeeIDNumber")}} :</h6>
+                        {{ item.employees.employeeIDNumber }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("EmployeeNumber")}} :</h6>
+                        {{ item.employees.employeeNumber }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Password")}} :</h6>
+                        {{ item.employees.password }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("IsActive")}} :</h6>
+                        <div *ngIf="item.employees.isActive" class="text-left"><i class="fa fa-check-circle kt--font-success"
+                                title="True"></i></div>
+                        <div *ngIf="!item.employees.isActive" class="text-left"><i class="fa fa-times-circle" title="False"></i></div>
+                    </div>                    <div class="col-6 mb-3">
+                        <h6>{{l("CardNumberTicketing")}} :</h6>
+                        {{ item.employees.cardNumberTicketing }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("EmailAddress")}} :</h6>
+                        {{ item.employees.emailAddress }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("PercentageOfPosition")}} :</h6>
+                        {{ item.employees.percentageOfPosition }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("WorkStartDate")}} :</h6>
+                        {{ item.employees.workStartDate |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("WorkEndDate")}} :</h6>
+                        {{ item.employees.workEndDate |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("DateOfBirth")}} :</h6>
+                        {{ item.employees.dateOfBirth |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("BankAccountNumber")}} :</h6>
+                        {{ item.employees.bankAccountNumber }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("jobTitle")}} :</h6>
+                        {{ item.employees.jobTitle }}
+                    </div>
+
+                    <div class="col-6 mb-3">
+                        <h6>({{l("EmployeeType")}}) {{l("Description")}} :</h6>
+                        {{item.employeeTypeDescription}}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>({{l("Branches")}}) {{l("Description")}} :</h6>
+                        {{item.branchesDescription}}
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button [disabled]="saving" type="button" class="btn btn-primary blue" (click)="close()">{{l("Close")}}</button>
+            </div>
+        </div>
+    </div>
+
+</div>

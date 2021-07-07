@@ -1,0 +1,144 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #vehiclesForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="vehicles.id">{{l("EditVehicles")}}</span>
+                        <span *ngIf="!vehicles.id">{{l("CreateNewVehicles")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                 
+
+					<div class="form-group m-form__group">
+                        <label for="VehiclesTypeTypeDescription">{{l("VehiclesType")}}</label>
+                        <div class="input-group">
+                            <input class="form-control" id="VehiclesTypeTypeDescription" name="vehiclesTypeTypeDescription" [(ngModel)]="vehiclesTypeTypeDescription" type="text" disabled>     
+                            <div class="input-group-append">
+                                <button class="btn btn-primary blue" (click)="openSelectVehiclesTypeModal()" type="button"><i class="fa fa-search"></i> {{l("Pick")}}</button>
+                            </div> <div class="input-group-prepend">
+                                <button class="btn btn-danger btn-icon" type="button" (click)="setVehiclesTypeIdNull()"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <input class="form-control" name="vehicles.vehiclesTypeId" [(ngModel)]="vehicles.vehiclesTypeId" type="text"  hidden>
+		 
+
+								<div class="form-group">
+									<label for="Vehicles_InternalID">{{l("InternalID")}}</label>
+									<input type="number" #Vehicles_InternalID="ngModel" id="Vehicles_InternalID" class="form-control" [(ngModel)]="vehicles.internalID" name="InternalID"    required/>
+									<validation-messages [formCtrl]="Vehicles_InternalID"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_VehicleNumber">{{l("VehicleNumber")}}</label>
+									<input type="number" #Vehicles_VehicleNumber="ngModel" id="Vehicles_VehicleNumber" class="form-control" [(ngModel)]="vehicles.vehicleNumber" name="VehicleNumber"    required/>
+									<validation-messages [formCtrl]="Vehicles_VehicleNumber"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_ShortVehicleNumber">{{l("ShortVehicleNumber")}}</label>
+									<input type="number" #Vehicles_ShortVehicleNumber="ngModel" id="Vehicles_ShortVehicleNumber" class="form-control" [(ngModel)]="vehicles.shortVehicleNumber" name="ShortVehicleNumber"   />
+									<validation-messages [formCtrl]="Vehicles_ShortVehicleNumber"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_VehicleType">{{l("VehicleType")}}</label>
+									<input type="number" #Vehicles_VehicleType="ngModel" id="Vehicles_VehicleType" class="form-control" [(ngModel)]="vehicles.vehicleType" name="VehicleType"   />
+									<validation-messages [formCtrl]="Vehicles_VehicleType"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_Status">{{l("Status")}}</label>
+									<input type="number" #Vehicles_Status="ngModel" id="Vehicles_Status" class="form-control" [(ngModel)]="vehicles.status" name="Status"    required/>
+									<validation-messages [formCtrl]="Vehicles_Status"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_StatusDate">{{l("StatusDate")}}</label>
+									 <input class="form-control m-input" #Vehicles_StatusDate type="datetime" bsDatepicker [(ngModel)]="statusDate" id="Vehicles_StatusDate" name="Vehicles_StatusDate">
+									<validation-messages [formCtrl]="Vehicles_StatusDate"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_Parking">{{l("Parking")}}</label>
+									<input type="number" #Vehicles_Parking="ngModel" id="Vehicles_Parking" class="form-control" [(ngModel)]="vehicles.parking" name="Parking"   />
+									<validation-messages [formCtrl]="Vehicles_Parking"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_Garage">{{l("Garage")}}</label>
+									<input type="number" #Vehicles_Garage="ngModel" id="Vehicles_Garage" class="form-control" [(ngModel)]="vehicles.garage" name="Garage"   />
+									<validation-messages [formCtrl]="Vehicles_Garage"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_KM">{{l("KM")}}</label>
+									<input type="number" #Vehicles_KM="ngModel" id="Vehicles_KM" class="form-control" [(ngModel)]="vehicles.km" name="KM"   />
+									<validation-messages [formCtrl]="Vehicles_KM"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_TestDate">{{l("TestDate")}}</label>
+									 <input class="form-control m-input" #Vehicles_TestDate type="datetime" bsDatepicker [(ngModel)]="testDate" id="Vehicles_TestDate" name="Vehicles_TestDate">
+									<validation-messages [formCtrl]="Vehicles_TestDate"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_InsuranceDate">{{l("InsuranceDate")}}</label>
+									 <input class="form-control m-input" #Vehicles_InsuranceDate type="datetime" bsDatepicker [(ngModel)]="insuranceDate" id="Vehicles_InsuranceDate" name="Vehicles_InsuranceDate">
+									<validation-messages [formCtrl]="Vehicles_InsuranceDate"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_LastHandleDate">{{l("LastHandleDate")}}</label>
+									 <input class="form-control m-input" #Vehicles_LastHandleDate type="datetime" bsDatepicker [(ngModel)]="lastHandleDate" id="Vehicles_LastHandleDate" name="Vehicles_LastHandleDate">
+									<validation-messages [formCtrl]="Vehicles_LastHandleDate"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_NextHandleDate">{{l("NextHandleDate")}}</label>
+									 <input class="form-control m-input" #Vehicles_NextHandleDate type="datetime" bsDatepicker [(ngModel)]="nextHandleDate" id="Vehicles_NextHandleDate" name="Vehicles_NextHandleDate">
+									<validation-messages [formCtrl]="Vehicles_NextHandleDate"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_Updated">{{l("Updated")}}</label>
+									 <input class="form-control m-input" #Vehicles_Updated type="datetime" bsDatepicker [(ngModel)]="updated" id="Vehicles_Updated" name="Vehicles_Updated">
+									<validation-messages [formCtrl]="Vehicles_Updated"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_OperatorID">{{l("OperatorID")}}</label>
+									<input type="number" #Vehicles_OperatorID="ngModel" id="Vehicles_OperatorID" class="form-control" [(ngModel)]="vehicles.operatorID" name="OperatorID"    required/>
+									<validation-messages [formCtrl]="Vehicles_OperatorID"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_IsBusInTrip">{{l("IsBusInTrip")}}</label>
+									<input type="number" #Vehicles_IsBusInTrip="ngModel" id="Vehicles_IsBusInTrip" class="form-control" [(ngModel)]="vehicles.isBusInTrip" name="IsBusInTrip"   />
+									<validation-messages [formCtrl]="Vehicles_IsBusInTrip"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Vehicles_IsBusInTripLastUpdated">{{l("IsBusInTripLastUpdated")}}</label>
+									 <input class="form-control m-input" #Vehicles_IsBusInTripLastUpdated type="datetime" bsDatepicker [(ngModel)]="isBusInTripLastUpdated" id="Vehicles_IsBusInTripLastUpdated" name="Vehicles_IsBusInTripLastUpdated">
+									<validation-messages [formCtrl]="Vehicles_IsBusInTripLastUpdated"></validation-messages>
+								</div>
+					
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default" (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!vehiclesForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{l("Save")}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+<vehiclesVehiclesTypeLookupTableModal #vehiclesVehiclesTypeLookupTableModal (modalSave)="getNewVehiclesTypeId()"></vehiclesVehiclesTypeLookupTableModal>
+		 
+</div>

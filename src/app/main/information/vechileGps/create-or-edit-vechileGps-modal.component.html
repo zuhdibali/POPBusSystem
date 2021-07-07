@@ -1,0 +1,106 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #vechileGpsForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="vechileGps.id">{{l("EditVechileGps")}}</span>
+                        <span *ngIf="!vechileGps.id">{{l("CreateNewVechileGps")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                 
+
+
+								<div class="form-group">
+									<label for="VechileGps_VechileID">{{l("VechileID")}}</label>
+									<input type="number" #VechileGps_VechileID="ngModel" id="VechileGps_VechileID" class="form-control" [(ngModel)]="vechileGps.vechileID" name="VechileID"    required/>
+									<validation-messages [formCtrl]="VechileGps_VechileID"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_Latitude">{{l("Latitude")}}</label>
+									<input type="number" #VechileGps_Latitude="ngModel" id="VechileGps_Latitude" class="form-control" [(ngModel)]="vechileGps.latitude" name="Latitude"    required/>
+									<validation-messages [formCtrl]="VechileGps_Latitude"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_Longitude">{{l("Longitude")}}</label>
+									<input type="number" #VechileGps_Longitude="ngModel" id="VechileGps_Longitude" class="form-control" [(ngModel)]="vechileGps.longitude" name="Longitude"    required/>
+									<validation-messages [formCtrl]="VechileGps_Longitude"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_angle">{{l("angle")}}</label>
+									<input type="number" #VechileGps_angle="ngModel" id="VechileGps_angle" class="form-control" [(ngModel)]="vechileGps.angle" name="angle"    required/>
+									<validation-messages [formCtrl]="VechileGps_angle"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_LocationDateTime">{{l("LocationDateTime")}}</label>
+									 <input required class="form-control m-input" #VechileGps_LocationDateTime type="datetime" bsDatepicker [(ngModel)]="vechileGps.locationDateTime._d" id="VechileGps_LocationDateTime" name="VechileGps_LocationDateTime">
+									<validation-messages [formCtrl]="VechileGps_LocationDateTime"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_Satellites">{{l("Satellites")}}</label>
+									<input type="number" #VechileGps_Satellites="ngModel" id="VechileGps_Satellites" class="form-control" [(ngModel)]="vechileGps.satellites" name="Satellites"   />
+									<validation-messages [formCtrl]="VechileGps_Satellites"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_Hdop">{{l("Hdop")}}</label>
+									<input type="number" #VechileGps_Hdop="ngModel" id="VechileGps_Hdop" class="form-control" [(ngModel)]="vechileGps.hdop" name="Hdop"   />
+									<validation-messages [formCtrl]="VechileGps_Hdop"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_Created">{{l("Created")}}</label>
+									 <input required class="form-control m-input" #VechileGps_Created type="datetime" bsDatepicker [(ngModel)]="vechileGps.created._d" id="VechileGps_Created" name="VechileGps_Created">
+									<validation-messages [formCtrl]="VechileGps_Created"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_Modified">{{l("Modified")}}</label>
+									 <input required class="form-control m-input" #VechileGps_Modified type="datetime" bsDatepicker [(ngModel)]="vechileGps.modified._d" id="VechileGps_Modified" name="VechileGps_Modified">
+									<validation-messages [formCtrl]="VechileGps_Modified"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_GPSSpeed">{{l("GPSSpeed")}}</label>
+									<input type="number" #VechileGps_GPSSpeed="ngModel" id="VechileGps_GPSSpeed" class="form-control" [(ngModel)]="vechileGps.gpsSpeed" name="GPSSpeed"   />
+									<validation-messages [formCtrl]="VechileGps_GPSSpeed"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_Speed">{{l("Speed")}}</label>
+									<input type="number" #VechileGps_Speed="ngModel" id="VechileGps_Speed" class="form-control" [(ngModel)]="vechileGps.speed" name="Speed"   />
+									<validation-messages [formCtrl]="VechileGps_Speed"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_Bearing">{{l("Bearing")}}</label>
+									<input type="number" #VechileGps_Bearing="ngModel" id="VechileGps_Bearing" class="form-control" [(ngModel)]="vechileGps.bearing" name="Bearing"   />
+									<validation-messages [formCtrl]="VechileGps_Bearing"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="VechileGps_VehicleNumber">{{l("VehicleNumber")}}</label>
+									<input type="number" #VechileGps_VehicleNumber="ngModel" id="VechileGps_VehicleNumber" class="form-control" [(ngModel)]="vechileGps.vehicleNumber" name="VehicleNumber"   />
+									<validation-messages [formCtrl]="VechileGps_VehicleNumber"></validation-messages>
+								</div>
+					
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default" (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!vechileGpsForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{l("Save")}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

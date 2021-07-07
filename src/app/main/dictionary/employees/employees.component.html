@@ -1,0 +1,451 @@
+﻿<div [@routerTransition]>
+  
+  
+  
+                <div class="kt-subheader kt-grid__item">
+                  
+                    <div class="kt-subheader__main">
+                        <h3 class="kt-subheader__title">
+                            <span>{{l("Employees")}}</span>
+                        </h3>
+                        <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                        <span class="kt-subheader__desc">
+                            {{l("EmployeesHeaderInfo")}}
+                        </span>
+                    </div>
+                    <div class="kt-subheader__toolbar">
+                        <div class="kt-subheader__wrapper">
+            				<button (click)="exportToExcel()" class="btn btn-outline-success"><i class="fa fa-file-excel"></i> {{l("ExportToExcel")}}</button>
+                <button *ngIf="isGranted('Pages.Employees.Create')" (click)="createEmployees()" 
+            			class="btn btn-primary blue"><i class="fa fa-plus"></i> {{l("CreateNewEmployees")}}</button>
+                        </div>
+                    </div>
+                  
+                </div>
+            
+    
+    <div class="kt-content">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__body">
+                <form class="kt-form" autocomplete="off">
+                    <div>
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <div class="form-group m-form__group align-items-center">
+                                    <div class="input-group">
+                                        <input [(ngModel)]="filterText" name="filterText" autoFocus class="form-control m-input" [placeholder]="l('SearchWithThreeDot')" type="text">
+                                        <span class="input-group-btn">
+                                            <button (click)="getEmployees()" class="btn btn-primary" type="submit"><i class="flaticon-search-1"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+						 <div class="row" [hidden]="!advancedFiltersAreShown">
+						 	<div class="col-md-12">
+						         <div class="kt-separator kt-separator--border-dashed"></div>
+						     </div>
+
+
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="UserNameFilter">{{l("UserName")}}</label>
+									<input type="text" class="form-control" id="UserNameFilter" name="userNameFilter" [(ngModel)]="userNameFilter">
+								</div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="FirstNameFilter">{{l("FirstName")}}</label>
+									<input type="text" class="form-control" id="FirstNameFilter" name="firstNameFilter" [(ngModel)]="firstNameFilter">
+								</div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="LastNameFilter">{{l("LastName")}}</label>
+									<input type="text" class="form-control" id="LastNameFilter" name="lastNameFilter" [(ngModel)]="lastNameFilter">
+								</div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="CellularFilter">{{l("Cellular")}}</label>
+									<input type="text" class="form-control" id="CellularFilter" name="cellularFilter" [(ngModel)]="cellularFilter">
+								</div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="GenderFilter">{{l("Gender")}}</label>
+									<input type="text" class="form-control" id="GenderFilter" name="genderFilter" [(ngModel)]="genderFilter">
+								</div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="EmailFilter">{{l("Email")}}</label>
+									<input type="text" class="form-control" id="EmailFilter" name="emailFilter" [(ngModel)]="emailFilter">
+								</div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="EmployeeIDNumberFilter">{{l("EmployeeIDNumber")}}</label>
+									<input type="text" class="form-control" id="EmployeeIDNumberFilter" name="employeeIDNumberFilter" [(ngModel)]="employeeIDNumberFilter">
+								</div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="EmployeeNumberFilter">{{l("EmployeeNumber")}}</label>
+									<input type="text" class="form-control" id="EmployeeNumberFilter" name="employeeNumberFilter" [(ngModel)]="employeeNumberFilter">
+								</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinPasswordFilter">{{l("MinMax")}} {{l("Password")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinPasswordFilter" [(ngModel)]="minPasswordFilter" placeholder="{{l('MinValue')}}" name="minPasswordFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxPasswordFilter" placeholder="{{l('MaxValue')}}" name="maxPasswordFilter" />
+									</div>
+                                </div>
+                            </div>	
+							<div class="col-md-3">
+								<label for="IsActiveFilterSelect">{{l("IsActive")}}</label>
+								<select class="form-control" name="IsActiveFilter" id="IsActiveFilterSelect" [(ngModel)]="isActiveFilter">
+								<option value="-1">{{l("All")}}</option>
+								<option value="0">{{l("False")}}</option>
+								<option value="1">{{l("True")}}</option>
+								</select>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinCardNumberTicketingFilter">{{l("MinMax")}} {{l("CardNumberTicketing")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinCardNumberTicketingFilter" [(ngModel)]="minCardNumberTicketingFilter" placeholder="{{l('MinValue')}}" name="minCardNumberTicketingFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxCardNumberTicketingFilter" placeholder="{{l('MaxValue')}}" name="maxCardNumberTicketingFilter" />
+									</div>
+                                </div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="EmailAddressFilter">{{l("EmailAddress")}}</label>
+									<input type="text" class="form-control" id="EmailAddressFilter" name="emailAddressFilter" [(ngModel)]="emailAddressFilter">
+								</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label for="MinPercentageOfPositionFilter">{{l("MinMax")}} {{l("PercentageOfPosition")}}</label>
+									<div class="input-group">
+                                        <input type="number" class="form-control" id="MinPercentageOfPositionFilter" [(ngModel)]="minPercentageOfPositionFilter" placeholder="{{l('MinValue')}}" name="minPercentageOfPositionFilter" />
+                                        <input type="number" class="form-control" [(ngModel)]="maxPercentageOfPositionFilter" placeholder="{{l('MaxValue')}}" name="maxPercentageOfPositionFilter" />
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label  for="MinWorkStartDateFilter">{{l("WorkStartDateRange")}}</label>
+									<div class="input-group">
+                                        <input class="form-control m-input" id="MinWorkStartDateFilter" name="MinWorkStartDateFilter" type="datetime" bsDatepicker  placeholder="{{l('MinValue')}}" [(ngModel)]="minWorkStartDateFilter">
+			                            <span style="line-height: 40px;padding: 0 15px 0 15px;"> &mdash; </span>
+                                        <input class="form-control m-input" id="MaxWorkStartDateFilter" name="MaxWorkStartDateFilter" type="datetime" bsDatepicker  placeholder="{{l('MaxValue')}}" [(ngModel)]="maxWorkStartDateFilter">
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label  for="MinWorkEndDateFilter">{{l("WorkEndDateRange")}}</label>
+									<div class="input-group">
+                                        <input class="form-control m-input" id="MinWorkEndDateFilter" name="MinWorkEndDateFilter" type="datetime" bsDatepicker  placeholder="{{l('MinValue')}}" [(ngModel)]="minWorkEndDateFilter">
+			                            <span style="line-height: 40px;padding: 0 15px 0 15px;"> &mdash; </span>
+                                        <input class="form-control m-input" id="MaxWorkEndDateFilter" name="MaxWorkEndDateFilter" type="datetime" bsDatepicker  placeholder="{{l('MaxValue')}}" [(ngModel)]="maxWorkEndDateFilter">
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label  for="MinDateOfBirthFilter">{{l("DateOfBirthRange")}}</label>
+									<div class="input-group">
+                                        <input class="form-control m-input" id="MinDateOfBirthFilter" name="MinDateOfBirthFilter" type="datetime" bsDatepicker  placeholder="{{l('MinValue')}}" [(ngModel)]="minDateOfBirthFilter">
+			                            <span style="line-height: 40px;padding: 0 15px 0 15px;"> &mdash; </span>
+                                        <input class="form-control m-input" id="MaxDateOfBirthFilter" name="MaxDateOfBirthFilter" type="datetime" bsDatepicker  placeholder="{{l('MaxValue')}}" [(ngModel)]="maxDateOfBirthFilter">
+									</div>
+                                </div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="BankAccountNumberFilter">{{l("BankAccountNumber")}}</label>
+									<input type="text" class="form-control" id="BankAccountNumberFilter" name="bankAccountNumberFilter" [(ngModel)]="bankAccountNumberFilter">
+								</div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="jobTitleFilter">{{l("jobTitle")}}</label>
+									<input type="text" class="form-control" id="jobTitleFilter" name="jobTitleFilter" [(ngModel)]="jobTitleFilter">
+								</div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="EmployeeTypeDescriptionFilter">({{l("EmployeeType")}}) {{l("Description")}}</label>
+									<input type="text" class="form-control" id="EmployeeTypeDescriptionFilter" name="employeeTypeDescriptionFilter" [(ngModel)]="employeeTypeDescriptionFilter">
+                                </div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="BranchesDescriptionFilter">({{l("Branches")}}) {{l("Description")}}</label>
+									<input type="text" class="form-control" id="BranchesDescriptionFilter" name="branchesDescriptionFilter" [(ngModel)]="branchesDescriptionFilter">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-12">
+                                <span class="clickable-item text-muted" *ngIf="!advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-down"></i> {{l("ShowAdvancedFilters")}}</span>
+                                <span class="clickable-item text-muted" *ngIf="advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-up"></i> {{l("HideAdvancedFilters")}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row align-items-center">
+                    <!--<Primeng-Datatable-Start>-->
+                    <div class="primeng-datatable-container col-12"
+                         [busyIf]="primengTableHelper.isLoading">
+                        <p-table #dataTable
+                                     (onLazyLoad)="getEmployees($event)"
+                                     [value]="primengTableHelper.records"
+                                     rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                     [paginator]="false"
+                                     [lazy]="true"
+                                     [scrollable]="true"
+                                     ScrollWidth="100%"
+                                     [responsive]="primengTableHelper.isResponsive"
+                                     [resizableColumns]="primengTableHelper.resizableColumns">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 130px" [hidden]="!isGrantedAny('Pages.Employees.Edit', 'Pages.Employees.Delete')">{{l('Actions')}}</th>
+                                    <th style="width: 150px" pSortableColumn="employeeTypeFk.description">
+                                        {{l('Description')}}
+                                        <p-sortIcon field="employeeTypeDescription"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="branchesFk.description">
+                                        {{l('Description')}}
+                                        <p-sortIcon field="branchesDescription"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="userName">
+                                        {{l('UserName')}}
+                                        <p-sortIcon field="employees.userName"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="firstName">
+                                        {{l('FirstName')}}
+                                        <p-sortIcon field="employees.firstName"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="lastName">
+                                        {{l('LastName')}}
+                                        <p-sortIcon field="employees.lastName"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="cellular">
+                                        {{l('Cellular')}}
+                                        <p-sortIcon field="employees.cellular"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="gender">
+                                        {{l('Gender')}}
+                                        <p-sortIcon field="employees.gender"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="email">
+                                        {{l('Email')}}
+                                        <p-sortIcon field="employees.email"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="employeeIDNumber">
+                                        {{l('EmployeeIDNumber')}}
+                                        <p-sortIcon field="employees.employeeIDNumber"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="employeeNumber">
+                                        {{l('EmployeeNumber')}}
+                                        <p-sortIcon field="employees.employeeNumber"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="password">
+                                        {{l('Password')}}
+                                        <p-sortIcon field="employees.password"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="isActive">
+                                        {{l('IsActive')}}
+                                        <p-sortIcon field="employees.isActive"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="cardNumberTicketing">
+                                        {{l('CardNumberTicketing')}}
+                                        <p-sortIcon field="employees.cardNumberTicketing"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="emailAddress">
+                                        {{l('EmailAddress')}}
+                                        <p-sortIcon field="employees.emailAddress"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="percentageOfPosition">
+                                        {{l('PercentageOfPosition')}}
+                                        <p-sortIcon field="employees.percentageOfPosition"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="workStartDate">
+                                        {{l('WorkStartDate')}}
+                                        <p-sortIcon field="employees.workStartDate"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="workEndDate">
+                                        {{l('WorkEndDate')}}
+                                        <p-sortIcon field="employees.workEndDate"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="dateOfBirth">
+                                        {{l('DateOfBirth')}}
+                                        <p-sortIcon field="employees.dateOfBirth"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="bankAccountNumber">
+                                        {{l('BankAccountNumber')}}
+                                        <p-sortIcon field="employees.bankAccountNumber"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="jobTitle">
+                                        {{l('jobTitle')}}
+                                        <p-sortIcon field="employees.jobTitle"></p-sortIcon>
+                                    </th>
+
+                                </tr>
+                            </ng-template>                           
+							<ng-template pTemplate="body" let-record="$implicit" let-i="rowIndex">
+                                <tr>
+                                    <td style="width: 130px"
+                                        [hidden]="!isGrantedAny('Pages.Employees.Edit', 'Pages.Employees.Delete')">
+                                       <div class="btn-group dropdown" dropdown container="body">
+                                            <button class="dropdown-toggle btn btn-sm btn-primary" dropdownToggle>
+                                                <i class="fa fa-cog"></i><span class="caret"></span> {{l("Actions")}}
+                                            </button>
+												<ul class="dropdown-menu"  *dropdownMenu>
+												<li>
+													<a href="javascript:;" 
+														(click)="viewEmployeesModal.show(record)">{{l('View')}}</a>
+												</li>
+												<li>
+                                                <a href="javascript:;" *ngIf="permission.isGranted('Pages.Employees.Edit')" 
+														(click)="createOrEditEmployeesModal.show(record.employees.id)">{{l('Edit')}}</a>												
+                                                </li>
+												<li>
+											        <a  href="javascript:;" *ngIf="permission.isGranted('Pages.Employees.Delete')"
+														(click)="deleteEmployees(record.employees)">{{l('Delete')}}</a>
+												</li>
+                                                <li>
+                                                    <a href="javascript:;" *ngIf="entityHistoryEnabled"  
+                                                       (click)="showHistory(record.employees)">{{l('History')}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td style="width:150px">
+												<span class="ui-column-title"> {{l('Description')}}</span>
+												{{record.employeeTypeDescription}}
+											</td>
+                                    <td style="width:150px">
+												<span class="ui-column-title"> {{l('Description')}}</span>
+												{{record.branchesDescription}}
+											</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('UserName')}}</span>
+											{{record.employees.userName}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('FirstName')}}</span>
+											{{record.employees.firstName}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('LastName')}}</span>
+											{{record.employees.lastName}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Cellular')}}</span>
+											{{record.employees.cellular}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Gender')}}</span>
+											{{record.employees.gender}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Email')}}</span>
+											{{record.employees.email}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('EmployeeIDNumber')}}</span>
+											{{record.employees.employeeIDNumber}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('EmployeeNumber')}}</span>
+											{{record.employees.employeeNumber}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Password')}}</span>
+											{{record.employees.password}}
+										</td>
+                                    <td style="width:150px">
+										<span class="ui-column-title"> {{l('IsActive')}}</span>
+                                        <div *ngIf="record.employees.isActive" class="text-center"><i class="fa fa-check-circle kt--font-success" title="True"></i></div>
+										<div *ngIf="!record.employees.isActive" class="text-center"><i class="fa fa-times-circle" title="False"></i></div>
+                                    </td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('CardNumberTicketing')}}</span>
+											{{record.employees.cardNumberTicketing}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('EmailAddress')}}</span>
+											{{record.employees.emailAddress}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('PercentageOfPosition')}}</span>
+											{{record.employees.percentageOfPosition}}
+										</td>
+                                    <td style="width:150px">
+										<span class="ui-column-title"> {{l('WorkStartDate')}}</span>
+                                        <span *ngIf="record.employees.workStartDate">
+											{{record.employees.workStartDate |  momentFormat:'L' }}
+                                        </span>
+                                        <span *ngIf="!record.employees.workStartDate">-</span>
+                                    </td>
+                                    <td style="width:150px">
+										<span class="ui-column-title"> {{l('WorkEndDate')}}</span>
+                                        <span *ngIf="record.employees.workEndDate">
+											{{record.employees.workEndDate |  momentFormat:'L' }}
+                                        </span>
+                                        <span *ngIf="!record.employees.workEndDate">-</span>
+                                    </td>
+                                    <td style="width:150px">
+										<span class="ui-column-title"> {{l('DateOfBirth')}}</span>
+                                        <span *ngIf="record.employees.dateOfBirth">
+											{{record.employees.dateOfBirth |  momentFormat:'L' }}
+                                        </span>
+                                        <span *ngIf="!record.employees.dateOfBirth">-</span>
+                                    </td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('BankAccountNumber')}}</span>
+											{{record.employees.bankAccountNumber}}
+										</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('jobTitle')}}</span>
+											{{record.employees.jobTitle}}
+										</td>
+
+                                </tr>
+                               
+                            </ng-template>
+                        </p-table>
+						<div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                            {{l('NoData')}}
+                        </div>
+                        <div class="primeng-paging-container">
+                            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                         #paginator
+                                         (onPageChange)="getEmployees($event)"
+                                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
+                                         [showCurrentPageReport]="true"
+                                         [currentPageReportTemplate]="'TotalRecordsCount' | localize:primengTableHelper.totalRecordsCount"    
+                            >
+                            </p-paginator>
+                        </div>
+                    </div>
+                    <!--<Primeng-Datatable-End>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <createOrEditEmployeesModal #createOrEditEmployeesModal (modalSave)="getEmployees()"></createOrEditEmployeesModal>    
+    <viewEmployeesModal #viewEmployeesModal></viewEmployeesModal>
+     <entityTypeHistoryModal #entityTypeHistoryModal></entityTypeHistoryModal>
+  
+</div>

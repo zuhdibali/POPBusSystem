@@ -1081,6 +1081,806 @@ export class AuditLogServiceProxy {
 }
 
 @Injectable()
+export class BanksesServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/Bankses/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param descriptionFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, descriptionFilter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetBanksForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Bankses/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (descriptionFilter !== undefined)
+            url_ += "DescriptionFilter=" + encodeURIComponent("" + descriptionFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetBanksForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetBanksForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetBanksForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetBanksForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetBanksForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetBanksForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getBanksForView(id: number | null | undefined): Observable<GetBanksForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Bankses/GetBanksForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBanksForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBanksForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetBanksForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetBanksForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetBanksForView(response: HttpResponseBase): Observable<GetBanksForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetBanksForViewDto.fromJS(resultData200) : new GetBanksForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetBanksForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getBanksForEdit(id: number | null | undefined): Observable<GetBanksForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Bankses/GetBanksForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBanksForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBanksForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetBanksForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetBanksForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetBanksForEdit(response: HttpResponseBase): Observable<GetBanksForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetBanksForEditOutput.fromJS(resultData200) : new GetBanksForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetBanksForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditBanksDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Bankses/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Bankses/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param descriptionFilter (optional) 
+     * @return Success
+     */
+    getBanksesToExcel(filter: string | null | undefined, descriptionFilter: string | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/Bankses/GetBanksesToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (descriptionFilter !== undefined)
+            url_ += "DescriptionFilter=" + encodeURIComponent("" + descriptionFilter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBanksesToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBanksesToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetBanksesToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class BranchesServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/Branches/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param descriptionFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, descriptionFilter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetBranchesForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Branches/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (descriptionFilter !== undefined)
+            url_ += "DescriptionFilter=" + encodeURIComponent("" + descriptionFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetBranchesForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetBranchesForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetBranchesForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetBranchesForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetBranchesForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetBranchesForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getBranchesForView(id: number | null | undefined): Observable<GetBranchesForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Branches/GetBranchesForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBranchesForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBranchesForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetBranchesForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetBranchesForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetBranchesForView(response: HttpResponseBase): Observable<GetBranchesForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetBranchesForViewDto.fromJS(resultData200) : new GetBranchesForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetBranchesForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getBranchesForEdit(id: number | null | undefined): Observable<GetBranchesForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Branches/GetBranchesForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBranchesForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBranchesForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetBranchesForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetBranchesForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetBranchesForEdit(response: HttpResponseBase): Observable<GetBranchesForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetBranchesForEditOutput.fromJS(resultData200) : new GetBranchesForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetBranchesForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditBranchesDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Branches/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Branches/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param descriptionFilter (optional) 
+     * @return Success
+     */
+    getBranchesToExcel(filter: string | null | undefined, descriptionFilter: string | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/Branches/GetBranchesToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (descriptionFilter !== undefined)
+            url_ += "DescriptionFilter=" + encodeURIComponent("" + descriptionFilter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBranchesToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBranchesToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetBranchesToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class BusInfosServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -1478,6 +2278,406 @@ export class BusInfosServiceProxy {
 }
 
 @Injectable()
+export class BusTypesServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/BusTypes/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param busTypeDescFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, busTypeDescFilter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetBusTypesForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/BusTypes/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (busTypeDescFilter !== undefined)
+            url_ += "BusTypeDescFilter=" + encodeURIComponent("" + busTypeDescFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetBusTypesForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetBusTypesForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetBusTypesForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetBusTypesForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetBusTypesForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetBusTypesForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getBusTypesForView(id: number | null | undefined): Observable<GetBusTypesForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/BusTypes/GetBusTypesForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBusTypesForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBusTypesForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetBusTypesForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetBusTypesForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetBusTypesForView(response: HttpResponseBase): Observable<GetBusTypesForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetBusTypesForViewDto.fromJS(resultData200) : new GetBusTypesForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetBusTypesForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getBusTypesForEdit(id: number | null | undefined): Observable<GetBusTypesForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/BusTypes/GetBusTypesForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBusTypesForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBusTypesForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetBusTypesForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetBusTypesForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetBusTypesForEdit(response: HttpResponseBase): Observable<GetBusTypesForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetBusTypesForEditOutput.fromJS(resultData200) : new GetBusTypesForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetBusTypesForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditBusTypesDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/BusTypes/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/BusTypes/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param busTypeDescFilter (optional) 
+     * @return Success
+     */
+    getBusTypesToExcel(filter: string | null | undefined, busTypeDescFilter: string | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/BusTypes/GetBusTypesToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (busTypeDescFilter !== undefined)
+            url_ += "BusTypeDescFilter=" + encodeURIComponent("" + busTypeDescFilter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBusTypesToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBusTypesToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetBusTypesToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class CachingServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -1648,6 +2848,61 @@ export class CalenderBusesServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/CalenderBuses/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
     }
 
     /**
@@ -2699,6 +3954,61 @@ export class DepartmentsServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/Departments/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
      * @param filter (optional) 
      * @param departmentNameFilter (optional) 
      * @param departmentEnNameFilter (optional) 
@@ -3422,6 +4732,1082 @@ export class EditionServiceProxy {
             }));
         }
         return _observableOf<number>(<any>null);
+    }
+}
+
+@Injectable()
+export class EmployeesServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/Employees/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param userNameFilter (optional) 
+     * @param firstNameFilter (optional) 
+     * @param lastNameFilter (optional) 
+     * @param cellularFilter (optional) 
+     * @param genderFilter (optional) 
+     * @param emailFilter (optional) 
+     * @param employeeIDNumberFilter (optional) 
+     * @param employeeNumberFilter (optional) 
+     * @param maxPasswordFilter (optional) 
+     * @param minPasswordFilter (optional) 
+     * @param isActiveFilter (optional) 
+     * @param maxCardNumberTicketingFilter (optional) 
+     * @param minCardNumberTicketingFilter (optional) 
+     * @param emailAddressFilter (optional) 
+     * @param maxPercentageOfPositionFilter (optional) 
+     * @param minPercentageOfPositionFilter (optional) 
+     * @param maxWorkStartDateFilter (optional) 
+     * @param minWorkStartDateFilter (optional) 
+     * @param maxWorkEndDateFilter (optional) 
+     * @param minWorkEndDateFilter (optional) 
+     * @param maxDateOfBirthFilter (optional) 
+     * @param minDateOfBirthFilter (optional) 
+     * @param bankAccountNumberFilter (optional) 
+     * @param jobTitleFilter (optional) 
+     * @param employeeTypeDescriptionFilter (optional) 
+     * @param branchesDescriptionFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, userNameFilter: string | null | undefined, firstNameFilter: string | null | undefined, lastNameFilter: string | null | undefined, cellularFilter: string | null | undefined, genderFilter: string | null | undefined, emailFilter: string | null | undefined, employeeIDNumberFilter: string | null | undefined, employeeNumberFilter: string | null | undefined, maxPasswordFilter: number | null | undefined, minPasswordFilter: number | null | undefined, isActiveFilter: number | null | undefined, maxCardNumberTicketingFilter: number | null | undefined, minCardNumberTicketingFilter: number | null | undefined, emailAddressFilter: string | null | undefined, maxPercentageOfPositionFilter: number | null | undefined, minPercentageOfPositionFilter: number | null | undefined, maxWorkStartDateFilter: moment.Moment | null | undefined, minWorkStartDateFilter: moment.Moment | null | undefined, maxWorkEndDateFilter: moment.Moment | null | undefined, minWorkEndDateFilter: moment.Moment | null | undefined, maxDateOfBirthFilter: moment.Moment | null | undefined, minDateOfBirthFilter: moment.Moment | null | undefined, bankAccountNumberFilter: string | null | undefined, jobTitleFilter: string | null | undefined, employeeTypeDescriptionFilter: string | null | undefined, branchesDescriptionFilter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetEmployeesForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Employees/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (userNameFilter !== undefined)
+            url_ += "UserNameFilter=" + encodeURIComponent("" + userNameFilter) + "&"; 
+        if (firstNameFilter !== undefined)
+            url_ += "FirstNameFilter=" + encodeURIComponent("" + firstNameFilter) + "&"; 
+        if (lastNameFilter !== undefined)
+            url_ += "LastNameFilter=" + encodeURIComponent("" + lastNameFilter) + "&"; 
+        if (cellularFilter !== undefined)
+            url_ += "CellularFilter=" + encodeURIComponent("" + cellularFilter) + "&"; 
+        if (genderFilter !== undefined)
+            url_ += "GenderFilter=" + encodeURIComponent("" + genderFilter) + "&"; 
+        if (emailFilter !== undefined)
+            url_ += "EmailFilter=" + encodeURIComponent("" + emailFilter) + "&"; 
+        if (employeeIDNumberFilter !== undefined)
+            url_ += "EmployeeIDNumberFilter=" + encodeURIComponent("" + employeeIDNumberFilter) + "&"; 
+        if (employeeNumberFilter !== undefined)
+            url_ += "EmployeeNumberFilter=" + encodeURIComponent("" + employeeNumberFilter) + "&"; 
+        if (maxPasswordFilter !== undefined)
+            url_ += "MaxPasswordFilter=" + encodeURIComponent("" + maxPasswordFilter) + "&"; 
+        if (minPasswordFilter !== undefined)
+            url_ += "MinPasswordFilter=" + encodeURIComponent("" + minPasswordFilter) + "&"; 
+        if (isActiveFilter !== undefined)
+            url_ += "IsActiveFilter=" + encodeURIComponent("" + isActiveFilter) + "&"; 
+        if (maxCardNumberTicketingFilter !== undefined)
+            url_ += "MaxCardNumberTicketingFilter=" + encodeURIComponent("" + maxCardNumberTicketingFilter) + "&"; 
+        if (minCardNumberTicketingFilter !== undefined)
+            url_ += "MinCardNumberTicketingFilter=" + encodeURIComponent("" + minCardNumberTicketingFilter) + "&"; 
+        if (emailAddressFilter !== undefined)
+            url_ += "EmailAddressFilter=" + encodeURIComponent("" + emailAddressFilter) + "&"; 
+        if (maxPercentageOfPositionFilter !== undefined)
+            url_ += "MaxPercentageOfPositionFilter=" + encodeURIComponent("" + maxPercentageOfPositionFilter) + "&"; 
+        if (minPercentageOfPositionFilter !== undefined)
+            url_ += "MinPercentageOfPositionFilter=" + encodeURIComponent("" + minPercentageOfPositionFilter) + "&"; 
+        if (maxWorkStartDateFilter !== undefined)
+            url_ += "MaxWorkStartDateFilter=" + encodeURIComponent(maxWorkStartDateFilter ? "" + maxWorkStartDateFilter.toJSON() : "") + "&"; 
+        if (minWorkStartDateFilter !== undefined)
+            url_ += "MinWorkStartDateFilter=" + encodeURIComponent(minWorkStartDateFilter ? "" + minWorkStartDateFilter.toJSON() : "") + "&"; 
+        if (maxWorkEndDateFilter !== undefined)
+            url_ += "MaxWorkEndDateFilter=" + encodeURIComponent(maxWorkEndDateFilter ? "" + maxWorkEndDateFilter.toJSON() : "") + "&"; 
+        if (minWorkEndDateFilter !== undefined)
+            url_ += "MinWorkEndDateFilter=" + encodeURIComponent(minWorkEndDateFilter ? "" + minWorkEndDateFilter.toJSON() : "") + "&"; 
+        if (maxDateOfBirthFilter !== undefined)
+            url_ += "MaxDateOfBirthFilter=" + encodeURIComponent(maxDateOfBirthFilter ? "" + maxDateOfBirthFilter.toJSON() : "") + "&"; 
+        if (minDateOfBirthFilter !== undefined)
+            url_ += "MinDateOfBirthFilter=" + encodeURIComponent(minDateOfBirthFilter ? "" + minDateOfBirthFilter.toJSON() : "") + "&"; 
+        if (bankAccountNumberFilter !== undefined)
+            url_ += "BankAccountNumberFilter=" + encodeURIComponent("" + bankAccountNumberFilter) + "&"; 
+        if (jobTitleFilter !== undefined)
+            url_ += "jobTitleFilter=" + encodeURIComponent("" + jobTitleFilter) + "&"; 
+        if (employeeTypeDescriptionFilter !== undefined)
+            url_ += "EmployeeTypeDescriptionFilter=" + encodeURIComponent("" + employeeTypeDescriptionFilter) + "&"; 
+        if (branchesDescriptionFilter !== undefined)
+            url_ += "BranchesDescriptionFilter=" + encodeURIComponent("" + branchesDescriptionFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetEmployeesForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetEmployeesForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetEmployeesForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetEmployeesForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetEmployeesForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetEmployeesForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getEmployeesForView(id: number | null | undefined): Observable<GetEmployeesForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Employees/GetEmployeesForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetEmployeesForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetEmployeesForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetEmployeesForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetEmployeesForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetEmployeesForView(response: HttpResponseBase): Observable<GetEmployeesForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetEmployeesForViewDto.fromJS(resultData200) : new GetEmployeesForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetEmployeesForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getEmployeesForEdit(id: number | null | undefined): Observable<GetEmployeesForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Employees/GetEmployeesForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetEmployeesForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetEmployeesForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetEmployeesForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetEmployeesForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetEmployeesForEdit(response: HttpResponseBase): Observable<GetEmployeesForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetEmployeesForEditOutput.fromJS(resultData200) : new GetEmployeesForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetEmployeesForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditEmployeesDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Employees/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Employees/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param userNameFilter (optional) 
+     * @param firstNameFilter (optional) 
+     * @param lastNameFilter (optional) 
+     * @param cellularFilter (optional) 
+     * @param genderFilter (optional) 
+     * @param emailFilter (optional) 
+     * @param employeeIDNumberFilter (optional) 
+     * @param employeeNumberFilter (optional) 
+     * @param maxPasswordFilter (optional) 
+     * @param minPasswordFilter (optional) 
+     * @param isActiveFilter (optional) 
+     * @param maxCardNumberTicketingFilter (optional) 
+     * @param minCardNumberTicketingFilter (optional) 
+     * @param emailAddressFilter (optional) 
+     * @param maxPercentageOfPositionFilter (optional) 
+     * @param minPercentageOfPositionFilter (optional) 
+     * @param maxWorkStartDateFilter (optional) 
+     * @param minWorkStartDateFilter (optional) 
+     * @param maxWorkEndDateFilter (optional) 
+     * @param minWorkEndDateFilter (optional) 
+     * @param maxDateOfBirthFilter (optional) 
+     * @param minDateOfBirthFilter (optional) 
+     * @param bankAccountNumberFilter (optional) 
+     * @param jobTitleFilter (optional) 
+     * @param employeeTypeDescriptionFilter (optional) 
+     * @param branchesDescriptionFilter (optional) 
+     * @return Success
+     */
+    getEmployeesToExcel(filter: string | null | undefined, userNameFilter: string | null | undefined, firstNameFilter: string | null | undefined, lastNameFilter: string | null | undefined, cellularFilter: string | null | undefined, genderFilter: string | null | undefined, emailFilter: string | null | undefined, employeeIDNumberFilter: string | null | undefined, employeeNumberFilter: string | null | undefined, maxPasswordFilter: number | null | undefined, minPasswordFilter: number | null | undefined, isActiveFilter: number | null | undefined, maxCardNumberTicketingFilter: number | null | undefined, minCardNumberTicketingFilter: number | null | undefined, emailAddressFilter: string | null | undefined, maxPercentageOfPositionFilter: number | null | undefined, minPercentageOfPositionFilter: number | null | undefined, maxWorkStartDateFilter: moment.Moment | null | undefined, minWorkStartDateFilter: moment.Moment | null | undefined, maxWorkEndDateFilter: moment.Moment | null | undefined, minWorkEndDateFilter: moment.Moment | null | undefined, maxDateOfBirthFilter: moment.Moment | null | undefined, minDateOfBirthFilter: moment.Moment | null | undefined, bankAccountNumberFilter: string | null | undefined, jobTitleFilter: string | null | undefined, employeeTypeDescriptionFilter: string | null | undefined, branchesDescriptionFilter: string | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/Employees/GetEmployeesToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (userNameFilter !== undefined)
+            url_ += "UserNameFilter=" + encodeURIComponent("" + userNameFilter) + "&"; 
+        if (firstNameFilter !== undefined)
+            url_ += "FirstNameFilter=" + encodeURIComponent("" + firstNameFilter) + "&"; 
+        if (lastNameFilter !== undefined)
+            url_ += "LastNameFilter=" + encodeURIComponent("" + lastNameFilter) + "&"; 
+        if (cellularFilter !== undefined)
+            url_ += "CellularFilter=" + encodeURIComponent("" + cellularFilter) + "&"; 
+        if (genderFilter !== undefined)
+            url_ += "GenderFilter=" + encodeURIComponent("" + genderFilter) + "&"; 
+        if (emailFilter !== undefined)
+            url_ += "EmailFilter=" + encodeURIComponent("" + emailFilter) + "&"; 
+        if (employeeIDNumberFilter !== undefined)
+            url_ += "EmployeeIDNumberFilter=" + encodeURIComponent("" + employeeIDNumberFilter) + "&"; 
+        if (employeeNumberFilter !== undefined)
+            url_ += "EmployeeNumberFilter=" + encodeURIComponent("" + employeeNumberFilter) + "&"; 
+        if (maxPasswordFilter !== undefined)
+            url_ += "MaxPasswordFilter=" + encodeURIComponent("" + maxPasswordFilter) + "&"; 
+        if (minPasswordFilter !== undefined)
+            url_ += "MinPasswordFilter=" + encodeURIComponent("" + minPasswordFilter) + "&"; 
+        if (isActiveFilter !== undefined)
+            url_ += "IsActiveFilter=" + encodeURIComponent("" + isActiveFilter) + "&"; 
+        if (maxCardNumberTicketingFilter !== undefined)
+            url_ += "MaxCardNumberTicketingFilter=" + encodeURIComponent("" + maxCardNumberTicketingFilter) + "&"; 
+        if (minCardNumberTicketingFilter !== undefined)
+            url_ += "MinCardNumberTicketingFilter=" + encodeURIComponent("" + minCardNumberTicketingFilter) + "&"; 
+        if (emailAddressFilter !== undefined)
+            url_ += "EmailAddressFilter=" + encodeURIComponent("" + emailAddressFilter) + "&"; 
+        if (maxPercentageOfPositionFilter !== undefined)
+            url_ += "MaxPercentageOfPositionFilter=" + encodeURIComponent("" + maxPercentageOfPositionFilter) + "&"; 
+        if (minPercentageOfPositionFilter !== undefined)
+            url_ += "MinPercentageOfPositionFilter=" + encodeURIComponent("" + minPercentageOfPositionFilter) + "&"; 
+        if (maxWorkStartDateFilter !== undefined)
+            url_ += "MaxWorkStartDateFilter=" + encodeURIComponent(maxWorkStartDateFilter ? "" + maxWorkStartDateFilter.toJSON() : "") + "&"; 
+        if (minWorkStartDateFilter !== undefined)
+            url_ += "MinWorkStartDateFilter=" + encodeURIComponent(minWorkStartDateFilter ? "" + minWorkStartDateFilter.toJSON() : "") + "&"; 
+        if (maxWorkEndDateFilter !== undefined)
+            url_ += "MaxWorkEndDateFilter=" + encodeURIComponent(maxWorkEndDateFilter ? "" + maxWorkEndDateFilter.toJSON() : "") + "&"; 
+        if (minWorkEndDateFilter !== undefined)
+            url_ += "MinWorkEndDateFilter=" + encodeURIComponent(minWorkEndDateFilter ? "" + minWorkEndDateFilter.toJSON() : "") + "&"; 
+        if (maxDateOfBirthFilter !== undefined)
+            url_ += "MaxDateOfBirthFilter=" + encodeURIComponent(maxDateOfBirthFilter ? "" + maxDateOfBirthFilter.toJSON() : "") + "&"; 
+        if (minDateOfBirthFilter !== undefined)
+            url_ += "MinDateOfBirthFilter=" + encodeURIComponent(minDateOfBirthFilter ? "" + minDateOfBirthFilter.toJSON() : "") + "&"; 
+        if (bankAccountNumberFilter !== undefined)
+            url_ += "BankAccountNumberFilter=" + encodeURIComponent("" + bankAccountNumberFilter) + "&"; 
+        if (jobTitleFilter !== undefined)
+            url_ += "jobTitleFilter=" + encodeURIComponent("" + jobTitleFilter) + "&"; 
+        if (employeeTypeDescriptionFilter !== undefined)
+            url_ += "EmployeeTypeDescriptionFilter=" + encodeURIComponent("" + employeeTypeDescriptionFilter) + "&"; 
+        if (branchesDescriptionFilter !== undefined)
+            url_ += "BranchesDescriptionFilter=" + encodeURIComponent("" + branchesDescriptionFilter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetEmployeesToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetEmployeesToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetEmployeesToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAllEmployeeTypeForLookupTable(filter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfEmployeesEmployeeTypeLookupTableDto> {
+        let url_ = this.baseUrl + "/api/services/app/Employees/GetAllEmployeeTypeForLookupTable?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllEmployeeTypeForLookupTable(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllEmployeeTypeForLookupTable(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfEmployeesEmployeeTypeLookupTableDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfEmployeesEmployeeTypeLookupTableDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllEmployeeTypeForLookupTable(response: HttpResponseBase): Observable<PagedResultDtoOfEmployeesEmployeeTypeLookupTableDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfEmployeesEmployeeTypeLookupTableDto.fromJS(resultData200) : new PagedResultDtoOfEmployeesEmployeeTypeLookupTableDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfEmployeesEmployeeTypeLookupTableDto>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAllBranchesForLookupTable(filter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfEmployeesBranchesLookupTableDto> {
+        let url_ = this.baseUrl + "/api/services/app/Employees/GetAllBranchesForLookupTable?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllBranchesForLookupTable(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllBranchesForLookupTable(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfEmployeesBranchesLookupTableDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfEmployeesBranchesLookupTableDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllBranchesForLookupTable(response: HttpResponseBase): Observable<PagedResultDtoOfEmployeesBranchesLookupTableDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfEmployeesBranchesLookupTableDto.fromJS(resultData200) : new PagedResultDtoOfEmployeesBranchesLookupTableDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfEmployeesBranchesLookupTableDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class EmployeeTypeServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/EmployeeType/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param descriptionFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, descriptionFilter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetEmployeeTypeForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/EmployeeType/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (descriptionFilter !== undefined)
+            url_ += "DescriptionFilter=" + encodeURIComponent("" + descriptionFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetEmployeeTypeForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetEmployeeTypeForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetEmployeeTypeForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetEmployeeTypeForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetEmployeeTypeForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetEmployeeTypeForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getEmployeeTypeForView(id: number | null | undefined): Observable<GetEmployeeTypeForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/EmployeeType/GetEmployeeTypeForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetEmployeeTypeForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetEmployeeTypeForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetEmployeeTypeForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetEmployeeTypeForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetEmployeeTypeForView(response: HttpResponseBase): Observable<GetEmployeeTypeForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetEmployeeTypeForViewDto.fromJS(resultData200) : new GetEmployeeTypeForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetEmployeeTypeForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getEmployeeTypeForEdit(id: number | null | undefined): Observable<GetEmployeeTypeForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/EmployeeType/GetEmployeeTypeForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetEmployeeTypeForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetEmployeeTypeForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetEmployeeTypeForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetEmployeeTypeForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetEmployeeTypeForEdit(response: HttpResponseBase): Observable<GetEmployeeTypeForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetEmployeeTypeForEditOutput.fromJS(resultData200) : new GetEmployeeTypeForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetEmployeeTypeForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditEmployeeTypeDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/EmployeeType/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/EmployeeType/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param descriptionFilter (optional) 
+     * @return Success
+     */
+    getEmployeeTypeToExcel(filter: string | null | undefined, descriptionFilter: string | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/EmployeeType/GetEmployeeTypeToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (descriptionFilter !== undefined)
+            url_ += "DescriptionFilter=" + encodeURIComponent("" + descriptionFilter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetEmployeeTypeToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetEmployeeTypeToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetEmployeeTypeToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
     }
 }
 
@@ -4344,6 +6730,418 @@ export class InvoiceServiceProxy {
             }));
         }
         return _observableOf<void>(<any>null);
+    }
+}
+
+@Injectable()
+export class JobTitleServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/JobTitle/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param descriptionFilter (optional) 
+     * @param description2ndLangFilter (optional) 
+     * @param description3rdLangFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, descriptionFilter: string | null | undefined, description2ndLangFilter: string | null | undefined, description3rdLangFilter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetJobTitleForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/JobTitle/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (descriptionFilter !== undefined)
+            url_ += "DescriptionFilter=" + encodeURIComponent("" + descriptionFilter) + "&"; 
+        if (description2ndLangFilter !== undefined)
+            url_ += "Description2ndLangFilter=" + encodeURIComponent("" + description2ndLangFilter) + "&"; 
+        if (description3rdLangFilter !== undefined)
+            url_ += "Description3rdLangFilter=" + encodeURIComponent("" + description3rdLangFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetJobTitleForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetJobTitleForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetJobTitleForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetJobTitleForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetJobTitleForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetJobTitleForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getJobTitleForView(id: number | null | undefined): Observable<GetJobTitleForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/JobTitle/GetJobTitleForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetJobTitleForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetJobTitleForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetJobTitleForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetJobTitleForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetJobTitleForView(response: HttpResponseBase): Observable<GetJobTitleForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetJobTitleForViewDto.fromJS(resultData200) : new GetJobTitleForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetJobTitleForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getJobTitleForEdit(id: number | null | undefined): Observable<GetJobTitleForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/JobTitle/GetJobTitleForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetJobTitleForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetJobTitleForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetJobTitleForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetJobTitleForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetJobTitleForEdit(response: HttpResponseBase): Observable<GetJobTitleForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetJobTitleForEditOutput.fromJS(resultData200) : new GetJobTitleForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetJobTitleForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditJobTitleDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/JobTitle/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/JobTitle/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param descriptionFilter (optional) 
+     * @param description2ndLangFilter (optional) 
+     * @param description3rdLangFilter (optional) 
+     * @return Success
+     */
+    getJobTitleToExcel(filter: string | null | undefined, descriptionFilter: string | null | undefined, description2ndLangFilter: string | null | undefined, description3rdLangFilter: string | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/JobTitle/GetJobTitleToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (descriptionFilter !== undefined)
+            url_ += "DescriptionFilter=" + encodeURIComponent("" + descriptionFilter) + "&"; 
+        if (description2ndLangFilter !== undefined)
+            url_ += "Description2ndLangFilter=" + encodeURIComponent("" + description2ndLangFilter) + "&"; 
+        if (description3rdLangFilter !== undefined)
+            url_ += "Description3rdLangFilter=" + encodeURIComponent("" + description3rdLangFilter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetJobTitleToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetJobTitleToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetJobTitleToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
     }
 }
 
@@ -7604,6 +10402,61 @@ export class RoutesServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/Routes/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
      * @param filter (optional) 
      * @param maxLineNumberFilter (optional) 
      * @param minLineNumberFilter (optional) 
@@ -7715,6 +10568,60 @@ export class RoutesServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfGetRouteForView>(<any>null);
+    }
+
+    /**
+     * @param idofRoute (optional) 
+     * @return Success
+     */
+    getStationsofRoute(idofRoute: number | null | undefined): Observable<PagedResultDtoOfGetStatoinDetailForRouteForView> {
+        let url_ = this.baseUrl + "/api/services/app/Routes/GetStationsofRoute?";
+        if (idofRoute !== undefined)
+            url_ += "IdofRoute=" + encodeURIComponent("" + idofRoute) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetStationsofRoute(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetStationsofRoute(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetStatoinDetailForRouteForView>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetStatoinDetailForRouteForView>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetStationsofRoute(response: HttpResponseBase): Observable<PagedResultDtoOfGetStatoinDetailForRouteForView> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetStatoinDetailForRouteForView.fromJS(resultData200) : new PagedResultDtoOfGetStatoinDetailForRouteForView();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetStatoinDetailForRouteForView>(<any>null);
     }
 
     /**
@@ -7991,6 +10898,61 @@ export class Routes_StationsServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/Routes_Stations/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
      * @param filter (optional) 
      * @param maxRoutesIDFilter (optional) 
      * @param minRoutesIDFilter (optional) 
@@ -8258,6 +11220,59 @@ export class Routes_StationsServiceProxy {
     }
 
     /**
+     * @param idofRoute (optional) 
+     * @param stationCode (optional) 
+     * @return Success
+     */
+    deleteRouteStation(idofRoute: number | null | undefined, stationCode: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Routes_Stations/DeleteRouteStation?";
+        if (idofRoute !== undefined)
+            url_ += "IdofRoute=" + encodeURIComponent("" + idofRoute) + "&"; 
+        if (stationCode !== undefined)
+            url_ += "StationCode=" + encodeURIComponent("" + stationCode) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteRouteStation(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteRouteStation(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDeleteRouteStation(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
      * @param filter (optional) 
      * @param maxRoutesIDFilter (optional) 
      * @param minRoutesIDFilter (optional) 
@@ -8483,6 +11498,61 @@ export class StaffsServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/Staffs/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
     }
 
     /**
@@ -9344,6 +12414,169 @@ export class StationsServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/Stations/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param locationNameFilter (optional) 
+     * @param maxLatitudeFilter (optional) 
+     * @param minLatitudeFilter (optional) 
+     * @param maxLongitudeFilter (optional) 
+     * @param minLongitudeFilter (optional) 
+     * @param isStopFilter (optional) 
+     * @param maxStationCodeFilter (optional) 
+     * @param minStationCodeFilter (optional) 
+     * @param locationNameHebrewFilter (optional) 
+     * @param typeFilter (optional) 
+     * @param isMarkFilter (optional) 
+     * @param isSaveFilter (optional) 
+     * @param maxcheckDistanceFilter (optional) 
+     * @param mincheckDistanceFilter (optional) 
+     * @param isPathFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getRoutesofStation(filter: string | null | undefined, locationNameFilter: string | null | undefined, maxLatitudeFilter: number | null | undefined, minLatitudeFilter: number | null | undefined, maxLongitudeFilter: number | null | undefined, minLongitudeFilter: number | null | undefined, isStopFilter: number | null | undefined, maxStationCodeFilter: number | null | undefined, minStationCodeFilter: number | null | undefined, locationNameHebrewFilter: string | null | undefined, typeFilter: string | null | undefined, isMarkFilter: number | null | undefined, isSaveFilter: number | null | undefined, maxcheckDistanceFilter: number | null | undefined, mincheckDistanceFilter: number | null | undefined, isPathFilter: number | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetRouteForView> {
+        let url_ = this.baseUrl + "/api/services/app/Stations/GetRoutesofStation?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (locationNameFilter !== undefined)
+            url_ += "LocationNameFilter=" + encodeURIComponent("" + locationNameFilter) + "&"; 
+        if (maxLatitudeFilter !== undefined)
+            url_ += "MaxLatitudeFilter=" + encodeURIComponent("" + maxLatitudeFilter) + "&"; 
+        if (minLatitudeFilter !== undefined)
+            url_ += "MinLatitudeFilter=" + encodeURIComponent("" + minLatitudeFilter) + "&"; 
+        if (maxLongitudeFilter !== undefined)
+            url_ += "MaxLongitudeFilter=" + encodeURIComponent("" + maxLongitudeFilter) + "&"; 
+        if (minLongitudeFilter !== undefined)
+            url_ += "MinLongitudeFilter=" + encodeURIComponent("" + minLongitudeFilter) + "&"; 
+        if (isStopFilter !== undefined)
+            url_ += "IsStopFilter=" + encodeURIComponent("" + isStopFilter) + "&"; 
+        if (maxStationCodeFilter !== undefined)
+            url_ += "MaxStationCodeFilter=" + encodeURIComponent("" + maxStationCodeFilter) + "&"; 
+        if (minStationCodeFilter !== undefined)
+            url_ += "MinStationCodeFilter=" + encodeURIComponent("" + minStationCodeFilter) + "&"; 
+        if (locationNameHebrewFilter !== undefined)
+            url_ += "LocationNameHebrewFilter=" + encodeURIComponent("" + locationNameHebrewFilter) + "&"; 
+        if (typeFilter !== undefined)
+            url_ += "TypeFilter=" + encodeURIComponent("" + typeFilter) + "&"; 
+        if (isMarkFilter !== undefined)
+            url_ += "isMarkFilter=" + encodeURIComponent("" + isMarkFilter) + "&"; 
+        if (isSaveFilter !== undefined)
+            url_ += "IsSaveFilter=" + encodeURIComponent("" + isSaveFilter) + "&"; 
+        if (maxcheckDistanceFilter !== undefined)
+            url_ += "MaxcheckDistanceFilter=" + encodeURIComponent("" + maxcheckDistanceFilter) + "&"; 
+        if (mincheckDistanceFilter !== undefined)
+            url_ += "MincheckDistanceFilter=" + encodeURIComponent("" + mincheckDistanceFilter) + "&"; 
+        if (isPathFilter !== undefined)
+            url_ += "IsPathFilter=" + encodeURIComponent("" + isPathFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRoutesofStation(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetRoutesofStation(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetRouteForView>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetRouteForView>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetRoutesofStation(response: HttpResponseBase): Observable<PagedResultDtoOfGetRouteForView> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetRouteForView.fromJS(resultData200) : new PagedResultDtoOfGetRouteForView();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetRouteForView>(<any>null);
     }
 
     /**
@@ -11935,6 +15168,61 @@ export class TripActualServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/TripActual/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
      * @param filter (optional) 
      * @param timeSpanFilter (optional) 
      * @param maxEndStationIDFilter (optional) 
@@ -12562,6 +15850,61 @@ export class TripActualRoutes_StationServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/TripActualRoutes_Station/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
      * @param filter (optional) 
      * @param maxRoutesIDFilter (optional) 
      * @param minRoutesIDFilter (optional) 
@@ -12934,6 +16277,61 @@ export class TripActualWitHDriverServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/TripActualWitHDriver/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
     }
 
     /**
@@ -13327,6 +16725,61 @@ export class TripByMinistriesServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/TripByMinistries/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
     }
 
     /**
@@ -13777,6 +17230,61 @@ export class TripPlanedDailyWitHDriversServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/TripPlanedDailyWitHDrivers/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
      * @param filter (optional) 
      * @param maxTripPlanIDFilter (optional) 
      * @param minTripPlanIDFilter (optional) 
@@ -14188,6 +17696,61 @@ export class TripPlanedsServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/TripPlaneds/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
      * @param filter (optional) 
      * @param maxCalenderIDFilter (optional) 
      * @param minCalenderIDFilter (optional) 
@@ -14596,6 +18159,61 @@ export class TripPlanedWitHDriversServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/TripPlanedWitHDrivers/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
      * @param workingDay (optional) 
      * @return Success
      */
@@ -14992,6 +18610,61 @@ export class TripTypesServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/TripTypes/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
     }
 
     /**
@@ -16349,6 +20022,1742 @@ export class UserLoginServiceProxy {
 }
 
 @Injectable()
+export class VechileGpsServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param maxVechileIDFilter (optional) 
+     * @param minVechileIDFilter (optional) 
+     * @param maxLatitudeFilter (optional) 
+     * @param minLatitudeFilter (optional) 
+     * @param maxLongitudeFilter (optional) 
+     * @param minLongitudeFilter (optional) 
+     * @param maxangleFilter (optional) 
+     * @param minangleFilter (optional) 
+     * @param maxLocationDateTimeFilter (optional) 
+     * @param minLocationDateTimeFilter (optional) 
+     * @param maxSatellitesFilter (optional) 
+     * @param minSatellitesFilter (optional) 
+     * @param maxHdopFilter (optional) 
+     * @param minHdopFilter (optional) 
+     * @param maxCreatedFilter (optional) 
+     * @param minCreatedFilter (optional) 
+     * @param maxModifiedFilter (optional) 
+     * @param minModifiedFilter (optional) 
+     * @param maxGPSSpeedFilter (optional) 
+     * @param minGPSSpeedFilter (optional) 
+     * @param maxSpeedFilter (optional) 
+     * @param minSpeedFilter (optional) 
+     * @param maxBearingFilter (optional) 
+     * @param minBearingFilter (optional) 
+     * @param maxVehicleNumberFilter (optional) 
+     * @param minVehicleNumberFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, maxVechileIDFilter: number | null | undefined, minVechileIDFilter: number | null | undefined, maxLatitudeFilter: number | null | undefined, minLatitudeFilter: number | null | undefined, maxLongitudeFilter: number | null | undefined, minLongitudeFilter: number | null | undefined, maxangleFilter: number | null | undefined, minangleFilter: number | null | undefined, maxLocationDateTimeFilter: moment.Moment | null | undefined, minLocationDateTimeFilter: moment.Moment | null | undefined, maxSatellitesFilter: number | null | undefined, minSatellitesFilter: number | null | undefined, maxHdopFilter: number | null | undefined, minHdopFilter: number | null | undefined, maxCreatedFilter: moment.Moment | null | undefined, minCreatedFilter: moment.Moment | null | undefined, maxModifiedFilter: moment.Moment | null | undefined, minModifiedFilter: moment.Moment | null | undefined, maxGPSSpeedFilter: number | null | undefined, minGPSSpeedFilter: number | null | undefined, maxSpeedFilter: number | null | undefined, minSpeedFilter: number | null | undefined, maxBearingFilter: number | null | undefined, minBearingFilter: number | null | undefined, maxVehicleNumberFilter: number | null | undefined, minVehicleNumberFilter: number | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetVechileGpsForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/VechileGps/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (maxVechileIDFilter !== undefined)
+            url_ += "MaxVechileIDFilter=" + encodeURIComponent("" + maxVechileIDFilter) + "&"; 
+        if (minVechileIDFilter !== undefined)
+            url_ += "MinVechileIDFilter=" + encodeURIComponent("" + minVechileIDFilter) + "&"; 
+        if (maxLatitudeFilter !== undefined)
+            url_ += "MaxLatitudeFilter=" + encodeURIComponent("" + maxLatitudeFilter) + "&"; 
+        if (minLatitudeFilter !== undefined)
+            url_ += "MinLatitudeFilter=" + encodeURIComponent("" + minLatitudeFilter) + "&"; 
+        if (maxLongitudeFilter !== undefined)
+            url_ += "MaxLongitudeFilter=" + encodeURIComponent("" + maxLongitudeFilter) + "&"; 
+        if (minLongitudeFilter !== undefined)
+            url_ += "MinLongitudeFilter=" + encodeURIComponent("" + minLongitudeFilter) + "&"; 
+        if (maxangleFilter !== undefined)
+            url_ += "MaxangleFilter=" + encodeURIComponent("" + maxangleFilter) + "&"; 
+        if (minangleFilter !== undefined)
+            url_ += "MinangleFilter=" + encodeURIComponent("" + minangleFilter) + "&"; 
+        if (maxLocationDateTimeFilter !== undefined)
+            url_ += "MaxLocationDateTimeFilter=" + encodeURIComponent(maxLocationDateTimeFilter ? "" + maxLocationDateTimeFilter.toJSON() : "") + "&"; 
+        if (minLocationDateTimeFilter !== undefined)
+            url_ += "MinLocationDateTimeFilter=" + encodeURIComponent(minLocationDateTimeFilter ? "" + minLocationDateTimeFilter.toJSON() : "") + "&"; 
+        if (maxSatellitesFilter !== undefined)
+            url_ += "MaxSatellitesFilter=" + encodeURIComponent("" + maxSatellitesFilter) + "&"; 
+        if (minSatellitesFilter !== undefined)
+            url_ += "MinSatellitesFilter=" + encodeURIComponent("" + minSatellitesFilter) + "&"; 
+        if (maxHdopFilter !== undefined)
+            url_ += "MaxHdopFilter=" + encodeURIComponent("" + maxHdopFilter) + "&"; 
+        if (minHdopFilter !== undefined)
+            url_ += "MinHdopFilter=" + encodeURIComponent("" + minHdopFilter) + "&"; 
+        if (maxCreatedFilter !== undefined)
+            url_ += "MaxCreatedFilter=" + encodeURIComponent(maxCreatedFilter ? "" + maxCreatedFilter.toJSON() : "") + "&"; 
+        if (minCreatedFilter !== undefined)
+            url_ += "MinCreatedFilter=" + encodeURIComponent(minCreatedFilter ? "" + minCreatedFilter.toJSON() : "") + "&"; 
+        if (maxModifiedFilter !== undefined)
+            url_ += "MaxModifiedFilter=" + encodeURIComponent(maxModifiedFilter ? "" + maxModifiedFilter.toJSON() : "") + "&"; 
+        if (minModifiedFilter !== undefined)
+            url_ += "MinModifiedFilter=" + encodeURIComponent(minModifiedFilter ? "" + minModifiedFilter.toJSON() : "") + "&"; 
+        if (maxGPSSpeedFilter !== undefined)
+            url_ += "MaxGPSSpeedFilter=" + encodeURIComponent("" + maxGPSSpeedFilter) + "&"; 
+        if (minGPSSpeedFilter !== undefined)
+            url_ += "MinGPSSpeedFilter=" + encodeURIComponent("" + minGPSSpeedFilter) + "&"; 
+        if (maxSpeedFilter !== undefined)
+            url_ += "MaxSpeedFilter=" + encodeURIComponent("" + maxSpeedFilter) + "&"; 
+        if (minSpeedFilter !== undefined)
+            url_ += "MinSpeedFilter=" + encodeURIComponent("" + minSpeedFilter) + "&"; 
+        if (maxBearingFilter !== undefined)
+            url_ += "MaxBearingFilter=" + encodeURIComponent("" + maxBearingFilter) + "&"; 
+        if (minBearingFilter !== undefined)
+            url_ += "MinBearingFilter=" + encodeURIComponent("" + minBearingFilter) + "&"; 
+        if (maxVehicleNumberFilter !== undefined)
+            url_ += "MaxVehicleNumberFilter=" + encodeURIComponent("" + maxVehicleNumberFilter) + "&"; 
+        if (minVehicleNumberFilter !== undefined)
+            url_ += "MinVehicleNumberFilter=" + encodeURIComponent("" + minVehicleNumberFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetVechileGpsForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetVechileGpsForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetVechileGpsForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetVechileGpsForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetVechileGpsForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetVechileGpsForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getVechileGpsForView(id: number | null | undefined): Observable<GetVechileGpsForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/VechileGps/GetVechileGpsForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVechileGpsForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVechileGpsForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetVechileGpsForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetVechileGpsForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetVechileGpsForView(response: HttpResponseBase): Observable<GetVechileGpsForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetVechileGpsForViewDto.fromJS(resultData200) : new GetVechileGpsForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetVechileGpsForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getVechileGpsForEdit(id: number | null | undefined): Observable<GetVechileGpsForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/VechileGps/GetVechileGpsForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVechileGpsForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVechileGpsForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetVechileGpsForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetVechileGpsForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetVechileGpsForEdit(response: HttpResponseBase): Observable<GetVechileGpsForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetVechileGpsForEditOutput.fromJS(resultData200) : new GetVechileGpsForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetVechileGpsForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditVechileGpsDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/VechileGps/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/VechileGps/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param maxVechileIDFilter (optional) 
+     * @param minVechileIDFilter (optional) 
+     * @param maxLatitudeFilter (optional) 
+     * @param minLatitudeFilter (optional) 
+     * @param maxLongitudeFilter (optional) 
+     * @param minLongitudeFilter (optional) 
+     * @param maxangleFilter (optional) 
+     * @param minangleFilter (optional) 
+     * @param maxLocationDateTimeFilter (optional) 
+     * @param minLocationDateTimeFilter (optional) 
+     * @param maxSatellitesFilter (optional) 
+     * @param minSatellitesFilter (optional) 
+     * @param maxHdopFilter (optional) 
+     * @param minHdopFilter (optional) 
+     * @param maxCreatedFilter (optional) 
+     * @param minCreatedFilter (optional) 
+     * @param maxModifiedFilter (optional) 
+     * @param minModifiedFilter (optional) 
+     * @param maxGPSSpeedFilter (optional) 
+     * @param minGPSSpeedFilter (optional) 
+     * @param maxSpeedFilter (optional) 
+     * @param minSpeedFilter (optional) 
+     * @param maxBearingFilter (optional) 
+     * @param minBearingFilter (optional) 
+     * @param maxVehicleNumberFilter (optional) 
+     * @param minVehicleNumberFilter (optional) 
+     * @return Success
+     */
+    getVechileGpsToExcel(filter: string | null | undefined, maxVechileIDFilter: number | null | undefined, minVechileIDFilter: number | null | undefined, maxLatitudeFilter: number | null | undefined, minLatitudeFilter: number | null | undefined, maxLongitudeFilter: number | null | undefined, minLongitudeFilter: number | null | undefined, maxangleFilter: number | null | undefined, minangleFilter: number | null | undefined, maxLocationDateTimeFilter: moment.Moment | null | undefined, minLocationDateTimeFilter: moment.Moment | null | undefined, maxSatellitesFilter: number | null | undefined, minSatellitesFilter: number | null | undefined, maxHdopFilter: number | null | undefined, minHdopFilter: number | null | undefined, maxCreatedFilter: moment.Moment | null | undefined, minCreatedFilter: moment.Moment | null | undefined, maxModifiedFilter: moment.Moment | null | undefined, minModifiedFilter: moment.Moment | null | undefined, maxGPSSpeedFilter: number | null | undefined, minGPSSpeedFilter: number | null | undefined, maxSpeedFilter: number | null | undefined, minSpeedFilter: number | null | undefined, maxBearingFilter: number | null | undefined, minBearingFilter: number | null | undefined, maxVehicleNumberFilter: number | null | undefined, minVehicleNumberFilter: number | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/VechileGps/GetVechileGpsToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (maxVechileIDFilter !== undefined)
+            url_ += "MaxVechileIDFilter=" + encodeURIComponent("" + maxVechileIDFilter) + "&"; 
+        if (minVechileIDFilter !== undefined)
+            url_ += "MinVechileIDFilter=" + encodeURIComponent("" + minVechileIDFilter) + "&"; 
+        if (maxLatitudeFilter !== undefined)
+            url_ += "MaxLatitudeFilter=" + encodeURIComponent("" + maxLatitudeFilter) + "&"; 
+        if (minLatitudeFilter !== undefined)
+            url_ += "MinLatitudeFilter=" + encodeURIComponent("" + minLatitudeFilter) + "&"; 
+        if (maxLongitudeFilter !== undefined)
+            url_ += "MaxLongitudeFilter=" + encodeURIComponent("" + maxLongitudeFilter) + "&"; 
+        if (minLongitudeFilter !== undefined)
+            url_ += "MinLongitudeFilter=" + encodeURIComponent("" + minLongitudeFilter) + "&"; 
+        if (maxangleFilter !== undefined)
+            url_ += "MaxangleFilter=" + encodeURIComponent("" + maxangleFilter) + "&"; 
+        if (minangleFilter !== undefined)
+            url_ += "MinangleFilter=" + encodeURIComponent("" + minangleFilter) + "&"; 
+        if (maxLocationDateTimeFilter !== undefined)
+            url_ += "MaxLocationDateTimeFilter=" + encodeURIComponent(maxLocationDateTimeFilter ? "" + maxLocationDateTimeFilter.toJSON() : "") + "&"; 
+        if (minLocationDateTimeFilter !== undefined)
+            url_ += "MinLocationDateTimeFilter=" + encodeURIComponent(minLocationDateTimeFilter ? "" + minLocationDateTimeFilter.toJSON() : "") + "&"; 
+        if (maxSatellitesFilter !== undefined)
+            url_ += "MaxSatellitesFilter=" + encodeURIComponent("" + maxSatellitesFilter) + "&"; 
+        if (minSatellitesFilter !== undefined)
+            url_ += "MinSatellitesFilter=" + encodeURIComponent("" + minSatellitesFilter) + "&"; 
+        if (maxHdopFilter !== undefined)
+            url_ += "MaxHdopFilter=" + encodeURIComponent("" + maxHdopFilter) + "&"; 
+        if (minHdopFilter !== undefined)
+            url_ += "MinHdopFilter=" + encodeURIComponent("" + minHdopFilter) + "&"; 
+        if (maxCreatedFilter !== undefined)
+            url_ += "MaxCreatedFilter=" + encodeURIComponent(maxCreatedFilter ? "" + maxCreatedFilter.toJSON() : "") + "&"; 
+        if (minCreatedFilter !== undefined)
+            url_ += "MinCreatedFilter=" + encodeURIComponent(minCreatedFilter ? "" + minCreatedFilter.toJSON() : "") + "&"; 
+        if (maxModifiedFilter !== undefined)
+            url_ += "MaxModifiedFilter=" + encodeURIComponent(maxModifiedFilter ? "" + maxModifiedFilter.toJSON() : "") + "&"; 
+        if (minModifiedFilter !== undefined)
+            url_ += "MinModifiedFilter=" + encodeURIComponent(minModifiedFilter ? "" + minModifiedFilter.toJSON() : "") + "&"; 
+        if (maxGPSSpeedFilter !== undefined)
+            url_ += "MaxGPSSpeedFilter=" + encodeURIComponent("" + maxGPSSpeedFilter) + "&"; 
+        if (minGPSSpeedFilter !== undefined)
+            url_ += "MinGPSSpeedFilter=" + encodeURIComponent("" + minGPSSpeedFilter) + "&"; 
+        if (maxSpeedFilter !== undefined)
+            url_ += "MaxSpeedFilter=" + encodeURIComponent("" + maxSpeedFilter) + "&"; 
+        if (minSpeedFilter !== undefined)
+            url_ += "MinSpeedFilter=" + encodeURIComponent("" + minSpeedFilter) + "&"; 
+        if (maxBearingFilter !== undefined)
+            url_ += "MaxBearingFilter=" + encodeURIComponent("" + maxBearingFilter) + "&"; 
+        if (minBearingFilter !== undefined)
+            url_ += "MinBearingFilter=" + encodeURIComponent("" + minBearingFilter) + "&"; 
+        if (maxVehicleNumberFilter !== undefined)
+            url_ += "MaxVehicleNumberFilter=" + encodeURIComponent("" + maxVehicleNumberFilter) + "&"; 
+        if (minVehicleNumberFilter !== undefined)
+            url_ += "MinVehicleNumberFilter=" + encodeURIComponent("" + minVehicleNumberFilter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVechileGpsToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVechileGpsToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetVechileGpsToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class VehiclesServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/Vehicles/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param maxInternalIDFilter (optional) 
+     * @param minInternalIDFilter (optional) 
+     * @param maxVehicleNumberFilter (optional) 
+     * @param minVehicleNumberFilter (optional) 
+     * @param maxShortVehicleNumberFilter (optional) 
+     * @param minShortVehicleNumberFilter (optional) 
+     * @param maxVehicleTypeFilter (optional) 
+     * @param minVehicleTypeFilter (optional) 
+     * @param maxStatusFilter (optional) 
+     * @param minStatusFilter (optional) 
+     * @param maxStatusDateFilter (optional) 
+     * @param minStatusDateFilter (optional) 
+     * @param maxParkingFilter (optional) 
+     * @param minParkingFilter (optional) 
+     * @param maxGarageFilter (optional) 
+     * @param minGarageFilter (optional) 
+     * @param maxKMFilter (optional) 
+     * @param minKMFilter (optional) 
+     * @param maxTestDateFilter (optional) 
+     * @param minTestDateFilter (optional) 
+     * @param maxInsuranceDateFilter (optional) 
+     * @param minInsuranceDateFilter (optional) 
+     * @param maxLastHandleDateFilter (optional) 
+     * @param minLastHandleDateFilter (optional) 
+     * @param maxNextHandleDateFilter (optional) 
+     * @param minNextHandleDateFilter (optional) 
+     * @param maxUpdatedFilter (optional) 
+     * @param minUpdatedFilter (optional) 
+     * @param maxOperatorIDFilter (optional) 
+     * @param minOperatorIDFilter (optional) 
+     * @param maxIsBusInTripFilter (optional) 
+     * @param minIsBusInTripFilter (optional) 
+     * @param maxIsBusInTripLastUpdatedFilter (optional) 
+     * @param minIsBusInTripLastUpdatedFilter (optional) 
+     * @param vehiclesTypeTypeDescriptionFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, maxInternalIDFilter: number | null | undefined, minInternalIDFilter: number | null | undefined, maxVehicleNumberFilter: number | null | undefined, minVehicleNumberFilter: number | null | undefined, maxShortVehicleNumberFilter: number | null | undefined, minShortVehicleNumberFilter: number | null | undefined, maxVehicleTypeFilter: number | null | undefined, minVehicleTypeFilter: number | null | undefined, maxStatusFilter: number | null | undefined, minStatusFilter: number | null | undefined, maxStatusDateFilter: moment.Moment | null | undefined, minStatusDateFilter: moment.Moment | null | undefined, maxParkingFilter: number | null | undefined, minParkingFilter: number | null | undefined, maxGarageFilter: number | null | undefined, minGarageFilter: number | null | undefined, maxKMFilter: number | null | undefined, minKMFilter: number | null | undefined, maxTestDateFilter: moment.Moment | null | undefined, minTestDateFilter: moment.Moment | null | undefined, maxInsuranceDateFilter: moment.Moment | null | undefined, minInsuranceDateFilter: moment.Moment | null | undefined, maxLastHandleDateFilter: moment.Moment | null | undefined, minLastHandleDateFilter: moment.Moment | null | undefined, maxNextHandleDateFilter: moment.Moment | null | undefined, minNextHandleDateFilter: moment.Moment | null | undefined, maxUpdatedFilter: moment.Moment | null | undefined, minUpdatedFilter: moment.Moment | null | undefined, maxOperatorIDFilter: number | null | undefined, minOperatorIDFilter: number | null | undefined, maxIsBusInTripFilter: number | null | undefined, minIsBusInTripFilter: number | null | undefined, maxIsBusInTripLastUpdatedFilter: moment.Moment | null | undefined, minIsBusInTripLastUpdatedFilter: moment.Moment | null | undefined, vehiclesTypeTypeDescriptionFilter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetVehiclesForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Vehicles/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (maxInternalIDFilter !== undefined)
+            url_ += "MaxInternalIDFilter=" + encodeURIComponent("" + maxInternalIDFilter) + "&"; 
+        if (minInternalIDFilter !== undefined)
+            url_ += "MinInternalIDFilter=" + encodeURIComponent("" + minInternalIDFilter) + "&"; 
+        if (maxVehicleNumberFilter !== undefined)
+            url_ += "MaxVehicleNumberFilter=" + encodeURIComponent("" + maxVehicleNumberFilter) + "&"; 
+        if (minVehicleNumberFilter !== undefined)
+            url_ += "MinVehicleNumberFilter=" + encodeURIComponent("" + minVehicleNumberFilter) + "&"; 
+        if (maxShortVehicleNumberFilter !== undefined)
+            url_ += "MaxShortVehicleNumberFilter=" + encodeURIComponent("" + maxShortVehicleNumberFilter) + "&"; 
+        if (minShortVehicleNumberFilter !== undefined)
+            url_ += "MinShortVehicleNumberFilter=" + encodeURIComponent("" + minShortVehicleNumberFilter) + "&"; 
+        if (maxVehicleTypeFilter !== undefined)
+            url_ += "MaxVehicleTypeFilter=" + encodeURIComponent("" + maxVehicleTypeFilter) + "&"; 
+        if (minVehicleTypeFilter !== undefined)
+            url_ += "MinVehicleTypeFilter=" + encodeURIComponent("" + minVehicleTypeFilter) + "&"; 
+        if (maxStatusFilter !== undefined)
+            url_ += "MaxStatusFilter=" + encodeURIComponent("" + maxStatusFilter) + "&"; 
+        if (minStatusFilter !== undefined)
+            url_ += "MinStatusFilter=" + encodeURIComponent("" + minStatusFilter) + "&"; 
+        if (maxStatusDateFilter !== undefined)
+            url_ += "MaxStatusDateFilter=" + encodeURIComponent(maxStatusDateFilter ? "" + maxStatusDateFilter.toJSON() : "") + "&"; 
+        if (minStatusDateFilter !== undefined)
+            url_ += "MinStatusDateFilter=" + encodeURIComponent(minStatusDateFilter ? "" + minStatusDateFilter.toJSON() : "") + "&"; 
+        if (maxParkingFilter !== undefined)
+            url_ += "MaxParkingFilter=" + encodeURIComponent("" + maxParkingFilter) + "&"; 
+        if (minParkingFilter !== undefined)
+            url_ += "MinParkingFilter=" + encodeURIComponent("" + minParkingFilter) + "&"; 
+        if (maxGarageFilter !== undefined)
+            url_ += "MaxGarageFilter=" + encodeURIComponent("" + maxGarageFilter) + "&"; 
+        if (minGarageFilter !== undefined)
+            url_ += "MinGarageFilter=" + encodeURIComponent("" + minGarageFilter) + "&"; 
+        if (maxKMFilter !== undefined)
+            url_ += "MaxKMFilter=" + encodeURIComponent("" + maxKMFilter) + "&"; 
+        if (minKMFilter !== undefined)
+            url_ += "MinKMFilter=" + encodeURIComponent("" + minKMFilter) + "&"; 
+        if (maxTestDateFilter !== undefined)
+            url_ += "MaxTestDateFilter=" + encodeURIComponent(maxTestDateFilter ? "" + maxTestDateFilter.toJSON() : "") + "&"; 
+        if (minTestDateFilter !== undefined)
+            url_ += "MinTestDateFilter=" + encodeURIComponent(minTestDateFilter ? "" + minTestDateFilter.toJSON() : "") + "&"; 
+        if (maxInsuranceDateFilter !== undefined)
+            url_ += "MaxInsuranceDateFilter=" + encodeURIComponent(maxInsuranceDateFilter ? "" + maxInsuranceDateFilter.toJSON() : "") + "&"; 
+        if (minInsuranceDateFilter !== undefined)
+            url_ += "MinInsuranceDateFilter=" + encodeURIComponent(minInsuranceDateFilter ? "" + minInsuranceDateFilter.toJSON() : "") + "&"; 
+        if (maxLastHandleDateFilter !== undefined)
+            url_ += "MaxLastHandleDateFilter=" + encodeURIComponent(maxLastHandleDateFilter ? "" + maxLastHandleDateFilter.toJSON() : "") + "&"; 
+        if (minLastHandleDateFilter !== undefined)
+            url_ += "MinLastHandleDateFilter=" + encodeURIComponent(minLastHandleDateFilter ? "" + minLastHandleDateFilter.toJSON() : "") + "&"; 
+        if (maxNextHandleDateFilter !== undefined)
+            url_ += "MaxNextHandleDateFilter=" + encodeURIComponent(maxNextHandleDateFilter ? "" + maxNextHandleDateFilter.toJSON() : "") + "&"; 
+        if (minNextHandleDateFilter !== undefined)
+            url_ += "MinNextHandleDateFilter=" + encodeURIComponent(minNextHandleDateFilter ? "" + minNextHandleDateFilter.toJSON() : "") + "&"; 
+        if (maxUpdatedFilter !== undefined)
+            url_ += "MaxUpdatedFilter=" + encodeURIComponent(maxUpdatedFilter ? "" + maxUpdatedFilter.toJSON() : "") + "&"; 
+        if (minUpdatedFilter !== undefined)
+            url_ += "MinUpdatedFilter=" + encodeURIComponent(minUpdatedFilter ? "" + minUpdatedFilter.toJSON() : "") + "&"; 
+        if (maxOperatorIDFilter !== undefined)
+            url_ += "MaxOperatorIDFilter=" + encodeURIComponent("" + maxOperatorIDFilter) + "&"; 
+        if (minOperatorIDFilter !== undefined)
+            url_ += "MinOperatorIDFilter=" + encodeURIComponent("" + minOperatorIDFilter) + "&"; 
+        if (maxIsBusInTripFilter !== undefined)
+            url_ += "MaxIsBusInTripFilter=" + encodeURIComponent("" + maxIsBusInTripFilter) + "&"; 
+        if (minIsBusInTripFilter !== undefined)
+            url_ += "MinIsBusInTripFilter=" + encodeURIComponent("" + minIsBusInTripFilter) + "&"; 
+        if (maxIsBusInTripLastUpdatedFilter !== undefined)
+            url_ += "MaxIsBusInTripLastUpdatedFilter=" + encodeURIComponent(maxIsBusInTripLastUpdatedFilter ? "" + maxIsBusInTripLastUpdatedFilter.toJSON() : "") + "&"; 
+        if (minIsBusInTripLastUpdatedFilter !== undefined)
+            url_ += "MinIsBusInTripLastUpdatedFilter=" + encodeURIComponent(minIsBusInTripLastUpdatedFilter ? "" + minIsBusInTripLastUpdatedFilter.toJSON() : "") + "&"; 
+        if (vehiclesTypeTypeDescriptionFilter !== undefined)
+            url_ += "VehiclesTypeTypeDescriptionFilter=" + encodeURIComponent("" + vehiclesTypeTypeDescriptionFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetVehiclesForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetVehiclesForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetVehiclesForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetVehiclesForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetVehiclesForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetVehiclesForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getVehiclesForView(id: number | null | undefined): Observable<GetVehiclesForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Vehicles/GetVehiclesForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVehiclesForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVehiclesForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetVehiclesForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetVehiclesForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetVehiclesForView(response: HttpResponseBase): Observable<GetVehiclesForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetVehiclesForViewDto.fromJS(resultData200) : new GetVehiclesForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetVehiclesForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getVehiclesForEdit(id: number | null | undefined): Observable<GetVehiclesForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Vehicles/GetVehiclesForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVehiclesForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVehiclesForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetVehiclesForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetVehiclesForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetVehiclesForEdit(response: HttpResponseBase): Observable<GetVehiclesForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetVehiclesForEditOutput.fromJS(resultData200) : new GetVehiclesForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetVehiclesForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditVehiclesDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Vehicles/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Vehicles/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param maxInternalIDFilter (optional) 
+     * @param minInternalIDFilter (optional) 
+     * @param maxVehicleNumberFilter (optional) 
+     * @param minVehicleNumberFilter (optional) 
+     * @param maxShortVehicleNumberFilter (optional) 
+     * @param minShortVehicleNumberFilter (optional) 
+     * @param maxVehicleTypeFilter (optional) 
+     * @param minVehicleTypeFilter (optional) 
+     * @param maxStatusFilter (optional) 
+     * @param minStatusFilter (optional) 
+     * @param maxStatusDateFilter (optional) 
+     * @param minStatusDateFilter (optional) 
+     * @param maxParkingFilter (optional) 
+     * @param minParkingFilter (optional) 
+     * @param maxGarageFilter (optional) 
+     * @param minGarageFilter (optional) 
+     * @param maxKMFilter (optional) 
+     * @param minKMFilter (optional) 
+     * @param maxTestDateFilter (optional) 
+     * @param minTestDateFilter (optional) 
+     * @param maxInsuranceDateFilter (optional) 
+     * @param minInsuranceDateFilter (optional) 
+     * @param maxLastHandleDateFilter (optional) 
+     * @param minLastHandleDateFilter (optional) 
+     * @param maxNextHandleDateFilter (optional) 
+     * @param minNextHandleDateFilter (optional) 
+     * @param maxUpdatedFilter (optional) 
+     * @param minUpdatedFilter (optional) 
+     * @param maxOperatorIDFilter (optional) 
+     * @param minOperatorIDFilter (optional) 
+     * @param maxIsBusInTripFilter (optional) 
+     * @param minIsBusInTripFilter (optional) 
+     * @param maxIsBusInTripLastUpdatedFilter (optional) 
+     * @param minIsBusInTripLastUpdatedFilter (optional) 
+     * @param vehiclesTypeTypeDescriptionFilter (optional) 
+     * @return Success
+     */
+    getVehiclesToExcel(filter: string | null | undefined, maxInternalIDFilter: number | null | undefined, minInternalIDFilter: number | null | undefined, maxVehicleNumberFilter: number | null | undefined, minVehicleNumberFilter: number | null | undefined, maxShortVehicleNumberFilter: number | null | undefined, minShortVehicleNumberFilter: number | null | undefined, maxVehicleTypeFilter: number | null | undefined, minVehicleTypeFilter: number | null | undefined, maxStatusFilter: number | null | undefined, minStatusFilter: number | null | undefined, maxStatusDateFilter: moment.Moment | null | undefined, minStatusDateFilter: moment.Moment | null | undefined, maxParkingFilter: number | null | undefined, minParkingFilter: number | null | undefined, maxGarageFilter: number | null | undefined, minGarageFilter: number | null | undefined, maxKMFilter: number | null | undefined, minKMFilter: number | null | undefined, maxTestDateFilter: moment.Moment | null | undefined, minTestDateFilter: moment.Moment | null | undefined, maxInsuranceDateFilter: moment.Moment | null | undefined, minInsuranceDateFilter: moment.Moment | null | undefined, maxLastHandleDateFilter: moment.Moment | null | undefined, minLastHandleDateFilter: moment.Moment | null | undefined, maxNextHandleDateFilter: moment.Moment | null | undefined, minNextHandleDateFilter: moment.Moment | null | undefined, maxUpdatedFilter: moment.Moment | null | undefined, minUpdatedFilter: moment.Moment | null | undefined, maxOperatorIDFilter: number | null | undefined, minOperatorIDFilter: number | null | undefined, maxIsBusInTripFilter: number | null | undefined, minIsBusInTripFilter: number | null | undefined, maxIsBusInTripLastUpdatedFilter: moment.Moment | null | undefined, minIsBusInTripLastUpdatedFilter: moment.Moment | null | undefined, vehiclesTypeTypeDescriptionFilter: string | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/Vehicles/GetVehiclesToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (maxInternalIDFilter !== undefined)
+            url_ += "MaxInternalIDFilter=" + encodeURIComponent("" + maxInternalIDFilter) + "&"; 
+        if (minInternalIDFilter !== undefined)
+            url_ += "MinInternalIDFilter=" + encodeURIComponent("" + minInternalIDFilter) + "&"; 
+        if (maxVehicleNumberFilter !== undefined)
+            url_ += "MaxVehicleNumberFilter=" + encodeURIComponent("" + maxVehicleNumberFilter) + "&"; 
+        if (minVehicleNumberFilter !== undefined)
+            url_ += "MinVehicleNumberFilter=" + encodeURIComponent("" + minVehicleNumberFilter) + "&"; 
+        if (maxShortVehicleNumberFilter !== undefined)
+            url_ += "MaxShortVehicleNumberFilter=" + encodeURIComponent("" + maxShortVehicleNumberFilter) + "&"; 
+        if (minShortVehicleNumberFilter !== undefined)
+            url_ += "MinShortVehicleNumberFilter=" + encodeURIComponent("" + minShortVehicleNumberFilter) + "&"; 
+        if (maxVehicleTypeFilter !== undefined)
+            url_ += "MaxVehicleTypeFilter=" + encodeURIComponent("" + maxVehicleTypeFilter) + "&"; 
+        if (minVehicleTypeFilter !== undefined)
+            url_ += "MinVehicleTypeFilter=" + encodeURIComponent("" + minVehicleTypeFilter) + "&"; 
+        if (maxStatusFilter !== undefined)
+            url_ += "MaxStatusFilter=" + encodeURIComponent("" + maxStatusFilter) + "&"; 
+        if (minStatusFilter !== undefined)
+            url_ += "MinStatusFilter=" + encodeURIComponent("" + minStatusFilter) + "&"; 
+        if (maxStatusDateFilter !== undefined)
+            url_ += "MaxStatusDateFilter=" + encodeURIComponent(maxStatusDateFilter ? "" + maxStatusDateFilter.toJSON() : "") + "&"; 
+        if (minStatusDateFilter !== undefined)
+            url_ += "MinStatusDateFilter=" + encodeURIComponent(minStatusDateFilter ? "" + minStatusDateFilter.toJSON() : "") + "&"; 
+        if (maxParkingFilter !== undefined)
+            url_ += "MaxParkingFilter=" + encodeURIComponent("" + maxParkingFilter) + "&"; 
+        if (minParkingFilter !== undefined)
+            url_ += "MinParkingFilter=" + encodeURIComponent("" + minParkingFilter) + "&"; 
+        if (maxGarageFilter !== undefined)
+            url_ += "MaxGarageFilter=" + encodeURIComponent("" + maxGarageFilter) + "&"; 
+        if (minGarageFilter !== undefined)
+            url_ += "MinGarageFilter=" + encodeURIComponent("" + minGarageFilter) + "&"; 
+        if (maxKMFilter !== undefined)
+            url_ += "MaxKMFilter=" + encodeURIComponent("" + maxKMFilter) + "&"; 
+        if (minKMFilter !== undefined)
+            url_ += "MinKMFilter=" + encodeURIComponent("" + minKMFilter) + "&"; 
+        if (maxTestDateFilter !== undefined)
+            url_ += "MaxTestDateFilter=" + encodeURIComponent(maxTestDateFilter ? "" + maxTestDateFilter.toJSON() : "") + "&"; 
+        if (minTestDateFilter !== undefined)
+            url_ += "MinTestDateFilter=" + encodeURIComponent(minTestDateFilter ? "" + minTestDateFilter.toJSON() : "") + "&"; 
+        if (maxInsuranceDateFilter !== undefined)
+            url_ += "MaxInsuranceDateFilter=" + encodeURIComponent(maxInsuranceDateFilter ? "" + maxInsuranceDateFilter.toJSON() : "") + "&"; 
+        if (minInsuranceDateFilter !== undefined)
+            url_ += "MinInsuranceDateFilter=" + encodeURIComponent(minInsuranceDateFilter ? "" + minInsuranceDateFilter.toJSON() : "") + "&"; 
+        if (maxLastHandleDateFilter !== undefined)
+            url_ += "MaxLastHandleDateFilter=" + encodeURIComponent(maxLastHandleDateFilter ? "" + maxLastHandleDateFilter.toJSON() : "") + "&"; 
+        if (minLastHandleDateFilter !== undefined)
+            url_ += "MinLastHandleDateFilter=" + encodeURIComponent(minLastHandleDateFilter ? "" + minLastHandleDateFilter.toJSON() : "") + "&"; 
+        if (maxNextHandleDateFilter !== undefined)
+            url_ += "MaxNextHandleDateFilter=" + encodeURIComponent(maxNextHandleDateFilter ? "" + maxNextHandleDateFilter.toJSON() : "") + "&"; 
+        if (minNextHandleDateFilter !== undefined)
+            url_ += "MinNextHandleDateFilter=" + encodeURIComponent(minNextHandleDateFilter ? "" + minNextHandleDateFilter.toJSON() : "") + "&"; 
+        if (maxUpdatedFilter !== undefined)
+            url_ += "MaxUpdatedFilter=" + encodeURIComponent(maxUpdatedFilter ? "" + maxUpdatedFilter.toJSON() : "") + "&"; 
+        if (minUpdatedFilter !== undefined)
+            url_ += "MinUpdatedFilter=" + encodeURIComponent(minUpdatedFilter ? "" + minUpdatedFilter.toJSON() : "") + "&"; 
+        if (maxOperatorIDFilter !== undefined)
+            url_ += "MaxOperatorIDFilter=" + encodeURIComponent("" + maxOperatorIDFilter) + "&"; 
+        if (minOperatorIDFilter !== undefined)
+            url_ += "MinOperatorIDFilter=" + encodeURIComponent("" + minOperatorIDFilter) + "&"; 
+        if (maxIsBusInTripFilter !== undefined)
+            url_ += "MaxIsBusInTripFilter=" + encodeURIComponent("" + maxIsBusInTripFilter) + "&"; 
+        if (minIsBusInTripFilter !== undefined)
+            url_ += "MinIsBusInTripFilter=" + encodeURIComponent("" + minIsBusInTripFilter) + "&"; 
+        if (maxIsBusInTripLastUpdatedFilter !== undefined)
+            url_ += "MaxIsBusInTripLastUpdatedFilter=" + encodeURIComponent(maxIsBusInTripLastUpdatedFilter ? "" + maxIsBusInTripLastUpdatedFilter.toJSON() : "") + "&"; 
+        if (minIsBusInTripLastUpdatedFilter !== undefined)
+            url_ += "MinIsBusInTripLastUpdatedFilter=" + encodeURIComponent(minIsBusInTripLastUpdatedFilter ? "" + minIsBusInTripLastUpdatedFilter.toJSON() : "") + "&"; 
+        if (vehiclesTypeTypeDescriptionFilter !== undefined)
+            url_ += "VehiclesTypeTypeDescriptionFilter=" + encodeURIComponent("" + vehiclesTypeTypeDescriptionFilter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVehiclesToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVehiclesToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetVehiclesToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAllVehiclesTypeForLookupTable(filter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfVehiclesVehiclesTypeLookupTableDto> {
+        let url_ = this.baseUrl + "/api/services/app/Vehicles/GetAllVehiclesTypeForLookupTable?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllVehiclesTypeForLookupTable(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllVehiclesTypeForLookupTable(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfVehiclesVehiclesTypeLookupTableDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfVehiclesVehiclesTypeLookupTableDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllVehiclesTypeForLookupTable(response: HttpResponseBase): Observable<PagedResultDtoOfVehiclesVehiclesTypeLookupTableDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfVehiclesVehiclesTypeLookupTableDto.fromJS(resultData200) : new PagedResultDtoOfVehiclesVehiclesTypeLookupTableDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfVehiclesVehiclesTypeLookupTableDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class VehiclesTypeServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/VehiclesType/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param typeDescriptionFilter (optional) 
+     * @param maxManufacturerFilter (optional) 
+     * @param minManufacturerFilter (optional) 
+     * @param maxMotorTypeFilter (optional) 
+     * @param minMotorTypeFilter (optional) 
+     * @param maxPassengersCountFilter (optional) 
+     * @param minPassengersCountFilter (optional) 
+     * @param maxDoorsCountFilter (optional) 
+     * @param minDoorsCountFilter (optional) 
+     * @param maxDoorsTypesFilter (optional) 
+     * @param minDoorsTypesFilter (optional) 
+     * @param maxGarageFrequencyKMFilter (optional) 
+     * @param minGarageFrequencyKMFilter (optional) 
+     * @param maxSeatsNumberFilter (optional) 
+     * @param minSeatsNumberFilter (optional) 
+     * @param noInterurbanFilter (optional) 
+     * @param maxBusTypeFilter (optional) 
+     * @param minBusTypeFilter (optional) 
+     * @param maxTiresCountFilter (optional) 
+     * @param minTiresCountFilter (optional) 
+     * @param maxStatusFilter (optional) 
+     * @param minStatusFilter (optional) 
+     * @param maxModifiedByFilter (optional) 
+     * @param minModifiedByFilter (optional) 
+     * @param maxModificationDateFilter (optional) 
+     * @param minModificationDateFilter (optional) 
+     * @param maxCreatedByFilter (optional) 
+     * @param minCreatedByFilter (optional) 
+     * @param maxCreationDateFilter (optional) 
+     * @param minCreationDateFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, typeDescriptionFilter: string | null | undefined, maxManufacturerFilter: number | null | undefined, minManufacturerFilter: number | null | undefined, maxMotorTypeFilter: number | null | undefined, minMotorTypeFilter: number | null | undefined, maxPassengersCountFilter: number | null | undefined, minPassengersCountFilter: number | null | undefined, maxDoorsCountFilter: number | null | undefined, minDoorsCountFilter: number | null | undefined, maxDoorsTypesFilter: number | null | undefined, minDoorsTypesFilter: number | null | undefined, maxGarageFrequencyKMFilter: number | null | undefined, minGarageFrequencyKMFilter: number | null | undefined, maxSeatsNumberFilter: number | null | undefined, minSeatsNumberFilter: number | null | undefined, noInterurbanFilter: number | null | undefined, maxBusTypeFilter: number | null | undefined, minBusTypeFilter: number | null | undefined, maxTiresCountFilter: number | null | undefined, minTiresCountFilter: number | null | undefined, maxStatusFilter: number | null | undefined, minStatusFilter: number | null | undefined, maxModifiedByFilter: number | null | undefined, minModifiedByFilter: number | null | undefined, maxModificationDateFilter: moment.Moment | null | undefined, minModificationDateFilter: moment.Moment | null | undefined, maxCreatedByFilter: number | null | undefined, minCreatedByFilter: number | null | undefined, maxCreationDateFilter: moment.Moment | null | undefined, minCreationDateFilter: moment.Moment | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetVehiclesTypeForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/VehiclesType/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (typeDescriptionFilter !== undefined)
+            url_ += "TypeDescriptionFilter=" + encodeURIComponent("" + typeDescriptionFilter) + "&"; 
+        if (maxManufacturerFilter !== undefined)
+            url_ += "MaxManufacturerFilter=" + encodeURIComponent("" + maxManufacturerFilter) + "&"; 
+        if (minManufacturerFilter !== undefined)
+            url_ += "MinManufacturerFilter=" + encodeURIComponent("" + minManufacturerFilter) + "&"; 
+        if (maxMotorTypeFilter !== undefined)
+            url_ += "MaxMotorTypeFilter=" + encodeURIComponent("" + maxMotorTypeFilter) + "&"; 
+        if (minMotorTypeFilter !== undefined)
+            url_ += "MinMotorTypeFilter=" + encodeURIComponent("" + minMotorTypeFilter) + "&"; 
+        if (maxPassengersCountFilter !== undefined)
+            url_ += "MaxPassengersCountFilter=" + encodeURIComponent("" + maxPassengersCountFilter) + "&"; 
+        if (minPassengersCountFilter !== undefined)
+            url_ += "MinPassengersCountFilter=" + encodeURIComponent("" + minPassengersCountFilter) + "&"; 
+        if (maxDoorsCountFilter !== undefined)
+            url_ += "MaxDoorsCountFilter=" + encodeURIComponent("" + maxDoorsCountFilter) + "&"; 
+        if (minDoorsCountFilter !== undefined)
+            url_ += "MinDoorsCountFilter=" + encodeURIComponent("" + minDoorsCountFilter) + "&"; 
+        if (maxDoorsTypesFilter !== undefined)
+            url_ += "MaxDoorsTypesFilter=" + encodeURIComponent("" + maxDoorsTypesFilter) + "&"; 
+        if (minDoorsTypesFilter !== undefined)
+            url_ += "MinDoorsTypesFilter=" + encodeURIComponent("" + minDoorsTypesFilter) + "&"; 
+        if (maxGarageFrequencyKMFilter !== undefined)
+            url_ += "MaxGarageFrequencyKMFilter=" + encodeURIComponent("" + maxGarageFrequencyKMFilter) + "&"; 
+        if (minGarageFrequencyKMFilter !== undefined)
+            url_ += "MinGarageFrequencyKMFilter=" + encodeURIComponent("" + minGarageFrequencyKMFilter) + "&"; 
+        if (maxSeatsNumberFilter !== undefined)
+            url_ += "MaxSeatsNumberFilter=" + encodeURIComponent("" + maxSeatsNumberFilter) + "&"; 
+        if (minSeatsNumberFilter !== undefined)
+            url_ += "MinSeatsNumberFilter=" + encodeURIComponent("" + minSeatsNumberFilter) + "&"; 
+        if (noInterurbanFilter !== undefined)
+            url_ += "NoInterurbanFilter=" + encodeURIComponent("" + noInterurbanFilter) + "&"; 
+        if (maxBusTypeFilter !== undefined)
+            url_ += "MaxBusTypeFilter=" + encodeURIComponent("" + maxBusTypeFilter) + "&"; 
+        if (minBusTypeFilter !== undefined)
+            url_ += "MinBusTypeFilter=" + encodeURIComponent("" + minBusTypeFilter) + "&"; 
+        if (maxTiresCountFilter !== undefined)
+            url_ += "MaxTiresCountFilter=" + encodeURIComponent("" + maxTiresCountFilter) + "&"; 
+        if (minTiresCountFilter !== undefined)
+            url_ += "MinTiresCountFilter=" + encodeURIComponent("" + minTiresCountFilter) + "&"; 
+        if (maxStatusFilter !== undefined)
+            url_ += "MaxStatusFilter=" + encodeURIComponent("" + maxStatusFilter) + "&"; 
+        if (minStatusFilter !== undefined)
+            url_ += "MinStatusFilter=" + encodeURIComponent("" + minStatusFilter) + "&"; 
+        if (maxModifiedByFilter !== undefined)
+            url_ += "MaxModifiedByFilter=" + encodeURIComponent("" + maxModifiedByFilter) + "&"; 
+        if (minModifiedByFilter !== undefined)
+            url_ += "MinModifiedByFilter=" + encodeURIComponent("" + minModifiedByFilter) + "&"; 
+        if (maxModificationDateFilter !== undefined)
+            url_ += "MaxModificationDateFilter=" + encodeURIComponent(maxModificationDateFilter ? "" + maxModificationDateFilter.toJSON() : "") + "&"; 
+        if (minModificationDateFilter !== undefined)
+            url_ += "MinModificationDateFilter=" + encodeURIComponent(minModificationDateFilter ? "" + minModificationDateFilter.toJSON() : "") + "&"; 
+        if (maxCreatedByFilter !== undefined)
+            url_ += "MaxCreatedByFilter=" + encodeURIComponent("" + maxCreatedByFilter) + "&"; 
+        if (minCreatedByFilter !== undefined)
+            url_ += "MinCreatedByFilter=" + encodeURIComponent("" + minCreatedByFilter) + "&"; 
+        if (maxCreationDateFilter !== undefined)
+            url_ += "MaxCreationDateFilter=" + encodeURIComponent(maxCreationDateFilter ? "" + maxCreationDateFilter.toJSON() : "") + "&"; 
+        if (minCreationDateFilter !== undefined)
+            url_ += "MinCreationDateFilter=" + encodeURIComponent(minCreationDateFilter ? "" + minCreationDateFilter.toJSON() : "") + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetVehiclesTypeForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetVehiclesTypeForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetVehiclesTypeForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetVehiclesTypeForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetVehiclesTypeForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetVehiclesTypeForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getVehiclesTypeForView(id: number | null | undefined): Observable<GetVehiclesTypeForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/VehiclesType/GetVehiclesTypeForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVehiclesTypeForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVehiclesTypeForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetVehiclesTypeForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetVehiclesTypeForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetVehiclesTypeForView(response: HttpResponseBase): Observable<GetVehiclesTypeForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetVehiclesTypeForViewDto.fromJS(resultData200) : new GetVehiclesTypeForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetVehiclesTypeForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getVehiclesTypeForEdit(id: number | null | undefined): Observable<GetVehiclesTypeForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/VehiclesType/GetVehiclesTypeForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVehiclesTypeForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVehiclesTypeForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetVehiclesTypeForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetVehiclesTypeForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetVehiclesTypeForEdit(response: HttpResponseBase): Observable<GetVehiclesTypeForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetVehiclesTypeForEditOutput.fromJS(resultData200) : new GetVehiclesTypeForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetVehiclesTypeForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditVehiclesTypeDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/VehiclesType/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/VehiclesType/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param typeDescriptionFilter (optional) 
+     * @param maxManufacturerFilter (optional) 
+     * @param minManufacturerFilter (optional) 
+     * @param maxMotorTypeFilter (optional) 
+     * @param minMotorTypeFilter (optional) 
+     * @param maxPassengersCountFilter (optional) 
+     * @param minPassengersCountFilter (optional) 
+     * @param maxDoorsCountFilter (optional) 
+     * @param minDoorsCountFilter (optional) 
+     * @param maxDoorsTypesFilter (optional) 
+     * @param minDoorsTypesFilter (optional) 
+     * @param maxGarageFrequencyKMFilter (optional) 
+     * @param minGarageFrequencyKMFilter (optional) 
+     * @param maxSeatsNumberFilter (optional) 
+     * @param minSeatsNumberFilter (optional) 
+     * @param noInterurbanFilter (optional) 
+     * @param maxBusTypeFilter (optional) 
+     * @param minBusTypeFilter (optional) 
+     * @param maxTiresCountFilter (optional) 
+     * @param minTiresCountFilter (optional) 
+     * @param maxStatusFilter (optional) 
+     * @param minStatusFilter (optional) 
+     * @param maxModifiedByFilter (optional) 
+     * @param minModifiedByFilter (optional) 
+     * @param maxModificationDateFilter (optional) 
+     * @param minModificationDateFilter (optional) 
+     * @param maxCreatedByFilter (optional) 
+     * @param minCreatedByFilter (optional) 
+     * @param maxCreationDateFilter (optional) 
+     * @param minCreationDateFilter (optional) 
+     * @return Success
+     */
+    getVehiclesTypeToExcel(filter: string | null | undefined, typeDescriptionFilter: string | null | undefined, maxManufacturerFilter: number | null | undefined, minManufacturerFilter: number | null | undefined, maxMotorTypeFilter: number | null | undefined, minMotorTypeFilter: number | null | undefined, maxPassengersCountFilter: number | null | undefined, minPassengersCountFilter: number | null | undefined, maxDoorsCountFilter: number | null | undefined, minDoorsCountFilter: number | null | undefined, maxDoorsTypesFilter: number | null | undefined, minDoorsTypesFilter: number | null | undefined, maxGarageFrequencyKMFilter: number | null | undefined, minGarageFrequencyKMFilter: number | null | undefined, maxSeatsNumberFilter: number | null | undefined, minSeatsNumberFilter: number | null | undefined, noInterurbanFilter: number | null | undefined, maxBusTypeFilter: number | null | undefined, minBusTypeFilter: number | null | undefined, maxTiresCountFilter: number | null | undefined, minTiresCountFilter: number | null | undefined, maxStatusFilter: number | null | undefined, minStatusFilter: number | null | undefined, maxModifiedByFilter: number | null | undefined, minModifiedByFilter: number | null | undefined, maxModificationDateFilter: moment.Moment | null | undefined, minModificationDateFilter: moment.Moment | null | undefined, maxCreatedByFilter: number | null | undefined, minCreatedByFilter: number | null | undefined, maxCreationDateFilter: moment.Moment | null | undefined, minCreationDateFilter: moment.Moment | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/VehiclesType/GetVehiclesTypeToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (typeDescriptionFilter !== undefined)
+            url_ += "TypeDescriptionFilter=" + encodeURIComponent("" + typeDescriptionFilter) + "&"; 
+        if (maxManufacturerFilter !== undefined)
+            url_ += "MaxManufacturerFilter=" + encodeURIComponent("" + maxManufacturerFilter) + "&"; 
+        if (minManufacturerFilter !== undefined)
+            url_ += "MinManufacturerFilter=" + encodeURIComponent("" + minManufacturerFilter) + "&"; 
+        if (maxMotorTypeFilter !== undefined)
+            url_ += "MaxMotorTypeFilter=" + encodeURIComponent("" + maxMotorTypeFilter) + "&"; 
+        if (minMotorTypeFilter !== undefined)
+            url_ += "MinMotorTypeFilter=" + encodeURIComponent("" + minMotorTypeFilter) + "&"; 
+        if (maxPassengersCountFilter !== undefined)
+            url_ += "MaxPassengersCountFilter=" + encodeURIComponent("" + maxPassengersCountFilter) + "&"; 
+        if (minPassengersCountFilter !== undefined)
+            url_ += "MinPassengersCountFilter=" + encodeURIComponent("" + minPassengersCountFilter) + "&"; 
+        if (maxDoorsCountFilter !== undefined)
+            url_ += "MaxDoorsCountFilter=" + encodeURIComponent("" + maxDoorsCountFilter) + "&"; 
+        if (minDoorsCountFilter !== undefined)
+            url_ += "MinDoorsCountFilter=" + encodeURIComponent("" + minDoorsCountFilter) + "&"; 
+        if (maxDoorsTypesFilter !== undefined)
+            url_ += "MaxDoorsTypesFilter=" + encodeURIComponent("" + maxDoorsTypesFilter) + "&"; 
+        if (minDoorsTypesFilter !== undefined)
+            url_ += "MinDoorsTypesFilter=" + encodeURIComponent("" + minDoorsTypesFilter) + "&"; 
+        if (maxGarageFrequencyKMFilter !== undefined)
+            url_ += "MaxGarageFrequencyKMFilter=" + encodeURIComponent("" + maxGarageFrequencyKMFilter) + "&"; 
+        if (minGarageFrequencyKMFilter !== undefined)
+            url_ += "MinGarageFrequencyKMFilter=" + encodeURIComponent("" + minGarageFrequencyKMFilter) + "&"; 
+        if (maxSeatsNumberFilter !== undefined)
+            url_ += "MaxSeatsNumberFilter=" + encodeURIComponent("" + maxSeatsNumberFilter) + "&"; 
+        if (minSeatsNumberFilter !== undefined)
+            url_ += "MinSeatsNumberFilter=" + encodeURIComponent("" + minSeatsNumberFilter) + "&"; 
+        if (noInterurbanFilter !== undefined)
+            url_ += "NoInterurbanFilter=" + encodeURIComponent("" + noInterurbanFilter) + "&"; 
+        if (maxBusTypeFilter !== undefined)
+            url_ += "MaxBusTypeFilter=" + encodeURIComponent("" + maxBusTypeFilter) + "&"; 
+        if (minBusTypeFilter !== undefined)
+            url_ += "MinBusTypeFilter=" + encodeURIComponent("" + minBusTypeFilter) + "&"; 
+        if (maxTiresCountFilter !== undefined)
+            url_ += "MaxTiresCountFilter=" + encodeURIComponent("" + maxTiresCountFilter) + "&"; 
+        if (minTiresCountFilter !== undefined)
+            url_ += "MinTiresCountFilter=" + encodeURIComponent("" + minTiresCountFilter) + "&"; 
+        if (maxStatusFilter !== undefined)
+            url_ += "MaxStatusFilter=" + encodeURIComponent("" + maxStatusFilter) + "&"; 
+        if (minStatusFilter !== undefined)
+            url_ += "MinStatusFilter=" + encodeURIComponent("" + minStatusFilter) + "&"; 
+        if (maxModifiedByFilter !== undefined)
+            url_ += "MaxModifiedByFilter=" + encodeURIComponent("" + maxModifiedByFilter) + "&"; 
+        if (minModifiedByFilter !== undefined)
+            url_ += "MinModifiedByFilter=" + encodeURIComponent("" + minModifiedByFilter) + "&"; 
+        if (maxModificationDateFilter !== undefined)
+            url_ += "MaxModificationDateFilter=" + encodeURIComponent(maxModificationDateFilter ? "" + maxModificationDateFilter.toJSON() : "") + "&"; 
+        if (minModificationDateFilter !== undefined)
+            url_ += "MinModificationDateFilter=" + encodeURIComponent(minModificationDateFilter ? "" + minModificationDateFilter.toJSON() : "") + "&"; 
+        if (maxCreatedByFilter !== undefined)
+            url_ += "MaxCreatedByFilter=" + encodeURIComponent("" + maxCreatedByFilter) + "&"; 
+        if (minCreatedByFilter !== undefined)
+            url_ += "MinCreatedByFilter=" + encodeURIComponent("" + minCreatedByFilter) + "&"; 
+        if (maxCreationDateFilter !== undefined)
+            url_ += "MaxCreationDateFilter=" + encodeURIComponent(maxCreationDateFilter ? "" + maxCreationDateFilter.toJSON() : "") + "&"; 
+        if (minCreationDateFilter !== undefined)
+            url_ += "MinCreationDateFilter=" + encodeURIComponent(minCreationDateFilter ? "" + minCreationDateFilter.toJSON() : "") + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVehiclesTypeToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVehiclesTypeToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetVehiclesTypeToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class ViwTripPlanedServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -16357,6 +21766,61 @@ export class ViwTripPlanedServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/ViwTripPlaned/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
     }
 
     /**
@@ -17020,6 +22484,61 @@ export class ViwTripPlanedDailyServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/ViwTripPlanedDaily/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
     }
 
     /**
@@ -19409,6 +24928,406 @@ export interface IEntityPropertyChangeDto {
     id: number | undefined;
 }
 
+export class PagedResultDtoOfGetBanksForViewDto implements IPagedResultDtoOfGetBanksForViewDto {
+    totalCount!: number | undefined;
+    items!: GetBanksForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetBanksForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetBanksForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetBanksForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetBanksForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetBanksForViewDto {
+    totalCount: number | undefined;
+    items: GetBanksForViewDto[] | undefined;
+}
+
+export class GetBanksForViewDto implements IGetBanksForViewDto {
+    banks!: BanksDto | undefined;
+
+    constructor(data?: IGetBanksForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.banks = data["banks"] ? BanksDto.fromJS(data["banks"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetBanksForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetBanksForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["banks"] = this.banks ? this.banks.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetBanksForViewDto {
+    banks: BanksDto | undefined;
+}
+
+export class BanksDto implements IBanksDto {
+    description!: string | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IBanksDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.description = data["description"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): BanksDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BanksDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["description"] = this.description;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IBanksDto {
+    description: string | undefined;
+    id: number | undefined;
+}
+
+export class GetBanksForEditOutput implements IGetBanksForEditOutput {
+    banks!: CreateOrEditBanksDto | undefined;
+
+    constructor(data?: IGetBanksForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.banks = data["banks"] ? CreateOrEditBanksDto.fromJS(data["banks"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetBanksForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetBanksForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["banks"] = this.banks ? this.banks.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetBanksForEditOutput {
+    banks: CreateOrEditBanksDto | undefined;
+}
+
+export class CreateOrEditBanksDto implements ICreateOrEditBanksDto {
+    description!: string;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditBanksDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.description = data["description"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditBanksDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditBanksDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["description"] = this.description;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditBanksDto {
+    description: string;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfGetBranchesForViewDto implements IPagedResultDtoOfGetBranchesForViewDto {
+    totalCount!: number | undefined;
+    items!: GetBranchesForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetBranchesForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetBranchesForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetBranchesForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetBranchesForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetBranchesForViewDto {
+    totalCount: number | undefined;
+    items: GetBranchesForViewDto[] | undefined;
+}
+
+export class GetBranchesForViewDto implements IGetBranchesForViewDto {
+    branches!: BranchesDto | undefined;
+
+    constructor(data?: IGetBranchesForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branches = data["branches"] ? BranchesDto.fromJS(data["branches"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetBranchesForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetBranchesForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branches"] = this.branches ? this.branches.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetBranchesForViewDto {
+    branches: BranchesDto | undefined;
+}
+
+export class BranchesDto implements IBranchesDto {
+    description!: string | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IBranchesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.description = data["description"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): BranchesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BranchesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["description"] = this.description;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IBranchesDto {
+    description: string | undefined;
+    id: number | undefined;
+}
+
+export class GetBranchesForEditOutput implements IGetBranchesForEditOutput {
+    branches!: CreateOrEditBranchesDto | undefined;
+
+    constructor(data?: IGetBranchesForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branches = data["branches"] ? CreateOrEditBranchesDto.fromJS(data["branches"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetBranchesForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetBranchesForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branches"] = this.branches ? this.branches.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetBranchesForEditOutput {
+    branches: CreateOrEditBranchesDto | undefined;
+}
+
+export class CreateOrEditBranchesDto implements ICreateOrEditBranchesDto {
+    description!: string | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditBranchesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.description = data["description"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditBranchesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditBranchesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["description"] = this.description;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditBranchesDto {
+    description: string | undefined;
+    id: number | undefined;
+}
+
 export class PagedResultDtoOfGetBusInfoForView implements IPagedResultDtoOfGetBusInfoForView {
     totalCount!: number | undefined;
     items!: GetBusInfoForView[] | undefined;
@@ -19654,6 +25573,206 @@ export interface ICreateOrEditBusInfoDto {
     trackerIEMI: string | undefined;
     insuPolicyNumber: moment.Moment | undefined;
     capcity: number | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfGetBusTypesForViewDto implements IPagedResultDtoOfGetBusTypesForViewDto {
+    totalCount!: number | undefined;
+    items!: GetBusTypesForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetBusTypesForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetBusTypesForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetBusTypesForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetBusTypesForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetBusTypesForViewDto {
+    totalCount: number | undefined;
+    items: GetBusTypesForViewDto[] | undefined;
+}
+
+export class GetBusTypesForViewDto implements IGetBusTypesForViewDto {
+    busTypes!: BusTypesDto | undefined;
+
+    constructor(data?: IGetBusTypesForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.busTypes = data["busTypes"] ? BusTypesDto.fromJS(data["busTypes"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetBusTypesForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetBusTypesForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["busTypes"] = this.busTypes ? this.busTypes.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetBusTypesForViewDto {
+    busTypes: BusTypesDto | undefined;
+}
+
+export class BusTypesDto implements IBusTypesDto {
+    busTypeDesc!: string | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IBusTypesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.busTypeDesc = data["busTypeDesc"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): BusTypesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BusTypesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["busTypeDesc"] = this.busTypeDesc;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IBusTypesDto {
+    busTypeDesc: string | undefined;
+    id: number | undefined;
+}
+
+export class GetBusTypesForEditOutput implements IGetBusTypesForEditOutput {
+    busTypes!: CreateOrEditBusTypesDto | undefined;
+
+    constructor(data?: IGetBusTypesForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.busTypes = data["busTypes"] ? CreateOrEditBusTypesDto.fromJS(data["busTypes"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetBusTypesForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetBusTypesForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["busTypes"] = this.busTypes ? this.busTypes.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetBusTypesForEditOutput {
+    busTypes: CreateOrEditBusTypesDto | undefined;
+}
+
+export class CreateOrEditBusTypesDto implements ICreateOrEditBusTypesDto {
+    busTypeDesc!: string;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditBusTypesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.busTypeDesc = data["busTypeDesc"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditBusTypesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditBusTypesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["busTypeDesc"] = this.busTypeDesc;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditBusTypesDto {
+    busTypeDesc: string;
     id: number | undefined;
 }
 
@@ -21536,6 +27655,750 @@ export interface IMoveTenantsToAnotherEditionDto {
     targetEditionId: number | undefined;
 }
 
+export class PagedResultDtoOfGetEmployeesForViewDto implements IPagedResultDtoOfGetEmployeesForViewDto {
+    totalCount!: number | undefined;
+    items!: GetEmployeesForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetEmployeesForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetEmployeesForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetEmployeesForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetEmployeesForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetEmployeesForViewDto {
+    totalCount: number | undefined;
+    items: GetEmployeesForViewDto[] | undefined;
+}
+
+export class GetEmployeesForViewDto implements IGetEmployeesForViewDto {
+    employees!: EmployeesDto | undefined;
+    employeeTypeDescription!: string | undefined;
+    branchesDescription!: string | undefined;
+
+    constructor(data?: IGetEmployeesForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.employees = data["employees"] ? EmployeesDto.fromJS(data["employees"]) : <any>undefined;
+            this.employeeTypeDescription = data["employeeTypeDescription"];
+            this.branchesDescription = data["branchesDescription"];
+        }
+    }
+
+    static fromJS(data: any): GetEmployeesForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetEmployeesForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employees"] = this.employees ? this.employees.toJSON() : <any>undefined;
+        data["employeeTypeDescription"] = this.employeeTypeDescription;
+        data["branchesDescription"] = this.branchesDescription;
+        return data; 
+    }
+}
+
+export interface IGetEmployeesForViewDto {
+    employees: EmployeesDto | undefined;
+    employeeTypeDescription: string | undefined;
+    branchesDescription: string | undefined;
+}
+
+export class EmployeesDto implements IEmployeesDto {
+    userName!: string | undefined;
+    firstName!: string | undefined;
+    lastName!: string | undefined;
+    cellular!: string | undefined;
+    gender!: string | undefined;
+    email!: string | undefined;
+    employeeIDNumber!: string | undefined;
+    employeeNumber!: string | undefined;
+    password!: number | undefined;
+    isActive!: boolean | undefined;
+    cardNumberTicketing!: number | undefined;
+    emailAddress!: string | undefined;
+    percentageOfPosition!: number | undefined;
+    workStartDate!: moment.Moment | undefined;
+    workEndDate!: moment.Moment | undefined;
+    dateOfBirth!: moment.Moment | undefined;
+    bankAccountNumber!: string | undefined;
+    jobTitle!: string | undefined;
+    employeeTypeId!: number | undefined;
+    branchesId!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IEmployeesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.userName = data["userName"];
+            this.firstName = data["firstName"];
+            this.lastName = data["lastName"];
+            this.cellular = data["cellular"];
+            this.gender = data["gender"];
+            this.email = data["email"];
+            this.employeeIDNumber = data["employeeIDNumber"];
+            this.employeeNumber = data["employeeNumber"];
+            this.password = data["password"];
+            this.isActive = data["isActive"];
+            this.cardNumberTicketing = data["cardNumberTicketing"];
+            this.emailAddress = data["emailAddress"];
+            this.percentageOfPosition = data["percentageOfPosition"];
+            this.workStartDate = data["workStartDate"] ? moment(data["workStartDate"].toString()) : <any>undefined;
+            this.workEndDate = data["workEndDate"] ? moment(data["workEndDate"].toString()) : <any>undefined;
+            this.dateOfBirth = data["dateOfBirth"] ? moment(data["dateOfBirth"].toString()) : <any>undefined;
+            this.bankAccountNumber = data["bankAccountNumber"];
+            this.jobTitle = data["jobTitle"];
+            this.employeeTypeId = data["employeeTypeId"];
+            this.branchesId = data["branchesId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): EmployeesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["cellular"] = this.cellular;
+        data["gender"] = this.gender;
+        data["email"] = this.email;
+        data["employeeIDNumber"] = this.employeeIDNumber;
+        data["employeeNumber"] = this.employeeNumber;
+        data["password"] = this.password;
+        data["isActive"] = this.isActive;
+        data["cardNumberTicketing"] = this.cardNumberTicketing;
+        data["emailAddress"] = this.emailAddress;
+        data["percentageOfPosition"] = this.percentageOfPosition;
+        data["workStartDate"] = this.workStartDate ? this.workStartDate.toISOString() : <any>undefined;
+        data["workEndDate"] = this.workEndDate ? this.workEndDate.toISOString() : <any>undefined;
+        data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : <any>undefined;
+        data["bankAccountNumber"] = this.bankAccountNumber;
+        data["jobTitle"] = this.jobTitle;
+        data["employeeTypeId"] = this.employeeTypeId;
+        data["branchesId"] = this.branchesId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IEmployeesDto {
+    userName: string | undefined;
+    firstName: string | undefined;
+    lastName: string | undefined;
+    cellular: string | undefined;
+    gender: string | undefined;
+    email: string | undefined;
+    employeeIDNumber: string | undefined;
+    employeeNumber: string | undefined;
+    password: number | undefined;
+    isActive: boolean | undefined;
+    cardNumberTicketing: number | undefined;
+    emailAddress: string | undefined;
+    percentageOfPosition: number | undefined;
+    workStartDate: moment.Moment | undefined;
+    workEndDate: moment.Moment | undefined;
+    dateOfBirth: moment.Moment | undefined;
+    bankAccountNumber: string | undefined;
+    jobTitle: string | undefined;
+    employeeTypeId: number | undefined;
+    branchesId: number | undefined;
+    id: number | undefined;
+}
+
+export class GetEmployeesForEditOutput implements IGetEmployeesForEditOutput {
+    employees!: CreateOrEditEmployeesDto | undefined;
+    employeeTypeDescription!: string | undefined;
+    branchesDescription!: string | undefined;
+
+    constructor(data?: IGetEmployeesForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.employees = data["employees"] ? CreateOrEditEmployeesDto.fromJS(data["employees"]) : <any>undefined;
+            this.employeeTypeDescription = data["employeeTypeDescription"];
+            this.branchesDescription = data["branchesDescription"];
+        }
+    }
+
+    static fromJS(data: any): GetEmployeesForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetEmployeesForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employees"] = this.employees ? this.employees.toJSON() : <any>undefined;
+        data["employeeTypeDescription"] = this.employeeTypeDescription;
+        data["branchesDescription"] = this.branchesDescription;
+        return data; 
+    }
+}
+
+export interface IGetEmployeesForEditOutput {
+    employees: CreateOrEditEmployeesDto | undefined;
+    employeeTypeDescription: string | undefined;
+    branchesDescription: string | undefined;
+}
+
+export class CreateOrEditEmployeesDto implements ICreateOrEditEmployeesDto {
+    userName!: string;
+    firstName!: string;
+    lastName!: string;
+    cellular!: string | undefined;
+    gender!: string | undefined;
+    email!: string | undefined;
+    employeeIDNumber!: string;
+    employeeNumber!: string;
+    password!: number | undefined;
+    isActive!: boolean | undefined;
+    cardNumberTicketing!: number | undefined;
+    emailAddress!: string | undefined;
+    percentageOfPosition!: number | undefined;
+    workStartDate!: moment.Moment | undefined;
+    workEndDate!: moment.Moment | undefined;
+    dateOfBirth!: moment.Moment | undefined;
+    bankAccountNumber!: string | undefined;
+    jobTitle!: string | undefined;
+    employeeTypeId!: number | undefined;
+    branchesId!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditEmployeesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.userName = data["userName"];
+            this.firstName = data["firstName"];
+            this.lastName = data["lastName"];
+            this.cellular = data["cellular"];
+            this.gender = data["gender"];
+            this.email = data["email"];
+            this.employeeIDNumber = data["employeeIDNumber"];
+            this.employeeNumber = data["employeeNumber"];
+            this.password = data["password"];
+            this.isActive = data["isActive"];
+            this.cardNumberTicketing = data["cardNumberTicketing"];
+            this.emailAddress = data["emailAddress"];
+            this.percentageOfPosition = data["percentageOfPosition"];
+            this.workStartDate = data["workStartDate"] ? moment(data["workStartDate"].toString()) : <any>undefined;
+            this.workEndDate = data["workEndDate"] ? moment(data["workEndDate"].toString()) : <any>undefined;
+            this.dateOfBirth = data["dateOfBirth"] ? moment(data["dateOfBirth"].toString()) : <any>undefined;
+            this.bankAccountNumber = data["bankAccountNumber"];
+            this.jobTitle = data["jobTitle"];
+            this.employeeTypeId = data["employeeTypeId"];
+            this.branchesId = data["branchesId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditEmployeesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditEmployeesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["cellular"] = this.cellular;
+        data["gender"] = this.gender;
+        data["email"] = this.email;
+        data["employeeIDNumber"] = this.employeeIDNumber;
+        data["employeeNumber"] = this.employeeNumber;
+        data["password"] = this.password;
+        data["isActive"] = this.isActive;
+        data["cardNumberTicketing"] = this.cardNumberTicketing;
+        data["emailAddress"] = this.emailAddress;
+        data["percentageOfPosition"] = this.percentageOfPosition;
+        data["workStartDate"] = this.workStartDate ? this.workStartDate.toISOString() : <any>undefined;
+        data["workEndDate"] = this.workEndDate ? this.workEndDate.toISOString() : <any>undefined;
+        data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : <any>undefined;
+        data["bankAccountNumber"] = this.bankAccountNumber;
+        data["jobTitle"] = this.jobTitle;
+        data["employeeTypeId"] = this.employeeTypeId;
+        data["branchesId"] = this.branchesId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditEmployeesDto {
+    userName: string;
+    firstName: string;
+    lastName: string;
+    cellular: string | undefined;
+    gender: string | undefined;
+    email: string | undefined;
+    employeeIDNumber: string;
+    employeeNumber: string;
+    password: number | undefined;
+    isActive: boolean | undefined;
+    cardNumberTicketing: number | undefined;
+    emailAddress: string | undefined;
+    percentageOfPosition: number | undefined;
+    workStartDate: moment.Moment | undefined;
+    workEndDate: moment.Moment | undefined;
+    dateOfBirth: moment.Moment | undefined;
+    bankAccountNumber: string | undefined;
+    jobTitle: string | undefined;
+    employeeTypeId: number | undefined;
+    branchesId: number | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfEmployeesEmployeeTypeLookupTableDto implements IPagedResultDtoOfEmployeesEmployeeTypeLookupTableDto {
+    totalCount!: number | undefined;
+    items!: EmployeesEmployeeTypeLookupTableDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfEmployeesEmployeeTypeLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(EmployeesEmployeeTypeLookupTableDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfEmployeesEmployeeTypeLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfEmployeesEmployeeTypeLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfEmployeesEmployeeTypeLookupTableDto {
+    totalCount: number | undefined;
+    items: EmployeesEmployeeTypeLookupTableDto[] | undefined;
+}
+
+export class EmployeesEmployeeTypeLookupTableDto implements IEmployeesEmployeeTypeLookupTableDto {
+    id!: number | undefined;
+    displayName!: string | undefined;
+
+    constructor(data?: IEmployeesEmployeeTypeLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.displayName = data["displayName"];
+        }
+    }
+
+    static fromJS(data: any): EmployeesEmployeeTypeLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeesEmployeeTypeLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        return data; 
+    }
+}
+
+export interface IEmployeesEmployeeTypeLookupTableDto {
+    id: number | undefined;
+    displayName: string | undefined;
+}
+
+export class PagedResultDtoOfEmployeesBranchesLookupTableDto implements IPagedResultDtoOfEmployeesBranchesLookupTableDto {
+    totalCount!: number | undefined;
+    items!: EmployeesBranchesLookupTableDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfEmployeesBranchesLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(EmployeesBranchesLookupTableDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfEmployeesBranchesLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfEmployeesBranchesLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfEmployeesBranchesLookupTableDto {
+    totalCount: number | undefined;
+    items: EmployeesBranchesLookupTableDto[] | undefined;
+}
+
+export class EmployeesBranchesLookupTableDto implements IEmployeesBranchesLookupTableDto {
+    id!: number | undefined;
+    displayName!: string | undefined;
+
+    constructor(data?: IEmployeesBranchesLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.displayName = data["displayName"];
+        }
+    }
+
+    static fromJS(data: any): EmployeesBranchesLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeesBranchesLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        return data; 
+    }
+}
+
+export interface IEmployeesBranchesLookupTableDto {
+    id: number | undefined;
+    displayName: string | undefined;
+}
+
+export class PagedResultDtoOfGetEmployeeTypeForViewDto implements IPagedResultDtoOfGetEmployeeTypeForViewDto {
+    totalCount!: number | undefined;
+    items!: GetEmployeeTypeForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetEmployeeTypeForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetEmployeeTypeForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetEmployeeTypeForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetEmployeeTypeForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetEmployeeTypeForViewDto {
+    totalCount: number | undefined;
+    items: GetEmployeeTypeForViewDto[] | undefined;
+}
+
+export class GetEmployeeTypeForViewDto implements IGetEmployeeTypeForViewDto {
+    employeeType!: EmployeeTypeDto | undefined;
+
+    constructor(data?: IGetEmployeeTypeForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.employeeType = data["employeeType"] ? EmployeeTypeDto.fromJS(data["employeeType"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetEmployeeTypeForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetEmployeeTypeForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employeeType"] = this.employeeType ? this.employeeType.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetEmployeeTypeForViewDto {
+    employeeType: EmployeeTypeDto | undefined;
+}
+
+export class EmployeeTypeDto implements IEmployeeTypeDto {
+    description!: string | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IEmployeeTypeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.description = data["description"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): EmployeeTypeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeTypeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["description"] = this.description;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IEmployeeTypeDto {
+    description: string | undefined;
+    id: number | undefined;
+}
+
+export class GetEmployeeTypeForEditOutput implements IGetEmployeeTypeForEditOutput {
+    employeeType!: CreateOrEditEmployeeTypeDto | undefined;
+
+    constructor(data?: IGetEmployeeTypeForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.employeeType = data["employeeType"] ? CreateOrEditEmployeeTypeDto.fromJS(data["employeeType"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetEmployeeTypeForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetEmployeeTypeForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employeeType"] = this.employeeType ? this.employeeType.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetEmployeeTypeForEditOutput {
+    employeeType: CreateOrEditEmployeeTypeDto | undefined;
+}
+
+export class CreateOrEditEmployeeTypeDto implements ICreateOrEditEmployeeTypeDto {
+    description!: string | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditEmployeeTypeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.description = data["description"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditEmployeeTypeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditEmployeeTypeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["description"] = this.description;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditEmployeeTypeDto {
+    description: string | undefined;
+    id: number | undefined;
+}
+
 export class CreateFriendshipRequestInput implements ICreateFriendshipRequestInput {
     userId!: number | undefined;
     tenantId!: number | undefined;
@@ -23015,6 +29878,222 @@ export class CreateInvoiceDto implements ICreateInvoiceDto {
 
 export interface ICreateInvoiceDto {
     subscriptionPaymentId: number | undefined;
+}
+
+export class PagedResultDtoOfGetJobTitleForViewDto implements IPagedResultDtoOfGetJobTitleForViewDto {
+    totalCount!: number | undefined;
+    items!: GetJobTitleForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetJobTitleForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetJobTitleForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetJobTitleForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetJobTitleForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetJobTitleForViewDto {
+    totalCount: number | undefined;
+    items: GetJobTitleForViewDto[] | undefined;
+}
+
+export class GetJobTitleForViewDto implements IGetJobTitleForViewDto {
+    jobTitle!: JobTitleDto | undefined;
+
+    constructor(data?: IGetJobTitleForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.jobTitle = data["jobTitle"] ? JobTitleDto.fromJS(data["jobTitle"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetJobTitleForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetJobTitleForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobTitle"] = this.jobTitle ? this.jobTitle.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetJobTitleForViewDto {
+    jobTitle: JobTitleDto | undefined;
+}
+
+export class JobTitleDto implements IJobTitleDto {
+    description!: string | undefined;
+    description2ndLang!: string | undefined;
+    description3rdLang!: string | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IJobTitleDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.description = data["description"];
+            this.description2ndLang = data["description2ndLang"];
+            this.description3rdLang = data["description3rdLang"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): JobTitleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobTitleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["description"] = this.description;
+        data["description2ndLang"] = this.description2ndLang;
+        data["description3rdLang"] = this.description3rdLang;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IJobTitleDto {
+    description: string | undefined;
+    description2ndLang: string | undefined;
+    description3rdLang: string | undefined;
+    id: number | undefined;
+}
+
+export class GetJobTitleForEditOutput implements IGetJobTitleForEditOutput {
+    jobTitle!: CreateOrEditJobTitleDto | undefined;
+
+    constructor(data?: IGetJobTitleForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.jobTitle = data["jobTitle"] ? CreateOrEditJobTitleDto.fromJS(data["jobTitle"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetJobTitleForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetJobTitleForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobTitle"] = this.jobTitle ? this.jobTitle.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetJobTitleForEditOutput {
+    jobTitle: CreateOrEditJobTitleDto | undefined;
+}
+
+export class CreateOrEditJobTitleDto implements ICreateOrEditJobTitleDto {
+    description!: string | undefined;
+    description2ndLang!: string | undefined;
+    description3rdLang!: string | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditJobTitleDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.description = data["description"];
+            this.description2ndLang = data["description2ndLang"];
+            this.description3rdLang = data["description3rdLang"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditJobTitleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditJobTitleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["description"] = this.description;
+        data["description2ndLang"] = this.description2ndLang;
+        data["description3rdLang"] = this.description3rdLang;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditJobTitleDto {
+    description: string | undefined;
+    description2ndLang: string | undefined;
+    description3rdLang: string | undefined;
+    id: number | undefined;
 }
 
 export class GetLanguagesOutput implements IGetLanguagesOutput {
@@ -26118,6 +33197,322 @@ export interface IRouteDto {
     id: number | undefined;
 }
 
+export class PagedResultDtoOfGetStatoinDetailForRouteForView implements IPagedResultDtoOfGetStatoinDetailForRouteForView {
+    totalCount!: number | undefined;
+    items!: GetStatoinDetailForRouteForView[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetStatoinDetailForRouteForView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetStatoinDetailForRouteForView.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetStatoinDetailForRouteForView {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetStatoinDetailForRouteForView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetStatoinDetailForRouteForView {
+    totalCount: number | undefined;
+    items: GetStatoinDetailForRouteForView[] | undefined;
+}
+
+export class GetStatoinDetailForRouteForView implements IGetStatoinDetailForRouteForView {
+    route!: GetRouteForView | undefined;
+    station!: GetStationForView | undefined;
+    routes_Station!: GetRoutes_StationForView | undefined;
+
+    constructor(data?: IGetStatoinDetailForRouteForView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.route = data["route"] ? GetRouteForView.fromJS(data["route"]) : <any>undefined;
+            this.station = data["station"] ? GetStationForView.fromJS(data["station"]) : <any>undefined;
+            this.routes_Station = data["routes_Station"] ? GetRoutes_StationForView.fromJS(data["routes_Station"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetStatoinDetailForRouteForView {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetStatoinDetailForRouteForView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["route"] = this.route ? this.route.toJSON() : <any>undefined;
+        data["station"] = this.station ? this.station.toJSON() : <any>undefined;
+        data["routes_Station"] = this.routes_Station ? this.routes_Station.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetStatoinDetailForRouteForView {
+    route: GetRouteForView | undefined;
+    station: GetStationForView | undefined;
+    routes_Station: GetRoutes_StationForView | undefined;
+}
+
+export class GetStationForView implements IGetStationForView {
+    station!: StationDto | undefined;
+
+    constructor(data?: IGetStationForView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.station = data["station"] ? StationDto.fromJS(data["station"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetStationForView {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetStationForView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["station"] = this.station ? this.station.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetStationForView {
+    station: StationDto | undefined;
+}
+
+export class GetRoutes_StationForView implements IGetRoutes_StationForView {
+    routes_Station!: Routes_StationDto | undefined;
+
+    constructor(data?: IGetRoutes_StationForView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.routes_Station = data["routes_Station"] ? Routes_StationDto.fromJS(data["routes_Station"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetRoutes_StationForView {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetRoutes_StationForView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["routes_Station"] = this.routes_Station ? this.routes_Station.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetRoutes_StationForView {
+    routes_Station: Routes_StationDto | undefined;
+}
+
+export class StationDto implements IStationDto {
+    locationName!: string | undefined;
+    latitude!: number | undefined;
+    longitude!: number | undefined;
+    isStop!: boolean | undefined;
+    stationCode!: number | undefined;
+    locationNameHebrew!: string | undefined;
+    type!: string | undefined;
+    isMark!: boolean | undefined;
+    isSave!: boolean | undefined;
+    checkDistance!: number | undefined;
+    isPath!: boolean | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IStationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.locationName = data["locationName"];
+            this.latitude = data["latitude"];
+            this.longitude = data["longitude"];
+            this.isStop = data["isStop"];
+            this.stationCode = data["stationCode"];
+            this.locationNameHebrew = data["locationNameHebrew"];
+            this.type = data["type"];
+            this.isMark = data["isMark"];
+            this.isSave = data["isSave"];
+            this.checkDistance = data["checkDistance"];
+            this.isPath = data["isPath"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): StationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["locationName"] = this.locationName;
+        data["latitude"] = this.latitude;
+        data["longitude"] = this.longitude;
+        data["isStop"] = this.isStop;
+        data["stationCode"] = this.stationCode;
+        data["locationNameHebrew"] = this.locationNameHebrew;
+        data["type"] = this.type;
+        data["isMark"] = this.isMark;
+        data["isSave"] = this.isSave;
+        data["checkDistance"] = this.checkDistance;
+        data["isPath"] = this.isPath;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IStationDto {
+    locationName: string | undefined;
+    latitude: number | undefined;
+    longitude: number | undefined;
+    isStop: boolean | undefined;
+    stationCode: number | undefined;
+    locationNameHebrew: string | undefined;
+    type: string | undefined;
+    isMark: boolean | undefined;
+    isSave: boolean | undefined;
+    checkDistance: number | undefined;
+    isPath: boolean | undefined;
+    id: number | undefined;
+}
+
+export class Routes_StationDto implements IRoutes_StationDto {
+    routesID!: number | undefined;
+    stationCode!: number | undefined;
+    stationOrder!: number | undefined;
+    distanceFStart!: number | undefined;
+    distanceFPrviousSt!: number | undefined;
+    timefrStartStation!: number | undefined;
+    linkToMain!: number | undefined;
+    timefrPrvious!: string | undefined;
+    timeFrStart!: string | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IRoutes_StationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.routesID = data["routesID"];
+            this.stationCode = data["stationCode"];
+            this.stationOrder = data["stationOrder"];
+            this.distanceFStart = data["distanceFStart"];
+            this.distanceFPrviousSt = data["distanceFPrviousSt"];
+            this.timefrStartStation = data["timefrStartStation"];
+            this.linkToMain = data["linkToMain"];
+            this.timefrPrvious = data["timefrPrvious"];
+            this.timeFrStart = data["timeFrStart"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Routes_StationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new Routes_StationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["routesID"] = this.routesID;
+        data["stationCode"] = this.stationCode;
+        data["stationOrder"] = this.stationOrder;
+        data["distanceFStart"] = this.distanceFStart;
+        data["distanceFPrviousSt"] = this.distanceFPrviousSt;
+        data["timefrStartStation"] = this.timefrStartStation;
+        data["linkToMain"] = this.linkToMain;
+        data["timefrPrvious"] = this.timefrPrvious;
+        data["timeFrStart"] = this.timeFrStart;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IRoutes_StationDto {
+    routesID: number | undefined;
+    stationCode: number | undefined;
+    stationOrder: number | undefined;
+    distanceFStart: number | undefined;
+    distanceFPrviousSt: number | undefined;
+    timefrStartStation: number | undefined;
+    linkToMain: number | undefined;
+    timefrPrvious: string | undefined;
+    timeFrStart: string | undefined;
+    id: number | undefined;
+}
+
 export class GetRouteForEditOutput implements IGetRouteForEditOutput {
     route!: CreateOrEditRouteDto | undefined;
 
@@ -26272,114 +33667,6 @@ export class PagedResultDtoOfGetRoutes_StationForView implements IPagedResultDto
 export interface IPagedResultDtoOfGetRoutes_StationForView {
     totalCount: number | undefined;
     items: GetRoutes_StationForView[] | undefined;
-}
-
-export class GetRoutes_StationForView implements IGetRoutes_StationForView {
-    routes_Station!: Routes_StationDto | undefined;
-
-    constructor(data?: IGetRoutes_StationForView) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.routes_Station = data["routes_Station"] ? Routes_StationDto.fromJS(data["routes_Station"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): GetRoutes_StationForView {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetRoutes_StationForView();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["routes_Station"] = this.routes_Station ? this.routes_Station.toJSON() : <any>undefined;
-        return data; 
-    }
-}
-
-export interface IGetRoutes_StationForView {
-    routes_Station: Routes_StationDto | undefined;
-}
-
-export class Routes_StationDto implements IRoutes_StationDto {
-    routesID!: number | undefined;
-    stationCode!: number | undefined;
-    stationOrder!: number | undefined;
-    distanceFStart!: number | undefined;
-    distanceFPrviousSt!: number | undefined;
-    timefrStartStation!: number | undefined;
-    linkToMain!: number | undefined;
-    timefrPrvious!: string | undefined;
-    timeFrStart!: string | undefined;
-    id!: number | undefined;
-
-    constructor(data?: IRoutes_StationDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.routesID = data["routesID"];
-            this.stationCode = data["stationCode"];
-            this.stationOrder = data["stationOrder"];
-            this.distanceFStart = data["distanceFStart"];
-            this.distanceFPrviousSt = data["distanceFPrviousSt"];
-            this.timefrStartStation = data["timefrStartStation"];
-            this.linkToMain = data["linkToMain"];
-            this.timefrPrvious = data["timefrPrvious"];
-            this.timeFrStart = data["timeFrStart"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): Routes_StationDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new Routes_StationDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["routesID"] = this.routesID;
-        data["stationCode"] = this.stationCode;
-        data["stationOrder"] = this.stationOrder;
-        data["distanceFStart"] = this.distanceFStart;
-        data["distanceFPrviousSt"] = this.distanceFPrviousSt;
-        data["timefrStartStation"] = this.timefrStartStation;
-        data["linkToMain"] = this.linkToMain;
-        data["timefrPrvious"] = this.timefrPrvious;
-        data["timeFrStart"] = this.timeFrStart;
-        data["id"] = this.id;
-        return data; 
-    }
-}
-
-export interface IRoutes_StationDto {
-    routesID: number | undefined;
-    stationCode: number | undefined;
-    stationOrder: number | undefined;
-    distanceFStart: number | undefined;
-    distanceFPrviousSt: number | undefined;
-    timefrStartStation: number | undefined;
-    linkToMain: number | undefined;
-    timefrPrvious: string | undefined;
-    timeFrStart: string | undefined;
-    id: number | undefined;
 }
 
 export class GetRoutes_StationForEditOutput implements IGetRoutes_StationForEditOutput {
@@ -28050,122 +35337,6 @@ export class PagedResultDtoOfGetStationForView implements IPagedResultDtoOfGetSt
 export interface IPagedResultDtoOfGetStationForView {
     totalCount: number | undefined;
     items: GetStationForView[] | undefined;
-}
-
-export class GetStationForView implements IGetStationForView {
-    station!: StationDto | undefined;
-
-    constructor(data?: IGetStationForView) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.station = data["station"] ? StationDto.fromJS(data["station"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): GetStationForView {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetStationForView();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["station"] = this.station ? this.station.toJSON() : <any>undefined;
-        return data; 
-    }
-}
-
-export interface IGetStationForView {
-    station: StationDto | undefined;
-}
-
-export class StationDto implements IStationDto {
-    locationName!: string | undefined;
-    latitude!: number | undefined;
-    longitude!: number | undefined;
-    isStop!: boolean | undefined;
-    stationCode!: number | undefined;
-    locationNameHebrew!: string | undefined;
-    type!: string | undefined;
-    isMark!: boolean | undefined;
-    isSave!: boolean | undefined;
-    checkDistance!: number | undefined;
-    isPath!: boolean | undefined;
-    id!: number | undefined;
-
-    constructor(data?: IStationDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.locationName = data["locationName"];
-            this.latitude = data["latitude"];
-            this.longitude = data["longitude"];
-            this.isStop = data["isStop"];
-            this.stationCode = data["stationCode"];
-            this.locationNameHebrew = data["locationNameHebrew"];
-            this.type = data["type"];
-            this.isMark = data["isMark"];
-            this.isSave = data["isSave"];
-            this.checkDistance = data["checkDistance"];
-            this.isPath = data["isPath"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): StationDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new StationDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["locationName"] = this.locationName;
-        data["latitude"] = this.latitude;
-        data["longitude"] = this.longitude;
-        data["isStop"] = this.isStop;
-        data["stationCode"] = this.stationCode;
-        data["locationNameHebrew"] = this.locationNameHebrew;
-        data["type"] = this.type;
-        data["isMark"] = this.isMark;
-        data["isSave"] = this.isSave;
-        data["checkDistance"] = this.checkDistance;
-        data["isPath"] = this.isPath;
-        data["id"] = this.id;
-        return data; 
-    }
-}
-
-export interface IStationDto {
-    locationName: string | undefined;
-    latitude: number | undefined;
-    longitude: number | undefined;
-    isStop: boolean | undefined;
-    stationCode: number | undefined;
-    locationNameHebrew: string | undefined;
-    type: string | undefined;
-    isMark: boolean | undefined;
-    isSave: boolean | undefined;
-    checkDistance: number | undefined;
-    isPath: boolean | undefined;
-    id: number | undefined;
 }
 
 export class GetStationForEditOutput implements IGetStationForEditOutput {
@@ -33863,6 +41034,1054 @@ export interface IUserLoginAttemptDto {
     browserInfo: string | undefined;
     result: string | undefined;
     creationTime: moment.Moment | undefined;
+}
+
+export class PagedResultDtoOfGetVechileGpsForViewDto implements IPagedResultDtoOfGetVechileGpsForViewDto {
+    totalCount!: number | undefined;
+    items!: GetVechileGpsForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetVechileGpsForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetVechileGpsForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetVechileGpsForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetVechileGpsForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetVechileGpsForViewDto {
+    totalCount: number | undefined;
+    items: GetVechileGpsForViewDto[] | undefined;
+}
+
+export class GetVechileGpsForViewDto implements IGetVechileGpsForViewDto {
+    vechileGps!: VechileGpsDto | undefined;
+
+    constructor(data?: IGetVechileGpsForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.vechileGps = data["vechileGps"] ? VechileGpsDto.fromJS(data["vechileGps"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetVechileGpsForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetVechileGpsForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["vechileGps"] = this.vechileGps ? this.vechileGps.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetVechileGpsForViewDto {
+    vechileGps: VechileGpsDto | undefined;
+}
+
+export class VechileGpsDto implements IVechileGpsDto {
+    vechileID!: number | undefined;
+    latitude!: number | undefined;
+    longitude!: number | undefined;
+    angle!: number | undefined;
+    locationDateTime!: moment.Moment | undefined;
+    satellites!: number | undefined;
+    hdop!: number | undefined;
+    created!: moment.Moment | undefined;
+    modified!: moment.Moment | undefined;
+    gpsSpeed!: number | undefined;
+    speed!: number | undefined;
+    bearing!: number | undefined;
+    vehicleNumber!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IVechileGpsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.vechileID = data["vechileID"];
+            this.latitude = data["latitude"];
+            this.longitude = data["longitude"];
+            this.angle = data["angle"];
+            this.locationDateTime = data["locationDateTime"] ? moment(data["locationDateTime"].toString()) : <any>undefined;
+            this.satellites = data["satellites"];
+            this.hdop = data["hdop"];
+            this.created = data["created"] ? moment(data["created"].toString()) : <any>undefined;
+            this.modified = data["modified"] ? moment(data["modified"].toString()) : <any>undefined;
+            this.gpsSpeed = data["gpsSpeed"];
+            this.speed = data["speed"];
+            this.bearing = data["bearing"];
+            this.vehicleNumber = data["vehicleNumber"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): VechileGpsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new VechileGpsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["vechileID"] = this.vechileID;
+        data["latitude"] = this.latitude;
+        data["longitude"] = this.longitude;
+        data["angle"] = this.angle;
+        data["locationDateTime"] = this.locationDateTime ? this.locationDateTime.toISOString() : <any>undefined;
+        data["satellites"] = this.satellites;
+        data["hdop"] = this.hdop;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["modified"] = this.modified ? this.modified.toISOString() : <any>undefined;
+        data["gpsSpeed"] = this.gpsSpeed;
+        data["speed"] = this.speed;
+        data["bearing"] = this.bearing;
+        data["vehicleNumber"] = this.vehicleNumber;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IVechileGpsDto {
+    vechileID: number | undefined;
+    latitude: number | undefined;
+    longitude: number | undefined;
+    angle: number | undefined;
+    locationDateTime: moment.Moment | undefined;
+    satellites: number | undefined;
+    hdop: number | undefined;
+    created: moment.Moment | undefined;
+    modified: moment.Moment | undefined;
+    gpsSpeed: number | undefined;
+    speed: number | undefined;
+    bearing: number | undefined;
+    vehicleNumber: number | undefined;
+    id: number | undefined;
+}
+
+export class GetVechileGpsForEditOutput implements IGetVechileGpsForEditOutput {
+    vechileGps!: CreateOrEditVechileGpsDto | undefined;
+
+    constructor(data?: IGetVechileGpsForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.vechileGps = data["vechileGps"] ? CreateOrEditVechileGpsDto.fromJS(data["vechileGps"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetVechileGpsForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetVechileGpsForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["vechileGps"] = this.vechileGps ? this.vechileGps.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetVechileGpsForEditOutput {
+    vechileGps: CreateOrEditVechileGpsDto | undefined;
+}
+
+export class CreateOrEditVechileGpsDto implements ICreateOrEditVechileGpsDto {
+    vechileID!: number;
+    latitude!: number;
+    longitude!: number;
+    angle!: number;
+    locationDateTime!: moment.Moment;
+    satellites!: number | undefined;
+    hdop!: number | undefined;
+    created!: moment.Moment;
+    modified!: moment.Moment;
+    gpsSpeed!: number | undefined;
+    speed!: number | undefined;
+    bearing!: number | undefined;
+    vehicleNumber!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditVechileGpsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.vechileID = data["vechileID"];
+            this.latitude = data["latitude"];
+            this.longitude = data["longitude"];
+            this.angle = data["angle"];
+            this.locationDateTime = data["locationDateTime"] ? moment(data["locationDateTime"].toString()) : <any>undefined;
+            this.satellites = data["satellites"];
+            this.hdop = data["hdop"];
+            this.created = data["created"] ? moment(data["created"].toString()) : <any>undefined;
+            this.modified = data["modified"] ? moment(data["modified"].toString()) : <any>undefined;
+            this.gpsSpeed = data["gpsSpeed"];
+            this.speed = data["speed"];
+            this.bearing = data["bearing"];
+            this.vehicleNumber = data["vehicleNumber"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditVechileGpsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditVechileGpsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["vechileID"] = this.vechileID;
+        data["latitude"] = this.latitude;
+        data["longitude"] = this.longitude;
+        data["angle"] = this.angle;
+        data["locationDateTime"] = this.locationDateTime ? this.locationDateTime.toISOString() : <any>undefined;
+        data["satellites"] = this.satellites;
+        data["hdop"] = this.hdop;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["modified"] = this.modified ? this.modified.toISOString() : <any>undefined;
+        data["gpsSpeed"] = this.gpsSpeed;
+        data["speed"] = this.speed;
+        data["bearing"] = this.bearing;
+        data["vehicleNumber"] = this.vehicleNumber;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditVechileGpsDto {
+    vechileID: number;
+    latitude: number;
+    longitude: number;
+    angle: number;
+    locationDateTime: moment.Moment;
+    satellites: number | undefined;
+    hdop: number | undefined;
+    created: moment.Moment;
+    modified: moment.Moment;
+    gpsSpeed: number | undefined;
+    speed: number | undefined;
+    bearing: number | undefined;
+    vehicleNumber: number | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfGetVehiclesForViewDto implements IPagedResultDtoOfGetVehiclesForViewDto {
+    totalCount!: number | undefined;
+    items!: GetVehiclesForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetVehiclesForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetVehiclesForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetVehiclesForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetVehiclesForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetVehiclesForViewDto {
+    totalCount: number | undefined;
+    items: GetVehiclesForViewDto[] | undefined;
+}
+
+export class GetVehiclesForViewDto implements IGetVehiclesForViewDto {
+    vehicles!: VehiclesDto | undefined;
+    vehiclesTypeTypeDescription!: string | undefined;
+
+    constructor(data?: IGetVehiclesForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.vehicles = data["vehicles"] ? VehiclesDto.fromJS(data["vehicles"]) : <any>undefined;
+            this.vehiclesTypeTypeDescription = data["vehiclesTypeTypeDescription"];
+        }
+    }
+
+    static fromJS(data: any): GetVehiclesForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetVehiclesForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["vehicles"] = this.vehicles ? this.vehicles.toJSON() : <any>undefined;
+        data["vehiclesTypeTypeDescription"] = this.vehiclesTypeTypeDescription;
+        return data; 
+    }
+}
+
+export interface IGetVehiclesForViewDto {
+    vehicles: VehiclesDto | undefined;
+    vehiclesTypeTypeDescription: string | undefined;
+}
+
+export class VehiclesDto implements IVehiclesDto {
+    internalID!: number | undefined;
+    vehicleNumber!: number | undefined;
+    shortVehicleNumber!: number | undefined;
+    vehicleType!: number | undefined;
+    status!: number | undefined;
+    statusDate!: moment.Moment | undefined;
+    parking!: number | undefined;
+    garage!: number | undefined;
+    km!: number | undefined;
+    testDate!: moment.Moment | undefined;
+    insuranceDate!: moment.Moment | undefined;
+    lastHandleDate!: moment.Moment | undefined;
+    nextHandleDate!: moment.Moment | undefined;
+    updated!: moment.Moment | undefined;
+    operatorID!: number | undefined;
+    isBusInTrip!: number | undefined;
+    isBusInTripLastUpdated!: moment.Moment | undefined;
+    vehiclesTypeId!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IVehiclesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.internalID = data["internalID"];
+            this.vehicleNumber = data["vehicleNumber"];
+            this.shortVehicleNumber = data["shortVehicleNumber"];
+            this.vehicleType = data["vehicleType"];
+            this.status = data["status"];
+            this.statusDate = data["statusDate"] ? moment(data["statusDate"].toString()) : <any>undefined;
+            this.parking = data["parking"];
+            this.garage = data["garage"];
+            this.km = data["km"];
+            this.testDate = data["testDate"] ? moment(data["testDate"].toString()) : <any>undefined;
+            this.insuranceDate = data["insuranceDate"] ? moment(data["insuranceDate"].toString()) : <any>undefined;
+            this.lastHandleDate = data["lastHandleDate"] ? moment(data["lastHandleDate"].toString()) : <any>undefined;
+            this.nextHandleDate = data["nextHandleDate"] ? moment(data["nextHandleDate"].toString()) : <any>undefined;
+            this.updated = data["updated"] ? moment(data["updated"].toString()) : <any>undefined;
+            this.operatorID = data["operatorID"];
+            this.isBusInTrip = data["isBusInTrip"];
+            this.isBusInTripLastUpdated = data["isBusInTripLastUpdated"] ? moment(data["isBusInTripLastUpdated"].toString()) : <any>undefined;
+            this.vehiclesTypeId = data["vehiclesTypeId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): VehiclesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new VehiclesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["internalID"] = this.internalID;
+        data["vehicleNumber"] = this.vehicleNumber;
+        data["shortVehicleNumber"] = this.shortVehicleNumber;
+        data["vehicleType"] = this.vehicleType;
+        data["status"] = this.status;
+        data["statusDate"] = this.statusDate ? this.statusDate.toISOString() : <any>undefined;
+        data["parking"] = this.parking;
+        data["garage"] = this.garage;
+        data["km"] = this.km;
+        data["testDate"] = this.testDate ? this.testDate.toISOString() : <any>undefined;
+        data["insuranceDate"] = this.insuranceDate ? this.insuranceDate.toISOString() : <any>undefined;
+        data["lastHandleDate"] = this.lastHandleDate ? this.lastHandleDate.toISOString() : <any>undefined;
+        data["nextHandleDate"] = this.nextHandleDate ? this.nextHandleDate.toISOString() : <any>undefined;
+        data["updated"] = this.updated ? this.updated.toISOString() : <any>undefined;
+        data["operatorID"] = this.operatorID;
+        data["isBusInTrip"] = this.isBusInTrip;
+        data["isBusInTripLastUpdated"] = this.isBusInTripLastUpdated ? this.isBusInTripLastUpdated.toISOString() : <any>undefined;
+        data["vehiclesTypeId"] = this.vehiclesTypeId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IVehiclesDto {
+    internalID: number | undefined;
+    vehicleNumber: number | undefined;
+    shortVehicleNumber: number | undefined;
+    vehicleType: number | undefined;
+    status: number | undefined;
+    statusDate: moment.Moment | undefined;
+    parking: number | undefined;
+    garage: number | undefined;
+    km: number | undefined;
+    testDate: moment.Moment | undefined;
+    insuranceDate: moment.Moment | undefined;
+    lastHandleDate: moment.Moment | undefined;
+    nextHandleDate: moment.Moment | undefined;
+    updated: moment.Moment | undefined;
+    operatorID: number | undefined;
+    isBusInTrip: number | undefined;
+    isBusInTripLastUpdated: moment.Moment | undefined;
+    vehiclesTypeId: number | undefined;
+    id: number | undefined;
+}
+
+export class GetVehiclesForEditOutput implements IGetVehiclesForEditOutput {
+    vehicles!: CreateOrEditVehiclesDto | undefined;
+    vehiclesTypeTypeDescription!: string | undefined;
+
+    constructor(data?: IGetVehiclesForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.vehicles = data["vehicles"] ? CreateOrEditVehiclesDto.fromJS(data["vehicles"]) : <any>undefined;
+            this.vehiclesTypeTypeDescription = data["vehiclesTypeTypeDescription"];
+        }
+    }
+
+    static fromJS(data: any): GetVehiclesForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetVehiclesForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["vehicles"] = this.vehicles ? this.vehicles.toJSON() : <any>undefined;
+        data["vehiclesTypeTypeDescription"] = this.vehiclesTypeTypeDescription;
+        return data; 
+    }
+}
+
+export interface IGetVehiclesForEditOutput {
+    vehicles: CreateOrEditVehiclesDto | undefined;
+    vehiclesTypeTypeDescription: string | undefined;
+}
+
+export class CreateOrEditVehiclesDto implements ICreateOrEditVehiclesDto {
+    internalID!: number;
+    vehicleNumber!: number;
+    shortVehicleNumber!: number | undefined;
+    vehicleType!: number | undefined;
+    status!: number;
+    statusDate!: moment.Moment | undefined;
+    parking!: number | undefined;
+    garage!: number | undefined;
+    km!: number | undefined;
+    testDate!: moment.Moment | undefined;
+    insuranceDate!: moment.Moment | undefined;
+    lastHandleDate!: moment.Moment | undefined;
+    nextHandleDate!: moment.Moment | undefined;
+    updated!: moment.Moment | undefined;
+    operatorID!: number;
+    isBusInTrip!: number | undefined;
+    isBusInTripLastUpdated!: moment.Moment | undefined;
+    vehiclesTypeId!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditVehiclesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.internalID = data["internalID"];
+            this.vehicleNumber = data["vehicleNumber"];
+            this.shortVehicleNumber = data["shortVehicleNumber"];
+            this.vehicleType = data["vehicleType"];
+            this.status = data["status"];
+            this.statusDate = data["statusDate"] ? moment(data["statusDate"].toString()) : <any>undefined;
+            this.parking = data["parking"];
+            this.garage = data["garage"];
+            this.km = data["km"];
+            this.testDate = data["testDate"] ? moment(data["testDate"].toString()) : <any>undefined;
+            this.insuranceDate = data["insuranceDate"] ? moment(data["insuranceDate"].toString()) : <any>undefined;
+            this.lastHandleDate = data["lastHandleDate"] ? moment(data["lastHandleDate"].toString()) : <any>undefined;
+            this.nextHandleDate = data["nextHandleDate"] ? moment(data["nextHandleDate"].toString()) : <any>undefined;
+            this.updated = data["updated"] ? moment(data["updated"].toString()) : <any>undefined;
+            this.operatorID = data["operatorID"];
+            this.isBusInTrip = data["isBusInTrip"];
+            this.isBusInTripLastUpdated = data["isBusInTripLastUpdated"] ? moment(data["isBusInTripLastUpdated"].toString()) : <any>undefined;
+            this.vehiclesTypeId = data["vehiclesTypeId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditVehiclesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditVehiclesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["internalID"] = this.internalID;
+        data["vehicleNumber"] = this.vehicleNumber;
+        data["shortVehicleNumber"] = this.shortVehicleNumber;
+        data["vehicleType"] = this.vehicleType;
+        data["status"] = this.status;
+        data["statusDate"] = this.statusDate ? this.statusDate.toISOString() : <any>undefined;
+        data["parking"] = this.parking;
+        data["garage"] = this.garage;
+        data["km"] = this.km;
+        data["testDate"] = this.testDate ? this.testDate.toISOString() : <any>undefined;
+        data["insuranceDate"] = this.insuranceDate ? this.insuranceDate.toISOString() : <any>undefined;
+        data["lastHandleDate"] = this.lastHandleDate ? this.lastHandleDate.toISOString() : <any>undefined;
+        data["nextHandleDate"] = this.nextHandleDate ? this.nextHandleDate.toISOString() : <any>undefined;
+        data["updated"] = this.updated ? this.updated.toISOString() : <any>undefined;
+        data["operatorID"] = this.operatorID;
+        data["isBusInTrip"] = this.isBusInTrip;
+        data["isBusInTripLastUpdated"] = this.isBusInTripLastUpdated ? this.isBusInTripLastUpdated.toISOString() : <any>undefined;
+        data["vehiclesTypeId"] = this.vehiclesTypeId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditVehiclesDto {
+    internalID: number;
+    vehicleNumber: number;
+    shortVehicleNumber: number | undefined;
+    vehicleType: number | undefined;
+    status: number;
+    statusDate: moment.Moment | undefined;
+    parking: number | undefined;
+    garage: number | undefined;
+    km: number | undefined;
+    testDate: moment.Moment | undefined;
+    insuranceDate: moment.Moment | undefined;
+    lastHandleDate: moment.Moment | undefined;
+    nextHandleDate: moment.Moment | undefined;
+    updated: moment.Moment | undefined;
+    operatorID: number;
+    isBusInTrip: number | undefined;
+    isBusInTripLastUpdated: moment.Moment | undefined;
+    vehiclesTypeId: number | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfVehiclesVehiclesTypeLookupTableDto implements IPagedResultDtoOfVehiclesVehiclesTypeLookupTableDto {
+    totalCount!: number | undefined;
+    items!: VehiclesVehiclesTypeLookupTableDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfVehiclesVehiclesTypeLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(VehiclesVehiclesTypeLookupTableDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfVehiclesVehiclesTypeLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfVehiclesVehiclesTypeLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfVehiclesVehiclesTypeLookupTableDto {
+    totalCount: number | undefined;
+    items: VehiclesVehiclesTypeLookupTableDto[] | undefined;
+}
+
+export class VehiclesVehiclesTypeLookupTableDto implements IVehiclesVehiclesTypeLookupTableDto {
+    id!: number | undefined;
+    displayName!: string | undefined;
+
+    constructor(data?: IVehiclesVehiclesTypeLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.displayName = data["displayName"];
+        }
+    }
+
+    static fromJS(data: any): VehiclesVehiclesTypeLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new VehiclesVehiclesTypeLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        return data; 
+    }
+}
+
+export interface IVehiclesVehiclesTypeLookupTableDto {
+    id: number | undefined;
+    displayName: string | undefined;
+}
+
+export class PagedResultDtoOfGetVehiclesTypeForViewDto implements IPagedResultDtoOfGetVehiclesTypeForViewDto {
+    totalCount!: number | undefined;
+    items!: GetVehiclesTypeForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetVehiclesTypeForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetVehiclesTypeForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetVehiclesTypeForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetVehiclesTypeForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetVehiclesTypeForViewDto {
+    totalCount: number | undefined;
+    items: GetVehiclesTypeForViewDto[] | undefined;
+}
+
+export class GetVehiclesTypeForViewDto implements IGetVehiclesTypeForViewDto {
+    vehiclesType!: VehiclesTypeDto | undefined;
+
+    constructor(data?: IGetVehiclesTypeForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.vehiclesType = data["vehiclesType"] ? VehiclesTypeDto.fromJS(data["vehiclesType"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetVehiclesTypeForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetVehiclesTypeForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["vehiclesType"] = this.vehiclesType ? this.vehiclesType.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetVehiclesTypeForViewDto {
+    vehiclesType: VehiclesTypeDto | undefined;
+}
+
+export class VehiclesTypeDto implements IVehiclesTypeDto {
+    typeDescription!: string | undefined;
+    manufacturer!: number | undefined;
+    motorType!: number | undefined;
+    passengersCount!: number | undefined;
+    doorsCount!: number | undefined;
+    doorsTypes!: number | undefined;
+    garageFrequencyKM!: number | undefined;
+    seatsNumber!: number | undefined;
+    noInterurban!: boolean | undefined;
+    busType!: number | undefined;
+    tiresCount!: number | undefined;
+    status!: number | undefined;
+    modifiedBy!: number | undefined;
+    modificationDate!: moment.Moment | undefined;
+    createdBy!: number | undefined;
+    creationDate!: moment.Moment | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IVehiclesTypeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.typeDescription = data["typeDescription"];
+            this.manufacturer = data["manufacturer"];
+            this.motorType = data["motorType"];
+            this.passengersCount = data["passengersCount"];
+            this.doorsCount = data["doorsCount"];
+            this.doorsTypes = data["doorsTypes"];
+            this.garageFrequencyKM = data["garageFrequencyKM"];
+            this.seatsNumber = data["seatsNumber"];
+            this.noInterurban = data["noInterurban"];
+            this.busType = data["busType"];
+            this.tiresCount = data["tiresCount"];
+            this.status = data["status"];
+            this.modifiedBy = data["modifiedBy"];
+            this.modificationDate = data["modificationDate"] ? moment(data["modificationDate"].toString()) : <any>undefined;
+            this.createdBy = data["createdBy"];
+            this.creationDate = data["creationDate"] ? moment(data["creationDate"].toString()) : <any>undefined;
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): VehiclesTypeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new VehiclesTypeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["typeDescription"] = this.typeDescription;
+        data["manufacturer"] = this.manufacturer;
+        data["motorType"] = this.motorType;
+        data["passengersCount"] = this.passengersCount;
+        data["doorsCount"] = this.doorsCount;
+        data["doorsTypes"] = this.doorsTypes;
+        data["garageFrequencyKM"] = this.garageFrequencyKM;
+        data["seatsNumber"] = this.seatsNumber;
+        data["noInterurban"] = this.noInterurban;
+        data["busType"] = this.busType;
+        data["tiresCount"] = this.tiresCount;
+        data["status"] = this.status;
+        data["modifiedBy"] = this.modifiedBy;
+        data["modificationDate"] = this.modificationDate ? this.modificationDate.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["creationDate"] = this.creationDate ? this.creationDate.toISOString() : <any>undefined;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IVehiclesTypeDto {
+    typeDescription: string | undefined;
+    manufacturer: number | undefined;
+    motorType: number | undefined;
+    passengersCount: number | undefined;
+    doorsCount: number | undefined;
+    doorsTypes: number | undefined;
+    garageFrequencyKM: number | undefined;
+    seatsNumber: number | undefined;
+    noInterurban: boolean | undefined;
+    busType: number | undefined;
+    tiresCount: number | undefined;
+    status: number | undefined;
+    modifiedBy: number | undefined;
+    modificationDate: moment.Moment | undefined;
+    createdBy: number | undefined;
+    creationDate: moment.Moment | undefined;
+    id: number | undefined;
+}
+
+export class GetVehiclesTypeForEditOutput implements IGetVehiclesTypeForEditOutput {
+    vehiclesType!: CreateOrEditVehiclesTypeDto | undefined;
+
+    constructor(data?: IGetVehiclesTypeForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.vehiclesType = data["vehiclesType"] ? CreateOrEditVehiclesTypeDto.fromJS(data["vehiclesType"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetVehiclesTypeForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetVehiclesTypeForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["vehiclesType"] = this.vehiclesType ? this.vehiclesType.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetVehiclesTypeForEditOutput {
+    vehiclesType: CreateOrEditVehiclesTypeDto | undefined;
+}
+
+export class CreateOrEditVehiclesTypeDto implements ICreateOrEditVehiclesTypeDto {
+    typeDescription!: string;
+    manufacturer!: number;
+    motorType!: number | undefined;
+    passengersCount!: number | undefined;
+    doorsCount!: number | undefined;
+    doorsTypes!: number | undefined;
+    garageFrequencyKM!: number | undefined;
+    seatsNumber!: number | undefined;
+    noInterurban!: boolean | undefined;
+    busType!: number | undefined;
+    tiresCount!: number | undefined;
+    status!: number;
+    modifiedBy!: number | undefined;
+    modificationDate!: moment.Moment | undefined;
+    createdBy!: number | undefined;
+    creationDate!: moment.Moment | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditVehiclesTypeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.typeDescription = data["typeDescription"];
+            this.manufacturer = data["manufacturer"];
+            this.motorType = data["motorType"];
+            this.passengersCount = data["passengersCount"];
+            this.doorsCount = data["doorsCount"];
+            this.doorsTypes = data["doorsTypes"];
+            this.garageFrequencyKM = data["garageFrequencyKM"];
+            this.seatsNumber = data["seatsNumber"];
+            this.noInterurban = data["noInterurban"];
+            this.busType = data["busType"];
+            this.tiresCount = data["tiresCount"];
+            this.status = data["status"];
+            this.modifiedBy = data["modifiedBy"];
+            this.modificationDate = data["modificationDate"] ? moment(data["modificationDate"].toString()) : <any>undefined;
+            this.createdBy = data["createdBy"];
+            this.creationDate = data["creationDate"] ? moment(data["creationDate"].toString()) : <any>undefined;
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditVehiclesTypeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditVehiclesTypeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["typeDescription"] = this.typeDescription;
+        data["manufacturer"] = this.manufacturer;
+        data["motorType"] = this.motorType;
+        data["passengersCount"] = this.passengersCount;
+        data["doorsCount"] = this.doorsCount;
+        data["doorsTypes"] = this.doorsTypes;
+        data["garageFrequencyKM"] = this.garageFrequencyKM;
+        data["seatsNumber"] = this.seatsNumber;
+        data["noInterurban"] = this.noInterurban;
+        data["busType"] = this.busType;
+        data["tiresCount"] = this.tiresCount;
+        data["status"] = this.status;
+        data["modifiedBy"] = this.modifiedBy;
+        data["modificationDate"] = this.modificationDate ? this.modificationDate.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["creationDate"] = this.creationDate ? this.creationDate.toISOString() : <any>undefined;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditVehiclesTypeDto {
+    typeDescription: string;
+    manufacturer: number;
+    motorType: number | undefined;
+    passengersCount: number | undefined;
+    doorsCount: number | undefined;
+    doorsTypes: number | undefined;
+    garageFrequencyKM: number | undefined;
+    seatsNumber: number | undefined;
+    noInterurban: boolean | undefined;
+    busType: number | undefined;
+    tiresCount: number | undefined;
+    status: number;
+    modifiedBy: number | undefined;
+    modificationDate: moment.Moment | undefined;
+    createdBy: number | undefined;
+    creationDate: moment.Moment | undefined;
+    id: number | undefined;
 }
 
 export class PagedResultDtoOfGetViwTripPlanedForView implements IPagedResultDtoOfGetViwTripPlanedForView {

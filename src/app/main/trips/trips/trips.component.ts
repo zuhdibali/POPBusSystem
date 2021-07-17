@@ -1,13 +1,13 @@
 ﻿import {AppConsts} from '@shared/AppConsts';
 import { Component, Injector, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute , Router} from '@angular/router';
-import { CalenderBusesServiceProxy, CalenderBusDto  } from '@shared/service-proxies/service-proxies';
+import { TripsServiceProxy, TripDto  } from '@shared/service-proxies/service-proxies';
 import { NotifyService } from '@abp/notify/notify.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { TokenAuthServiceProxy } from '@shared/service-proxies/service-proxies';
-import { CreateOrEditCalenderBusModalComponent } from './create-or-edit-calenderBus-modal.component';
+import { CreateOrEditTripModalComponent } from './create-or-edit-trip-modal.component';
 
-import { ViewCalenderBusModalComponent } from './view-calenderBus-modal.component';
+import { ViewTripModalComponent } from './view-trip-modal.component';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { Table } from 'primeng/components/table/table';
 import { Paginator } from 'primeng/components/paginator/paginator';
@@ -19,44 +19,40 @@ import * as moment from 'moment';
 
 
 @Component({
-    templateUrl: './calenderBuses.component.html',
+    templateUrl: './trips.component.html',
     encapsulation: ViewEncapsulation.None,
     animations: [appModuleAnimation()]
 })
-export class CalenderBusesComponent extends AppComponentBase {
+export class TripsComponent extends AppComponentBase {
     
     
     @ViewChild('entityTypeHistoryModal', { static: true }) entityTypeHistoryModal: EntityTypeHistoryModalComponent;
-    @ViewChild('createOrEditCalenderBusModal', { static: true }) createOrEditCalenderBusModal: CreateOrEditCalenderBusModalComponent;
-    @ViewChild('viewCalenderBusModalComponent', { static: true }) viewCalenderBusModal: ViewCalenderBusModalComponent;   
+    @ViewChild('createOrEditTripModal', { static: true }) createOrEditTripModal: CreateOrEditTripModalComponent;
+    @ViewChild('viewTripModalComponent', { static: true }) viewTripModal: ViewTripModalComponent;   
     
     @ViewChild('dataTable', { static: true }) dataTable: Table;
     @ViewChild('paginator', { static: true }) paginator: Paginator;
 
     advancedFiltersAreShown = false;
     filterText = '';
-    mondayFilter = -1;
-    tuesdayFilter = -1;
-    wednesdayFilter = -1;
-    thursdayFilter = -1;
-    fridayFilter = -1;
-    saturdayFilter = -1;
-    sundayFilter = -1;
-    maxstart_dateFilter : moment.Moment;
-		minstart_dateFilter : moment.Moment;
-    maxend_dateFilter : moment.Moment;
-		minend_dateFilter : moment.Moment;
-    calenderNameFilter = '';
+    trip_idFilter = '';
+    maxStartTimeFilter : moment.Moment;
+		minStartTimeFilter : moment.Moment;
+    maxEndTimeFilter : moment.Moment;
+		minEndTimeFilter : moment.Moment;
+        tripTypeNameFilter = '';
+        routeRouteIDGTFSFilter = '';
+        calenderBusCalenderNameFilter = '';
 
 
-    _entityTypeFullName = 'BringitPal.POPBUS.Trips.CalenderBus';
+    _entityTypeFullName = 'BringitPal.POPBUS.Trips.Trip';
     entityHistoryEnabled = false;
 
 
 
     constructor(
         injector: Injector,
-        private _calenderBusesServiceProxy: CalenderBusesServiceProxy,
+        private _tripsServiceProxy: TripsServiceProxy,
         private _notifyService: NotifyService,
         private _tokenAuth: TokenAuthServiceProxy,
         private _activatedRoute: ActivatedRoute,
@@ -74,7 +70,7 @@ export class CalenderBusesComponent extends AppComponentBase {
         return this.isGrantedAny('Pages.Administration.AuditLogs') && customSettings.EntityHistory && customSettings.EntityHistory.isEnabled && _.filter(customSettings.EntityHistory.enabledEntities, entityType => entityType === this._entityTypeFullName).length === 1;
     }
 
-    getCalenderBuses(event?: LazyLoadEvent) {
+    getTrips(event?: LazyLoadEvent) {
         if (this.primengTableHelper.shouldResetPaging(event)) {
             this.paginator.changePage(0);
             return;
@@ -82,20 +78,16 @@ export class CalenderBusesComponent extends AppComponentBase {
 
         this.primengTableHelper.showLoadingIndicator();
 
-        this._calenderBusesServiceProxy.getAll(
+        this._tripsServiceProxy.getAll(
             this.filterText,
-            this.mondayFilter,
-            this.tuesdayFilter,
-            this.wednesdayFilter,
-            this.thursdayFilter,
-            this.fridayFilter,
-            this.saturdayFilter,
-            this.sundayFilter,
-            this.maxstart_dateFilter === undefined ? this.maxstart_dateFilter : moment(this.maxstart_dateFilter).endOf('day'),
-            this.minstart_dateFilter === undefined ? this.minstart_dateFilter : moment(this.minstart_dateFilter).startOf('day'),
-            this.maxend_dateFilter === undefined ? this.maxend_dateFilter : moment(this.maxend_dateFilter).endOf('day'),
-            this.minend_dateFilter === undefined ? this.minend_dateFilter : moment(this.minend_dateFilter).startOf('day'),
-            this.calenderNameFilter,
+            this.trip_idFilter,
+            this.maxStartTimeFilter === undefined ? this.maxStartTimeFilter : moment(this.maxStartTimeFilter).endOf('day'),
+            this.minStartTimeFilter === undefined ? this.minStartTimeFilter : moment(this.minStartTimeFilter).startOf('day'),
+            this.maxEndTimeFilter === undefined ? this.maxEndTimeFilter : moment(this.maxEndTimeFilter).endOf('day'),
+            this.minEndTimeFilter === undefined ? this.minEndTimeFilter : moment(this.minEndTimeFilter).startOf('day'),
+            this.tripTypeNameFilter,
+            this.routeRouteIDGTFSFilter,
+            this.calenderBusCalenderNameFilter,
             this.primengTableHelper.getSorting(this.dataTable),
             this.primengTableHelper.getSkipCount(this.paginator, event),
             this.primengTableHelper.getMaxResultCount(this.paginator, event)
@@ -110,26 +102,26 @@ export class CalenderBusesComponent extends AppComponentBase {
         this.paginator.changePage(this.paginator.getPage());
     }
 
-    createCalenderBus(): void {
-        this.createOrEditCalenderBusModal.show();        
+    createTrip(): void {
+        this.createOrEditTripModal.show();        
     }
 
 
-    showHistory(calenderBus: CalenderBusDto): void {
+    showHistory(trip: TripDto): void {
         this.entityTypeHistoryModal.show({
-            entityId: calenderBus.id.toString(),
+            entityId: trip.id.toString(),
             entityTypeFullName: this._entityTypeFullName,
             entityTypeDescription: ''
         });
     }
 
-    deleteCalenderBus(calenderBus: CalenderBusDto): void {
+    deleteTrip(trip: TripDto): void {
         this.message.confirm(
             '',
             this.l('AreYouSure'),
             (isConfirmed) => {
                 if (isConfirmed) {
-                    this._calenderBusesServiceProxy.delete(calenderBus.id)
+                    this._tripsServiceProxy.delete(trip.id)
                         .subscribe(() => {
                             this.reloadPage();
                             this.notify.success(this.l('SuccessfullyDeleted'));
@@ -140,20 +132,16 @@ export class CalenderBusesComponent extends AppComponentBase {
     }
 
     exportToExcel(): void {
-        this._calenderBusesServiceProxy.getCalenderBusesToExcel(
+        this._tripsServiceProxy.getTripsToExcel(
         this.filterText,
-            this.mondayFilter,
-            this.tuesdayFilter,
-            this.wednesdayFilter,
-            this.thursdayFilter,
-            this.fridayFilter,
-            this.saturdayFilter,
-            this.sundayFilter,
-            this.maxstart_dateFilter === undefined ? this.maxstart_dateFilter : moment(this.maxstart_dateFilter).endOf('day'),
-            this.minstart_dateFilter === undefined ? this.minstart_dateFilter : moment(this.minstart_dateFilter).startOf('day'),
-            this.maxend_dateFilter === undefined ? this.maxend_dateFilter : moment(this.maxend_dateFilter).endOf('day'),
-            this.minend_dateFilter === undefined ? this.minend_dateFilter : moment(this.minend_dateFilter).startOf('day'),
-            this.calenderNameFilter,
+            this.trip_idFilter,
+            this.maxStartTimeFilter === undefined ? this.maxStartTimeFilter : moment(this.maxStartTimeFilter).endOf('day'),
+            this.minStartTimeFilter === undefined ? this.minStartTimeFilter : moment(this.minStartTimeFilter).startOf('day'),
+            this.maxEndTimeFilter === undefined ? this.maxEndTimeFilter : moment(this.maxEndTimeFilter).endOf('day'),
+            this.minEndTimeFilter === undefined ? this.minEndTimeFilter : moment(this.minEndTimeFilter).startOf('day'),
+            this.tripTypeNameFilter,
+            this.routeRouteIDGTFSFilter,
+            this.calenderBusCalenderNameFilter,
         )
         .subscribe(result => {
             this._fileDownloadService.downloadTempFile(result);

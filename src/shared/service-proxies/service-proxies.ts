@@ -2851,61 +2851,6 @@ export class CalenderBusesServiceProxy {
     }
 
     /**
-     * @return Success
-     */
-    getAllHeaders(): Observable<string[]> {
-        let url_ = this.baseUrl + "/api/services/app/CalenderBuses/GetAllHeaders";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetAllHeaders(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetAllHeaders(<any>response_);
-                } catch (e) {
-                    return <Observable<string[]>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<string[]>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (resultData200 && resultData200.constructor === Array) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(item);
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<string[]>(<any>null);
-    }
-
-    /**
      * @param filter (optional) 
      * @param mondayFilter (optional) 
      * @param tuesdayFilter (optional) 
@@ -2918,12 +2863,13 @@ export class CalenderBusesServiceProxy {
      * @param minstart_dateFilter (optional) 
      * @param maxend_dateFilter (optional) 
      * @param minend_dateFilter (optional) 
+     * @param calenderNameFilter (optional) 
      * @param sorting (optional) 
      * @param skipCount (optional) 
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getAll(filter: string | null | undefined, mondayFilter: number | null | undefined, tuesdayFilter: number | null | undefined, wednesdayFilter: number | null | undefined, thursdayFilter: number | null | undefined, fridayFilter: number | null | undefined, saturdayFilter: number | null | undefined, sundayFilter: number | null | undefined, maxstart_dateFilter: moment.Moment | null | undefined, minstart_dateFilter: moment.Moment | null | undefined, maxend_dateFilter: moment.Moment | null | undefined, minend_dateFilter: moment.Moment | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetCalenderBusForView> {
+    getAll(filter: string | null | undefined, mondayFilter: number | null | undefined, tuesdayFilter: number | null | undefined, wednesdayFilter: number | null | undefined, thursdayFilter: number | null | undefined, fridayFilter: number | null | undefined, saturdayFilter: number | null | undefined, sundayFilter: number | null | undefined, maxstart_dateFilter: moment.Moment | null | undefined, minstart_dateFilter: moment.Moment | null | undefined, maxend_dateFilter: moment.Moment | null | undefined, minend_dateFilter: moment.Moment | null | undefined, calenderNameFilter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetCalenderBusForViewDto> {
         let url_ = this.baseUrl + "/api/services/app/CalenderBuses/GetAll?";
         if (filter !== undefined)
             url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
@@ -2949,6 +2895,8 @@ export class CalenderBusesServiceProxy {
             url_ += "Maxend_dateFilter=" + encodeURIComponent(maxend_dateFilter ? "" + maxend_dateFilter.toJSON() : "") + "&"; 
         if (minend_dateFilter !== undefined)
             url_ += "Minend_dateFilter=" + encodeURIComponent(minend_dateFilter ? "" + minend_dateFilter.toJSON() : "") + "&"; 
+        if (calenderNameFilter !== undefined)
+            url_ += "CalenderNameFilter=" + encodeURIComponent("" + calenderNameFilter) + "&"; 
         if (sorting !== undefined)
             url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
         if (skipCount !== undefined)
@@ -2972,14 +2920,14 @@ export class CalenderBusesServiceProxy {
                 try {
                     return this.processGetAll(<any>response_);
                 } catch (e) {
-                    return <Observable<PagedResultDtoOfGetCalenderBusForView>><any>_observableThrow(e);
+                    return <Observable<PagedResultDtoOfGetCalenderBusForViewDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<PagedResultDtoOfGetCalenderBusForView>><any>_observableThrow(response_);
+                return <Observable<PagedResultDtoOfGetCalenderBusForViewDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetCalenderBusForView> {
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetCalenderBusForViewDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -2990,7 +2938,7 @@ export class CalenderBusesServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? PagedResultDtoOfGetCalenderBusForView.fromJS(resultData200) : new PagedResultDtoOfGetCalenderBusForView();
+            result200 = resultData200 ? PagedResultDtoOfGetCalenderBusForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetCalenderBusForViewDto();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2998,7 +2946,61 @@ export class CalenderBusesServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<PagedResultDtoOfGetCalenderBusForView>(<any>null);
+        return _observableOf<PagedResultDtoOfGetCalenderBusForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getCalenderBusForView(id: number | null | undefined): Observable<GetCalenderBusForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/CalenderBuses/GetCalenderBusForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCalenderBusForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCalenderBusForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetCalenderBusForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetCalenderBusForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCalenderBusForView(response: HttpResponseBase): Observable<GetCalenderBusForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetCalenderBusForViewDto.fromJS(resultData200) : new GetCalenderBusForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetCalenderBusForViewDto>(<any>null);
     }
 
     /**
@@ -3170,9 +3172,10 @@ export class CalenderBusesServiceProxy {
      * @param minstart_dateFilter (optional) 
      * @param maxend_dateFilter (optional) 
      * @param minend_dateFilter (optional) 
+     * @param calenderNameFilter (optional) 
      * @return Success
      */
-    getCalenderBusesToExcel(filter: string | null | undefined, mondayFilter: number | null | undefined, tuesdayFilter: number | null | undefined, wednesdayFilter: number | null | undefined, thursdayFilter: number | null | undefined, fridayFilter: number | null | undefined, saturdayFilter: number | null | undefined, sundayFilter: number | null | undefined, maxstart_dateFilter: moment.Moment | null | undefined, minstart_dateFilter: moment.Moment | null | undefined, maxend_dateFilter: moment.Moment | null | undefined, minend_dateFilter: moment.Moment | null | undefined): Observable<FileDto> {
+    getCalenderBusesToExcel(filter: string | null | undefined, mondayFilter: number | null | undefined, tuesdayFilter: number | null | undefined, wednesdayFilter: number | null | undefined, thursdayFilter: number | null | undefined, fridayFilter: number | null | undefined, saturdayFilter: number | null | undefined, sundayFilter: number | null | undefined, maxstart_dateFilter: moment.Moment | null | undefined, minstart_dateFilter: moment.Moment | null | undefined, maxend_dateFilter: moment.Moment | null | undefined, minend_dateFilter: moment.Moment | null | undefined, calenderNameFilter: string | null | undefined): Observable<FileDto> {
         let url_ = this.baseUrl + "/api/services/app/CalenderBuses/GetCalenderBusesToExcel?";
         if (filter !== undefined)
             url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
@@ -3198,6 +3201,8 @@ export class CalenderBusesServiceProxy {
             url_ += "Maxend_dateFilter=" + encodeURIComponent(maxend_dateFilter ? "" + maxend_dateFilter.toJSON() : "") + "&"; 
         if (minend_dateFilter !== undefined)
             url_ += "Minend_dateFilter=" + encodeURIComponent(minend_dateFilter ? "" + minend_dateFilter.toJSON() : "") + "&"; 
+        if (calenderNameFilter !== undefined)
+            url_ += "CalenderNameFilter=" + encodeURIComponent("" + calenderNameFilter) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -18602,6 +18607,582 @@ export class TripPlanedWitHDriversServiceProxy {
 }
 
 @Injectable()
+export class TripsServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param trip_idFilter (optional) 
+     * @param maxStartTimeFilter (optional) 
+     * @param minStartTimeFilter (optional) 
+     * @param maxEndTimeFilter (optional) 
+     * @param minEndTimeFilter (optional) 
+     * @param tripTypeNameFilter (optional) 
+     * @param routeRouteIDGTFSFilter (optional) 
+     * @param calenderBusCalenderNameFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, trip_idFilter: string | null | undefined, maxStartTimeFilter: moment.Moment | null | undefined, minStartTimeFilter: moment.Moment | null | undefined, maxEndTimeFilter: moment.Moment | null | undefined, minEndTimeFilter: moment.Moment | null | undefined, tripTypeNameFilter: string | null | undefined, routeRouteIDGTFSFilter: string | null | undefined, calenderBusCalenderNameFilter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetTripForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Trips/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (trip_idFilter !== undefined)
+            url_ += "Trip_idFilter=" + encodeURIComponent("" + trip_idFilter) + "&"; 
+        if (maxStartTimeFilter !== undefined)
+            url_ += "MaxStartTimeFilter=" + encodeURIComponent(maxStartTimeFilter ? "" + maxStartTimeFilter.toJSON() : "") + "&"; 
+        if (minStartTimeFilter !== undefined)
+            url_ += "MinStartTimeFilter=" + encodeURIComponent(minStartTimeFilter ? "" + minStartTimeFilter.toJSON() : "") + "&"; 
+        if (maxEndTimeFilter !== undefined)
+            url_ += "MaxEndTimeFilter=" + encodeURIComponent(maxEndTimeFilter ? "" + maxEndTimeFilter.toJSON() : "") + "&"; 
+        if (minEndTimeFilter !== undefined)
+            url_ += "MinEndTimeFilter=" + encodeURIComponent(minEndTimeFilter ? "" + minEndTimeFilter.toJSON() : "") + "&"; 
+        if (tripTypeNameFilter !== undefined)
+            url_ += "TripTypeNameFilter=" + encodeURIComponent("" + tripTypeNameFilter) + "&"; 
+        if (routeRouteIDGTFSFilter !== undefined)
+            url_ += "RouteRouteIDGTFSFilter=" + encodeURIComponent("" + routeRouteIDGTFSFilter) + "&"; 
+        if (calenderBusCalenderNameFilter !== undefined)
+            url_ += "CalenderBusCalenderNameFilter=" + encodeURIComponent("" + calenderBusCalenderNameFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetTripForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetTripForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetTripForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetTripForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetTripForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetTripForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getTripForView(id: number | null | undefined): Observable<GetTripForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Trips/GetTripForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTripForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTripForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetTripForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetTripForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTripForView(response: HttpResponseBase): Observable<GetTripForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetTripForViewDto.fromJS(resultData200) : new GetTripForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetTripForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getTripForEdit(id: number | null | undefined): Observable<GetTripForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Trips/GetTripForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTripForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTripForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetTripForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetTripForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTripForEdit(response: HttpResponseBase): Observable<GetTripForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetTripForEditOutput.fromJS(resultData200) : new GetTripForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetTripForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditTripDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Trips/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Trips/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param trip_idFilter (optional) 
+     * @param maxStartTimeFilter (optional) 
+     * @param minStartTimeFilter (optional) 
+     * @param maxEndTimeFilter (optional) 
+     * @param minEndTimeFilter (optional) 
+     * @param tripTypeNameFilter (optional) 
+     * @param routeRouteIDGTFSFilter (optional) 
+     * @param calenderBusCalenderNameFilter (optional) 
+     * @return Success
+     */
+    getTripsToExcel(filter: string | null | undefined, trip_idFilter: string | null | undefined, maxStartTimeFilter: moment.Moment | null | undefined, minStartTimeFilter: moment.Moment | null | undefined, maxEndTimeFilter: moment.Moment | null | undefined, minEndTimeFilter: moment.Moment | null | undefined, tripTypeNameFilter: string | null | undefined, routeRouteIDGTFSFilter: string | null | undefined, calenderBusCalenderNameFilter: string | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/Trips/GetTripsToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (trip_idFilter !== undefined)
+            url_ += "Trip_idFilter=" + encodeURIComponent("" + trip_idFilter) + "&"; 
+        if (maxStartTimeFilter !== undefined)
+            url_ += "MaxStartTimeFilter=" + encodeURIComponent(maxStartTimeFilter ? "" + maxStartTimeFilter.toJSON() : "") + "&"; 
+        if (minStartTimeFilter !== undefined)
+            url_ += "MinStartTimeFilter=" + encodeURIComponent(minStartTimeFilter ? "" + minStartTimeFilter.toJSON() : "") + "&"; 
+        if (maxEndTimeFilter !== undefined)
+            url_ += "MaxEndTimeFilter=" + encodeURIComponent(maxEndTimeFilter ? "" + maxEndTimeFilter.toJSON() : "") + "&"; 
+        if (minEndTimeFilter !== undefined)
+            url_ += "MinEndTimeFilter=" + encodeURIComponent(minEndTimeFilter ? "" + minEndTimeFilter.toJSON() : "") + "&"; 
+        if (tripTypeNameFilter !== undefined)
+            url_ += "TripTypeNameFilter=" + encodeURIComponent("" + tripTypeNameFilter) + "&"; 
+        if (routeRouteIDGTFSFilter !== undefined)
+            url_ += "RouteRouteIDGTFSFilter=" + encodeURIComponent("" + routeRouteIDGTFSFilter) + "&"; 
+        if (calenderBusCalenderNameFilter !== undefined)
+            url_ += "CalenderBusCalenderNameFilter=" + encodeURIComponent("" + calenderBusCalenderNameFilter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTripsToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTripsToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTripsToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAllTripTypeForLookupTable(filter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfTripTripTypeLookupTableDto> {
+        let url_ = this.baseUrl + "/api/services/app/Trips/GetAllTripTypeForLookupTable?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllTripTypeForLookupTable(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllTripTypeForLookupTable(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfTripTripTypeLookupTableDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfTripTripTypeLookupTableDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllTripTypeForLookupTable(response: HttpResponseBase): Observable<PagedResultDtoOfTripTripTypeLookupTableDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfTripTripTypeLookupTableDto.fromJS(resultData200) : new PagedResultDtoOfTripTripTypeLookupTableDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfTripTripTypeLookupTableDto>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAllRouteForLookupTable(filter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfTripRouteLookupTableDto> {
+        let url_ = this.baseUrl + "/api/services/app/Trips/GetAllRouteForLookupTable?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllRouteForLookupTable(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllRouteForLookupTable(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfTripRouteLookupTableDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfTripRouteLookupTableDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllRouteForLookupTable(response: HttpResponseBase): Observable<PagedResultDtoOfTripRouteLookupTableDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfTripRouteLookupTableDto.fromJS(resultData200) : new PagedResultDtoOfTripRouteLookupTableDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfTripRouteLookupTableDto>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAllCalenderBusForLookupTable(filter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfTripCalenderBusLookupTableDto> {
+        let url_ = this.baseUrl + "/api/services/app/Trips/GetAllCalenderBusForLookupTable?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllCalenderBusForLookupTable(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllCalenderBusForLookupTable(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfTripCalenderBusLookupTableDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfTripCalenderBusLookupTableDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllCalenderBusForLookupTable(response: HttpResponseBase): Observable<PagedResultDtoOfTripCalenderBusLookupTableDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfTripCalenderBusLookupTableDto.fromJS(resultData200) : new PagedResultDtoOfTripCalenderBusLookupTableDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfTripCalenderBusLookupTableDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class TripTypesServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -25892,11 +26473,11 @@ export interface IEntityDtoOfString {
     id: string | undefined;
 }
 
-export class PagedResultDtoOfGetCalenderBusForView implements IPagedResultDtoOfGetCalenderBusForView {
+export class PagedResultDtoOfGetCalenderBusForViewDto implements IPagedResultDtoOfGetCalenderBusForViewDto {
     totalCount!: number | undefined;
-    items!: GetCalenderBusForView[] | undefined;
+    items!: GetCalenderBusForViewDto[] | undefined;
 
-    constructor(data?: IPagedResultDtoOfGetCalenderBusForView) {
+    constructor(data?: IPagedResultDtoOfGetCalenderBusForViewDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -25911,14 +26492,14 @@ export class PagedResultDtoOfGetCalenderBusForView implements IPagedResultDtoOfG
             if (data["items"] && data["items"].constructor === Array) {
                 this.items = [] as any;
                 for (let item of data["items"])
-                    this.items!.push(GetCalenderBusForView.fromJS(item));
+                    this.items!.push(GetCalenderBusForViewDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): PagedResultDtoOfGetCalenderBusForView {
+    static fromJS(data: any): PagedResultDtoOfGetCalenderBusForViewDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PagedResultDtoOfGetCalenderBusForView();
+        let result = new PagedResultDtoOfGetCalenderBusForViewDto();
         result.init(data);
         return result;
     }
@@ -25935,15 +26516,15 @@ export class PagedResultDtoOfGetCalenderBusForView implements IPagedResultDtoOfG
     }
 }
 
-export interface IPagedResultDtoOfGetCalenderBusForView {
+export interface IPagedResultDtoOfGetCalenderBusForViewDto {
     totalCount: number | undefined;
-    items: GetCalenderBusForView[] | undefined;
+    items: GetCalenderBusForViewDto[] | undefined;
 }
 
-export class GetCalenderBusForView implements IGetCalenderBusForView {
+export class GetCalenderBusForViewDto implements IGetCalenderBusForViewDto {
     calenderBus!: CalenderBusDto | undefined;
 
-    constructor(data?: IGetCalenderBusForView) {
+    constructor(data?: IGetCalenderBusForViewDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -25958,9 +26539,9 @@ export class GetCalenderBusForView implements IGetCalenderBusForView {
         }
     }
 
-    static fromJS(data: any): GetCalenderBusForView {
+    static fromJS(data: any): GetCalenderBusForViewDto {
         data = typeof data === 'object' ? data : {};
-        let result = new GetCalenderBusForView();
+        let result = new GetCalenderBusForViewDto();
         result.init(data);
         return result;
     }
@@ -25972,7 +26553,7 @@ export class GetCalenderBusForView implements IGetCalenderBusForView {
     }
 }
 
-export interface IGetCalenderBusForView {
+export interface IGetCalenderBusForViewDto {
     calenderBus: CalenderBusDto | undefined;
 }
 
@@ -25986,6 +26567,7 @@ export class CalenderBusDto implements ICalenderBusDto {
     sunday!: boolean | undefined;
     start_date!: moment.Moment | undefined;
     end_date!: moment.Moment | undefined;
+    calenderName!: string | undefined;
     id!: number | undefined;
 
     constructor(data?: ICalenderBusDto) {
@@ -26008,6 +26590,7 @@ export class CalenderBusDto implements ICalenderBusDto {
             this.sunday = data["sunday"];
             this.start_date = data["start_date"] ? moment(data["start_date"].toString()) : <any>undefined;
             this.end_date = data["end_date"] ? moment(data["end_date"].toString()) : <any>undefined;
+            this.calenderName = data["calenderName"];
             this.id = data["id"];
         }
     }
@@ -26030,6 +26613,7 @@ export class CalenderBusDto implements ICalenderBusDto {
         data["sunday"] = this.sunday;
         data["start_date"] = this.start_date ? this.start_date.toISOString() : <any>undefined;
         data["end_date"] = this.end_date ? this.end_date.toISOString() : <any>undefined;
+        data["calenderName"] = this.calenderName;
         data["id"] = this.id;
         return data; 
     }
@@ -26045,6 +26629,7 @@ export interface ICalenderBusDto {
     sunday: boolean | undefined;
     start_date: moment.Moment | undefined;
     end_date: moment.Moment | undefined;
+    calenderName: string | undefined;
     id: number | undefined;
 }
 
@@ -26094,6 +26679,7 @@ export class CreateOrEditCalenderBusDto implements ICreateOrEditCalenderBusDto {
     sunday!: boolean | undefined;
     start_date!: moment.Moment | undefined;
     end_date!: moment.Moment | undefined;
+    calenderName!: string;
     id!: number | undefined;
 
     constructor(data?: ICreateOrEditCalenderBusDto) {
@@ -26116,6 +26702,7 @@ export class CreateOrEditCalenderBusDto implements ICreateOrEditCalenderBusDto {
             this.sunday = data["sunday"];
             this.start_date = data["start_date"] ? moment(data["start_date"].toString()) : <any>undefined;
             this.end_date = data["end_date"] ? moment(data["end_date"].toString()) : <any>undefined;
+            this.calenderName = data["calenderName"];
             this.id = data["id"];
         }
     }
@@ -26138,6 +26725,7 @@ export class CreateOrEditCalenderBusDto implements ICreateOrEditCalenderBusDto {
         data["sunday"] = this.sunday;
         data["start_date"] = this.start_date ? this.start_date.toISOString() : <any>undefined;
         data["end_date"] = this.end_date ? this.end_date.toISOString() : <any>undefined;
+        data["calenderName"] = this.calenderName;
         data["id"] = this.id;
         return data; 
     }
@@ -26153,6 +26741,7 @@ export interface ICreateOrEditCalenderBusDto {
     sunday: boolean | undefined;
     start_date: moment.Moment | undefined;
     end_date: moment.Moment | undefined;
+    calenderName: string;
     id: number | undefined;
 }
 
@@ -39919,6 +40508,534 @@ export interface ICreateOrEditTripPlanedWitHDriverDto {
     notes: string | undefined;
     busGroup: string | undefined;
     id: number | undefined;
+}
+
+export class PagedResultDtoOfGetTripForViewDto implements IPagedResultDtoOfGetTripForViewDto {
+    totalCount!: number | undefined;
+    items!: GetTripForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetTripForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetTripForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetTripForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetTripForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetTripForViewDto {
+    totalCount: number | undefined;
+    items: GetTripForViewDto[] | undefined;
+}
+
+export class GetTripForViewDto implements IGetTripForViewDto {
+    trip!: TripDto | undefined;
+    tripTypeName!: string | undefined;
+    routeRouteIDGTFS!: string | undefined;
+    calenderBusCalenderName!: string | undefined;
+
+    constructor(data?: IGetTripForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.trip = data["trip"] ? TripDto.fromJS(data["trip"]) : <any>undefined;
+            this.tripTypeName = data["tripTypeName"];
+            this.routeRouteIDGTFS = data["routeRouteIDGTFS"];
+            this.calenderBusCalenderName = data["calenderBusCalenderName"];
+        }
+    }
+
+    static fromJS(data: any): GetTripForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetTripForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["trip"] = this.trip ? this.trip.toJSON() : <any>undefined;
+        data["tripTypeName"] = this.tripTypeName;
+        data["routeRouteIDGTFS"] = this.routeRouteIDGTFS;
+        data["calenderBusCalenderName"] = this.calenderBusCalenderName;
+        return data; 
+    }
+}
+
+export interface IGetTripForViewDto {
+    trip: TripDto | undefined;
+    tripTypeName: string | undefined;
+    routeRouteIDGTFS: string | undefined;
+    calenderBusCalenderName: string | undefined;
+}
+
+export class TripDto implements ITripDto {
+    trip_id!: string | undefined;
+    startTime!: moment.Moment | undefined;
+    endTime!: moment.Moment | undefined;
+    tripTypeId!: number | undefined;
+    routeId!: number | undefined;
+    calenderBusId!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ITripDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.trip_id = data["trip_id"];
+            this.startTime = data["startTime"] ? moment(data["startTime"].toString()) : <any>undefined;
+            this.endTime = data["endTime"] ? moment(data["endTime"].toString()) : <any>undefined;
+            this.tripTypeId = data["tripTypeId"];
+            this.routeId = data["routeId"];
+            this.calenderBusId = data["calenderBusId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): TripDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TripDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["trip_id"] = this.trip_id;
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        data["tripTypeId"] = this.tripTypeId;
+        data["routeId"] = this.routeId;
+        data["calenderBusId"] = this.calenderBusId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ITripDto {
+    trip_id: string | undefined;
+    startTime: moment.Moment | undefined;
+    endTime: moment.Moment | undefined;
+    tripTypeId: number | undefined;
+    routeId: number | undefined;
+    calenderBusId: number | undefined;
+    id: number | undefined;
+}
+
+export class GetTripForEditOutput implements IGetTripForEditOutput {
+    trip!: CreateOrEditTripDto | undefined;
+    tripTypeName!: string | undefined;
+    routeRouteIDGTFS!: string | undefined;
+    calenderBusCalenderName!: string | undefined;
+
+    constructor(data?: IGetTripForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.trip = data["trip"] ? CreateOrEditTripDto.fromJS(data["trip"]) : <any>undefined;
+            this.tripTypeName = data["tripTypeName"];
+            this.routeRouteIDGTFS = data["routeRouteIDGTFS"];
+            this.calenderBusCalenderName = data["calenderBusCalenderName"];
+        }
+    }
+
+    static fromJS(data: any): GetTripForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetTripForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["trip"] = this.trip ? this.trip.toJSON() : <any>undefined;
+        data["tripTypeName"] = this.tripTypeName;
+        data["routeRouteIDGTFS"] = this.routeRouteIDGTFS;
+        data["calenderBusCalenderName"] = this.calenderBusCalenderName;
+        return data; 
+    }
+}
+
+export interface IGetTripForEditOutput {
+    trip: CreateOrEditTripDto | undefined;
+    tripTypeName: string | undefined;
+    routeRouteIDGTFS: string | undefined;
+    calenderBusCalenderName: string | undefined;
+}
+
+export class CreateOrEditTripDto implements ICreateOrEditTripDto {
+    trip_id!: string;
+    startTime!: moment.Moment | undefined;
+    endTime!: moment.Moment | undefined;
+    tripTypeId!: number | undefined;
+    routeId!: number | undefined;
+    calenderBusId!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditTripDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.trip_id = data["trip_id"];
+            this.startTime = data["startTime"] ? moment(data["startTime"].toString()) : <any>undefined;
+            this.endTime = data["endTime"] ? moment(data["endTime"].toString()) : <any>undefined;
+            this.tripTypeId = data["tripTypeId"];
+            this.routeId = data["routeId"];
+            this.calenderBusId = data["calenderBusId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditTripDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditTripDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["trip_id"] = this.trip_id;
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        data["tripTypeId"] = this.tripTypeId;
+        data["routeId"] = this.routeId;
+        data["calenderBusId"] = this.calenderBusId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditTripDto {
+    trip_id: string;
+    startTime: moment.Moment | undefined;
+    endTime: moment.Moment | undefined;
+    tripTypeId: number | undefined;
+    routeId: number | undefined;
+    calenderBusId: number | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfTripTripTypeLookupTableDto implements IPagedResultDtoOfTripTripTypeLookupTableDto {
+    totalCount!: number | undefined;
+    items!: TripTripTypeLookupTableDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfTripTripTypeLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(TripTripTypeLookupTableDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfTripTripTypeLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfTripTripTypeLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfTripTripTypeLookupTableDto {
+    totalCount: number | undefined;
+    items: TripTripTypeLookupTableDto[] | undefined;
+}
+
+export class TripTripTypeLookupTableDto implements ITripTripTypeLookupTableDto {
+    id!: number | undefined;
+    displayName!: string | undefined;
+
+    constructor(data?: ITripTripTypeLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.displayName = data["displayName"];
+        }
+    }
+
+    static fromJS(data: any): TripTripTypeLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TripTripTypeLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        return data; 
+    }
+}
+
+export interface ITripTripTypeLookupTableDto {
+    id: number | undefined;
+    displayName: string | undefined;
+}
+
+export class PagedResultDtoOfTripRouteLookupTableDto implements IPagedResultDtoOfTripRouteLookupTableDto {
+    totalCount!: number | undefined;
+    items!: TripRouteLookupTableDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfTripRouteLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(TripRouteLookupTableDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfTripRouteLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfTripRouteLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfTripRouteLookupTableDto {
+    totalCount: number | undefined;
+    items: TripRouteLookupTableDto[] | undefined;
+}
+
+export class TripRouteLookupTableDto implements ITripRouteLookupTableDto {
+    id!: number | undefined;
+    displayName!: string | undefined;
+
+    constructor(data?: ITripRouteLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.displayName = data["displayName"];
+        }
+    }
+
+    static fromJS(data: any): TripRouteLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TripRouteLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        return data; 
+    }
+}
+
+export interface ITripRouteLookupTableDto {
+    id: number | undefined;
+    displayName: string | undefined;
+}
+
+export class PagedResultDtoOfTripCalenderBusLookupTableDto implements IPagedResultDtoOfTripCalenderBusLookupTableDto {
+    totalCount!: number | undefined;
+    items!: TripCalenderBusLookupTableDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfTripCalenderBusLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(TripCalenderBusLookupTableDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfTripCalenderBusLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfTripCalenderBusLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfTripCalenderBusLookupTableDto {
+    totalCount: number | undefined;
+    items: TripCalenderBusLookupTableDto[] | undefined;
+}
+
+export class TripCalenderBusLookupTableDto implements ITripCalenderBusLookupTableDto {
+    id!: number | undefined;
+    displayName!: string | undefined;
+
+    constructor(data?: ITripCalenderBusLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.displayName = data["displayName"];
+        }
+    }
+
+    static fromJS(data: any): TripCalenderBusLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TripCalenderBusLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        return data; 
+    }
+}
+
+export interface ITripCalenderBusLookupTableDto {
+    id: number | undefined;
+    displayName: string | undefined;
 }
 
 export class PagedResultDtoOfGetTripTypeForView implements IPagedResultDtoOfGetTripTypeForView {

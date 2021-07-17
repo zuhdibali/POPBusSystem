@@ -1,4 +1,4 @@
-import { PermissionCheckerService } from '@abp/auth/permission-checker.service';
+﻿import { PermissionCheckerService } from '@abp/auth/permission-checker.service';
 import { AppSessionService } from '@shared/common/session/app-session.service';
 
 import { Injectable } from '@angular/core';
@@ -55,6 +55,8 @@ export class AppNavigationService {
             new AppMenuItem('TripActualRoutes_Station', 'Pages.TripActualRoutes_Station', 'flaticon-more', '/app/main/trips/tripActualRoutes_Station'),
             
             new AppMenuItem('ViwTripPlanedDaily', 'Pages.ViwTripPlanedDaily', 'flaticon-more', '/app/main/trips/viwTripPlanedDaily'),
+            
+            new AppMenuItem('Trips', 'Pages.Trips', 'flaticon-more', '/app/main/trips/trips'),
              new AppMenuItem('Administration', '', 'flaticon-interface-8', '', [
                 new AppMenuItem('OrganizationUnits', 'Pages.Administration.OrganizationUnits', 'flaticon-map', '/app/admin/organization-units'),
                 new AppMenuItem('Roles', 'Pages.Administration.Roles', 'flaticon-suitcase', '/app/admin/roles'),

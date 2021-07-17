@@ -1,14 +1,14 @@
 ﻿import {AppConsts} from "@shared/AppConsts";
 import { Component, ViewChild, Injector, Output, EventEmitter } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
-import { GetCalenderBusForViewDto, CalenderBusDto } from '@shared/service-proxies/service-proxies';
+import { GetTripForViewDto, TripDto } from '@shared/service-proxies/service-proxies';
 import { AppComponentBase } from '@shared/common/app-component-base';
 
 @Component({
-    selector: 'viewCalenderBusModal',
-    templateUrl: './view-calenderBus-modal.component.html'
+    selector: 'viewTripModal',
+    templateUrl: './view-trip-modal.component.html'
 })
-export class ViewCalenderBusModalComponent extends AppComponentBase {
+export class ViewTripModalComponent extends AppComponentBase {
 
     @ViewChild('createOrEditModal', { static: true }) modal: ModalDirective;
     @Output() modalSave: EventEmitter<any> = new EventEmitter<any>();
@@ -16,18 +16,18 @@ export class ViewCalenderBusModalComponent extends AppComponentBase {
     active = false;
     saving = false;
 
-    item: GetCalenderBusForViewDto;
+    item: GetTripForViewDto;
 
 
     constructor(
         injector: Injector
     ) {
         super(injector);
-        this.item = new GetCalenderBusForViewDto();
-        this.item.calenderBus = new CalenderBusDto();
+        this.item = new GetTripForViewDto();
+        this.item.trip = new TripDto();
     }
 
-    show(item: GetCalenderBusForViewDto): void {
+    show(item: GetTripForViewDto): void {
         this.item = item;
         this.active = true;
         this.modal.show();

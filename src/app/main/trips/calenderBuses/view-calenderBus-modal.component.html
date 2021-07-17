@@ -1,9 +1,9 @@
-<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">
-                    <span>{{l("")}}</span>
+                    <span>{{l("Details")}}</span>
                 </h4>
                 <button type="button" class="close" (click)="close()" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -11,52 +11,54 @@
             </div>
             <div class="modal-body">
 
-                <div class="m-stack m-stack--hor m-stack--general m-stack--demo">
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                <div class="row">
+                    <div class="col-6 mb-3">
                         <h6>{{l("monday")}} :</h6>
-                        {{item.calenderBus.monday}}
-                    </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <div *ngIf="item.calenderBus.monday" class="text-left"><i class="fa fa-check-circle kt--font-success"
+                                title="True"></i></div>
+                        <div *ngIf="!item.calenderBus.monday" class="text-left"><i class="fa fa-times-circle" title="False"></i></div>
+                    </div>                    <div class="col-6 mb-3">
                         <h6>{{l("tuesday")}} :</h6>
-                        {{item.calenderBus.tuesday}}
-                    </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <div *ngIf="item.calenderBus.tuesday" class="text-left"><i class="fa fa-check-circle kt--font-success"
+                                title="True"></i></div>
+                        <div *ngIf="!item.calenderBus.tuesday" class="text-left"><i class="fa fa-times-circle" title="False"></i></div>
+                    </div>                    <div class="col-6 mb-3">
                         <h6>{{l("wednesday")}} :</h6>
-                        {{item.calenderBus.wednesday}}
-                    </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <div *ngIf="item.calenderBus.wednesday" class="text-left"><i class="fa fa-check-circle kt--font-success"
+                                title="True"></i></div>
+                        <div *ngIf="!item.calenderBus.wednesday" class="text-left"><i class="fa fa-times-circle" title="False"></i></div>
+                    </div>                    <div class="col-6 mb-3">
                         <h6>{{l("thursday")}} :</h6>
-                        {{item.calenderBus.thursday}}
-                    </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <div *ngIf="item.calenderBus.thursday" class="text-left"><i class="fa fa-check-circle kt--font-success"
+                                title="True"></i></div>
+                        <div *ngIf="!item.calenderBus.thursday" class="text-left"><i class="fa fa-times-circle" title="False"></i></div>
+                    </div>                    <div class="col-6 mb-3">
                         <h6>{{l("friday")}} :</h6>
-                        {{item.calenderBus.friday}}
-                    </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <div *ngIf="item.calenderBus.friday" class="text-left"><i class="fa fa-check-circle kt--font-success"
+                                title="True"></i></div>
+                        <div *ngIf="!item.calenderBus.friday" class="text-left"><i class="fa fa-times-circle" title="False"></i></div>
+                    </div>                    <div class="col-6 mb-3">
                         <h6>{{l("saturday")}} :</h6>
-                        {{item.calenderBus.saturday}}
-                    </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <div *ngIf="item.calenderBus.saturday" class="text-left"><i class="fa fa-check-circle kt--font-success"
+                                title="True"></i></div>
+                        <div *ngIf="!item.calenderBus.saturday" class="text-left"><i class="fa fa-times-circle" title="False"></i></div>
+                    </div>                    <div class="col-6 mb-3">
                         <h6>{{l("sunday")}} :</h6>
-                        {{item.calenderBus.sunday}}
-                    </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                        <div *ngIf="item.calenderBus.sunday" class="text-left"><i class="fa fa-check-circle kt--font-success"
+                                title="True"></i></div>
+                        <div *ngIf="!item.calenderBus.sunday" class="text-left"><i class="fa fa-times-circle" title="False"></i></div>
+                    </div>                    <div class="col-6 mb-3">
                         <h6>{{l("start_date")}} :</h6>
-                        {{item.calenderBus.start_date}}
+                        {{ item.calenderBus.start_date |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
                     </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                    <div class="col-6 mb-3">
                         <h6>{{l("end_date")}} :</h6>
-                        {{item.calenderBus.end_date}}
+                        {{ item.calenderBus.end_date |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}
                     </div>
-                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("CalenderName")}} :</h6>
+                        {{ item.calenderBus.calenderName }}
+                    </div>
 
 
                 </div>

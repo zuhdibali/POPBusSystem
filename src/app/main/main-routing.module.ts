@@ -1,5 +1,6 @@
-import { NgModule } from '@angular/core';
+﻿import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TripsComponent } from './trips/trips/trips.component';
 import { ViwTripPlanedDailyComponent } from './trips/viwTripPlanedDaily/viwTripPlanedDaily.component';
 import { TripActualRoutes_StationComponent } from './trips/tripActualRoutes_Station/tripActualRoutes_Station.component';
 import { TripPlanedDailyWitHDriversComponent } from './trips/tripPlanedDailyWitHDrivers/tripPlanedDailyWitHDrivers.component';
@@ -24,6 +25,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
             {
                 path: '',
                 children: [
+                    { path: 'trips/trips', component: TripsComponent, data: { permission: 'Pages.Trips' }  },
                     { path: 'trips/viwTripPlanedDaily', component: ViwTripPlanedDailyComponent, data: { permission: 'Pages.ViwTripPlanedDaily' }  },
                     { path: 'trips/tripActualRoutes_Station', component: TripActualRoutes_StationComponent, data: { permission: 'Pages.TripActualRoutes_Station' }  },
                     { path: 'trips/tripPlanedDailyWitHDrivers', component: TripPlanedDailyWitHDriversComponent, data: { permission: 'Pages.TripPlanedDailyWitHDrivers' }  },

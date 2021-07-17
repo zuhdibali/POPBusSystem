@@ -1,0 +1,236 @@
+﻿<div [@routerTransition]>
+  
+  
+  
+                <div class="kt-subheader kt-grid__item">
+                  
+                    <div class="kt-subheader__main">
+                        <h3 class="kt-subheader__title">
+                            <span>{{l("Trips")}}</span>
+                        </h3>
+                        <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                        <span class="kt-subheader__desc">
+                            {{l("TripsHeaderInfo")}}
+                        </span>
+                    </div>
+                    <div class="kt-subheader__toolbar">
+                        <div class="kt-subheader__wrapper">
+            				<button (click)="exportToExcel()" class="btn btn-outline-success"><i class="fa fa-file-excel"></i> {{l("ExportToExcel")}}</button>
+                <button *ngIf="isGranted('Pages.Trips.Create')" (click)="createTrip()" 
+            			class="btn btn-primary blue"><i class="fa fa-plus"></i> {{l("CreateNewTrip")}}</button>
+                        </div>
+                    </div>
+                  
+                </div>
+            
+    
+    <div class="kt-content">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__body">
+                <form class="kt-form" autocomplete="off">
+                    <div>
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <div class="form-group m-form__group align-items-center">
+                                    <div class="input-group">
+                                        <input [(ngModel)]="filterText" name="filterText" autoFocus class="form-control m-input" [placeholder]="l('SearchWithThreeDot')" type="text">
+                                        <span class="input-group-btn">
+                                            <button (click)="getTrips()" class="btn btn-primary" type="submit"><i class="flaticon-search-1"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+						 <div class="row" [hidden]="!advancedFiltersAreShown">
+						 	<div class="col-md-12">
+						         <div class="kt-separator kt-separator--border-dashed"></div>
+						     </div>
+
+
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="Trip_idFilter">{{l("Trip_id")}}</label>
+									<input type="text" class="form-control" id="Trip_idFilter" name="trip_idFilter" [(ngModel)]="trip_idFilter">
+								</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label  for="MinStartTimeFilter">{{l("StartTimeRange")}}</label>
+									<div class="input-group">
+                                        <input class="form-control m-input" id="MinStartTimeFilter" name="MinStartTimeFilter" type="datetime" bsDatepicker  placeholder="{{l('MinValue')}}" [(ngModel)]="minStartTimeFilter">
+			                            <span style="line-height: 40px;padding: 0 15px 0 15px;"> &mdash; </span>
+                                        <input class="form-control m-input" id="MaxStartTimeFilter" name="MaxStartTimeFilter" type="datetime" bsDatepicker  placeholder="{{l('MaxValue')}}" [(ngModel)]="maxStartTimeFilter">
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+									<label  for="MinEndTimeFilter">{{l("EndTimeRange")}}</label>
+									<div class="input-group">
+                                        <input class="form-control m-input" id="MinEndTimeFilter" name="MinEndTimeFilter" type="datetime" bsDatepicker  placeholder="{{l('MinValue')}}" [(ngModel)]="minEndTimeFilter">
+			                            <span style="line-height: 40px;padding: 0 15px 0 15px;"> &mdash; </span>
+                                        <input class="form-control m-input" id="MaxEndTimeFilter" name="MaxEndTimeFilter" type="datetime" bsDatepicker  placeholder="{{l('MaxValue')}}" [(ngModel)]="maxEndTimeFilter">
+									</div>
+                                </div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="TripTypeNameFilter">({{l("TripType")}}) {{l("Name")}}</label>
+									<input type="text" class="form-control" id="TripTypeNameFilter" name="tripTypeNameFilter" [(ngModel)]="tripTypeNameFilter">
+                                </div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="RouteRouteIDGTFSFilter">({{l("Route")}}) {{l("RouteIDGTFS")}}</label>
+									<input type="text" class="form-control" id="RouteRouteIDGTFSFilter" name="routeRouteIDGTFSFilter" [(ngModel)]="routeRouteIDGTFSFilter">
+                                </div>
+                            </div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="CalenderBusCalenderNameFilter">({{l("CalenderBus")}}) {{l("CalenderName")}}</label>
+									<input type="text" class="form-control" id="CalenderBusCalenderNameFilter" name="calenderBusCalenderNameFilter" [(ngModel)]="calenderBusCalenderNameFilter">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-12">
+                                <span class="clickable-item text-muted" *ngIf="!advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-down"></i> {{l("ShowAdvancedFilters")}}</span>
+                                <span class="clickable-item text-muted" *ngIf="advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-up"></i> {{l("HideAdvancedFilters")}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row align-items-center">
+                    <!--<Primeng-Datatable-Start>-->
+                    <div class="primeng-datatable-container col-12"
+                         [busyIf]="primengTableHelper.isLoading">
+                        <p-table #dataTable
+                                     (onLazyLoad)="getTrips($event)"
+                                     [value]="primengTableHelper.records"
+                                     rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                     [paginator]="false"
+                                     [lazy]="true"
+                                     [scrollable]="true"
+                                     ScrollWidth="100%"
+                                     [responsive]="primengTableHelper.isResponsive"
+                                     [resizableColumns]="primengTableHelper.resizableColumns">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 130px" [hidden]="!isGrantedAny('Pages.Trips.Edit', 'Pages.Trips.Delete')">{{l('Actions')}}</th>
+                                    <th style="width: 150px" pSortableColumn="tripTypeFk.name">
+                                        {{l('Name')}}
+                                        <p-sortIcon field="tripTypeName"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="routeFk.routeIDGTFS">
+                                        {{l('RouteIDGTFS')}}
+                                        <p-sortIcon field="routeRouteIDGTFS"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="calenderBusFk.calenderName">
+                                        {{l('CalenderName')}}
+                                        <p-sortIcon field="calenderBusCalenderName"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="trip_id">
+                                        {{l('Trip_id')}}
+                                        <p-sortIcon field="trip.trip_id"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="startTime">
+                                        {{l('StartTime')}}
+                                        <p-sortIcon field="trip.startTime"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="endTime">
+                                        {{l('EndTime')}}
+                                        <p-sortIcon field="trip.endTime"></p-sortIcon>
+                                    </th>
+
+                                </tr>
+                            </ng-template>                           
+							<ng-template pTemplate="body" let-record="$implicit" let-i="rowIndex">
+                                <tr>
+                                    <td style="width: 130px"
+                                        [hidden]="!isGrantedAny('Pages.Trips.Edit', 'Pages.Trips.Delete')">
+                                       <div class="btn-group dropdown" dropdown container="body">
+                                            <button class="dropdown-toggle btn btn-sm btn-primary" dropdownToggle>
+                                                <i class="fa fa-cog"></i><span class="caret"></span> {{l("Actions")}}
+                                            </button>
+												<ul class="dropdown-menu"  *dropdownMenu>
+												<li>
+													<a href="javascript:;" 
+														(click)="viewTripModal.show(record)">{{l('View')}}</a>
+												</li>
+												<li>
+                                                <a href="javascript:;" *ngIf="permission.isGranted('Pages.Trips.Edit')" 
+														(click)="createOrEditTripModal.show(record.trip.id)">{{l('Edit')}}</a>												
+                                                </li>
+												<li>
+											        <a  href="javascript:;" *ngIf="permission.isGranted('Pages.Trips.Delete')"
+														(click)="deleteTrip(record.trip)">{{l('Delete')}}</a>
+												</li>
+                                                <li>
+                                                    <a href="javascript:;" *ngIf="entityHistoryEnabled"  
+                                                       (click)="showHistory(record.trip)">{{l('History')}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td style="width:150px">
+												<span class="ui-column-title"> {{l('Name')}}</span>
+												{{record.tripTypeName}}
+											</td>
+                                    <td style="width:150px">
+												<span class="ui-column-title"> {{l('RouteIDGTFS')}}</span>
+												{{record.routeRouteIDGTFS}}
+											</td>
+                                    <td style="width:150px">
+												<span class="ui-column-title"> {{l('CalenderName')}}</span>
+												{{record.calenderBusCalenderName}}
+											</td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Trip_id')}}</span>
+											{{record.trip.trip_id}}
+										</td>
+                                    <td style="width:150px">
+										<span class="ui-column-title"> {{l('StartTime')}}</span>
+                                        <span *ngIf="record.trip.startTime">
+											{{record.trip.startTime |  momentFormat:'L' }}
+                                        </span>
+                                        <span *ngIf="!record.trip.startTime">-</span>
+                                    </td>
+                                    <td style="width:150px">
+										<span class="ui-column-title"> {{l('EndTime')}}</span>
+                                        <span *ngIf="record.trip.endTime">
+											{{record.trip.endTime |  momentFormat:'L' }}
+                                        </span>
+                                        <span *ngIf="!record.trip.endTime">-</span>
+                                    </td>
+
+                                </tr>
+                               
+                            </ng-template>
+                        </p-table>
+						<div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                            {{l('NoData')}}
+                        </div>
+                        <div class="primeng-paging-container">
+                            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                         #paginator
+                                         (onPageChange)="getTrips($event)"
+                                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
+                                         [showCurrentPageReport]="true"
+                                         [currentPageReportTemplate]="'TotalRecordsCount' | localize:primengTableHelper.totalRecordsCount"    
+                            >
+                            </p-paginator>
+                        </div>
+                    </div>
+                    <!--<Primeng-Datatable-End>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <createOrEditTripModal #createOrEditTripModal (modalSave)="getTrips()"></createOrEditTripModal>    
+    <viewTripModal #viewTripModal></viewTripModal>
+     <entityTypeHistoryModal #entityTypeHistoryModal></entityTypeHistoryModal>
+  
+</div>

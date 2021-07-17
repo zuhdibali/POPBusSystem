@@ -1,7 +1,14 @@
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppCommonModule } from '@app/shared/common/app-common.module';
+import { TripsComponent } from './trips/trips/trips.component';
+import { ViewTripModalComponent } from './trips/trips/view-trip-modal.component';
+import { CreateOrEditTripModalComponent } from './trips/trips/create-or-edit-trip-modal.component';
+import { TripTripTypeLookupTableModalComponent } from './trips/trips/trip-tripType-lookup-table-modal.component';
+import { TripRouteLookupTableModalComponent } from './trips/trips/trip-route-lookup-table-modal.component';
+import { TripCalenderBusLookupTableModalComponent } from './trips/trips/trip-calenderBus-lookup-table-modal.component';
+
 import { TripActualComponent } from './trips/tripActual/tripActual.component';
 import { ViewTripActualModalComponent } from './trips/tripActual/view-tripActual-modal.component';
 import { CreateOrEditTripActualModalComponent } from './trips/tripActual/create-or-edit-tripActual-modal.component';
@@ -121,6 +128,13 @@ NgxBootstrapDatePickerConfigService.registerNgxBootstrapDatePickerLocales();
         PopoverModule.forRoot()
     ],
     declarations: [
+		TripsComponent,
+
+		ViewTripModalComponent,
+		CreateOrEditTripModalComponent,
+    TripTripTypeLookupTableModalComponent,
+    TripRouteLookupTableModalComponent,
+    TripCalenderBusLookupTableModalComponent,
 		TripActualComponent,
 		ViewTripActualModalComponent,		CreateOrEditTripActualModalComponent,
     TripPlanedLookupTableModalComponent,

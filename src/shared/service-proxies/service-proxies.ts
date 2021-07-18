@@ -11381,6 +11381,381 @@ export class Routes_StationsServiceProxy {
 }
 
 @Injectable()
+export class RuntimePeriodsServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param nameFilter (optional) 
+     * @param maxstarttimeFilter (optional) 
+     * @param minstarttimeFilter (optional) 
+     * @param maxendtimeFilter (optional) 
+     * @param minendtimeFilter (optional) 
+     * @param traficJamFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, nameFilter: string | null | undefined, maxstarttimeFilter: moment.Moment | null | undefined, minstarttimeFilter: moment.Moment | null | undefined, maxendtimeFilter: moment.Moment | null | undefined, minendtimeFilter: moment.Moment | null | undefined, traficJamFilter: number | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetRuntimePeriodForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/RuntimePeriods/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (nameFilter !== undefined)
+            url_ += "NameFilter=" + encodeURIComponent("" + nameFilter) + "&"; 
+        if (maxstarttimeFilter !== undefined)
+            url_ += "MaxstarttimeFilter=" + encodeURIComponent(maxstarttimeFilter ? "" + maxstarttimeFilter.toJSON() : "") + "&"; 
+        if (minstarttimeFilter !== undefined)
+            url_ += "MinstarttimeFilter=" + encodeURIComponent(minstarttimeFilter ? "" + minstarttimeFilter.toJSON() : "") + "&"; 
+        if (maxendtimeFilter !== undefined)
+            url_ += "MaxendtimeFilter=" + encodeURIComponent(maxendtimeFilter ? "" + maxendtimeFilter.toJSON() : "") + "&"; 
+        if (minendtimeFilter !== undefined)
+            url_ += "MinendtimeFilter=" + encodeURIComponent(minendtimeFilter ? "" + minendtimeFilter.toJSON() : "") + "&"; 
+        if (traficJamFilter !== undefined)
+            url_ += "TraficJamFilter=" + encodeURIComponent("" + traficJamFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetRuntimePeriodForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetRuntimePeriodForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetRuntimePeriodForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetRuntimePeriodForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetRuntimePeriodForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetRuntimePeriodForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getRuntimePeriodForView(id: number | null | undefined): Observable<GetRuntimePeriodForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/RuntimePeriods/GetRuntimePeriodForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRuntimePeriodForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetRuntimePeriodForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetRuntimePeriodForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetRuntimePeriodForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetRuntimePeriodForView(response: HttpResponseBase): Observable<GetRuntimePeriodForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetRuntimePeriodForViewDto.fromJS(resultData200) : new GetRuntimePeriodForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetRuntimePeriodForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getRuntimePeriodForEdit(id: number | null | undefined): Observable<GetRuntimePeriodForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/RuntimePeriods/GetRuntimePeriodForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRuntimePeriodForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetRuntimePeriodForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetRuntimePeriodForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetRuntimePeriodForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetRuntimePeriodForEdit(response: HttpResponseBase): Observable<GetRuntimePeriodForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetRuntimePeriodForEditOutput.fromJS(resultData200) : new GetRuntimePeriodForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetRuntimePeriodForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditRuntimePeriodDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/RuntimePeriods/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/RuntimePeriods/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param nameFilter (optional) 
+     * @param maxstarttimeFilter (optional) 
+     * @param minstarttimeFilter (optional) 
+     * @param maxendtimeFilter (optional) 
+     * @param minendtimeFilter (optional) 
+     * @param traficJamFilter (optional) 
+     * @return Success
+     */
+    getRuntimePeriodsToExcel(filter: string | null | undefined, nameFilter: string | null | undefined, maxstarttimeFilter: moment.Moment | null | undefined, minstarttimeFilter: moment.Moment | null | undefined, maxendtimeFilter: moment.Moment | null | undefined, minendtimeFilter: moment.Moment | null | undefined, traficJamFilter: number | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/RuntimePeriods/GetRuntimePeriodsToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (nameFilter !== undefined)
+            url_ += "NameFilter=" + encodeURIComponent("" + nameFilter) + "&"; 
+        if (maxstarttimeFilter !== undefined)
+            url_ += "MaxstarttimeFilter=" + encodeURIComponent(maxstarttimeFilter ? "" + maxstarttimeFilter.toJSON() : "") + "&"; 
+        if (minstarttimeFilter !== undefined)
+            url_ += "MinstarttimeFilter=" + encodeURIComponent(minstarttimeFilter ? "" + minstarttimeFilter.toJSON() : "") + "&"; 
+        if (maxendtimeFilter !== undefined)
+            url_ += "MaxendtimeFilter=" + encodeURIComponent(maxendtimeFilter ? "" + maxendtimeFilter.toJSON() : "") + "&"; 
+        if (minendtimeFilter !== undefined)
+            url_ += "MinendtimeFilter=" + encodeURIComponent(minendtimeFilter ? "" + minendtimeFilter.toJSON() : "") + "&"; 
+        if (traficJamFilter !== undefined)
+            url_ += "TraficJamFilter=" + encodeURIComponent("" + traficJamFilter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRuntimePeriodsToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetRuntimePeriodsToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetRuntimePeriodsToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class SessionServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -34363,6 +34738,230 @@ export interface ICreateOrEditRoutes_StationDto {
     linkToMain: number | undefined;
     timefrPrvious: string | undefined;
     timeFrStart: string | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfGetRuntimePeriodForViewDto implements IPagedResultDtoOfGetRuntimePeriodForViewDto {
+    totalCount!: number | undefined;
+    items!: GetRuntimePeriodForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetRuntimePeriodForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetRuntimePeriodForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetRuntimePeriodForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetRuntimePeriodForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetRuntimePeriodForViewDto {
+    totalCount: number | undefined;
+    items: GetRuntimePeriodForViewDto[] | undefined;
+}
+
+export class GetRuntimePeriodForViewDto implements IGetRuntimePeriodForViewDto {
+    runtimePeriod!: RuntimePeriodDto | undefined;
+
+    constructor(data?: IGetRuntimePeriodForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.runtimePeriod = data["runtimePeriod"] ? RuntimePeriodDto.fromJS(data["runtimePeriod"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetRuntimePeriodForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetRuntimePeriodForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["runtimePeriod"] = this.runtimePeriod ? this.runtimePeriod.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetRuntimePeriodForViewDto {
+    runtimePeriod: RuntimePeriodDto | undefined;
+}
+
+export class RuntimePeriodDto implements IRuntimePeriodDto {
+    name!: string | undefined;
+    starttime!: moment.Moment | undefined;
+    endtime!: moment.Moment | undefined;
+    traficJam!: boolean | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IRuntimePeriodDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.name = data["name"];
+            this.starttime = data["starttime"] ? moment(data["starttime"].toString()) : <any>undefined;
+            this.endtime = data["endtime"] ? moment(data["endtime"].toString()) : <any>undefined;
+            this.traficJam = data["traficJam"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): RuntimePeriodDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RuntimePeriodDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["starttime"] = this.starttime ? this.starttime.toISOString() : <any>undefined;
+        data["endtime"] = this.endtime ? this.endtime.toISOString() : <any>undefined;
+        data["traficJam"] = this.traficJam;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IRuntimePeriodDto {
+    name: string | undefined;
+    starttime: moment.Moment | undefined;
+    endtime: moment.Moment | undefined;
+    traficJam: boolean | undefined;
+    id: number | undefined;
+}
+
+export class GetRuntimePeriodForEditOutput implements IGetRuntimePeriodForEditOutput {
+    runtimePeriod!: CreateOrEditRuntimePeriodDto | undefined;
+
+    constructor(data?: IGetRuntimePeriodForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.runtimePeriod = data["runtimePeriod"] ? CreateOrEditRuntimePeriodDto.fromJS(data["runtimePeriod"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetRuntimePeriodForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetRuntimePeriodForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["runtimePeriod"] = this.runtimePeriod ? this.runtimePeriod.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetRuntimePeriodForEditOutput {
+    runtimePeriod: CreateOrEditRuntimePeriodDto | undefined;
+}
+
+export class CreateOrEditRuntimePeriodDto implements ICreateOrEditRuntimePeriodDto {
+    name!: string;
+    starttime!: moment.Moment | undefined;
+    endtime!: moment.Moment | undefined;
+    traficJam!: boolean | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditRuntimePeriodDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.name = data["name"];
+            this.starttime = data["starttime"] ? moment(data["starttime"].toString()) : <any>undefined;
+            this.endtime = data["endtime"] ? moment(data["endtime"].toString()) : <any>undefined;
+            this.traficJam = data["traficJam"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditRuntimePeriodDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditRuntimePeriodDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["starttime"] = this.starttime ? this.starttime.toISOString() : <any>undefined;
+        data["endtime"] = this.endtime ? this.endtime.toISOString() : <any>undefined;
+        data["traficJam"] = this.traficJam;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditRuntimePeriodDto {
+    name: string;
+    starttime: moment.Moment | undefined;
+    endtime: moment.Moment | undefined;
+    traficJam: boolean | undefined;
     id: number | undefined;
 }
 

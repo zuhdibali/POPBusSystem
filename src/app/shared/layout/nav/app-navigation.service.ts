@@ -57,6 +57,8 @@ export class AppNavigationService {
             new AppMenuItem('ViwTripPlanedDaily', 'Pages.ViwTripPlanedDaily', 'flaticon-more', '/app/main/trips/viwTripPlanedDaily'),
             
             new AppMenuItem('Trips', 'Pages.Trips', 'flaticon-more', '/app/main/trips/trips'),
+            
+            new AppMenuItem('RuntimePeriods', 'Pages.RuntimePeriods', 'flaticon-more', '/app/main/trips/runtimePeriods'),
              new AppMenuItem('Administration', '', 'flaticon-interface-8', '', [
                 new AppMenuItem('OrganizationUnits', 'Pages.Administration.OrganizationUnits', 'flaticon-map', '/app/admin/organization-units'),
                 new AppMenuItem('Roles', 'Pages.Administration.Roles', 'flaticon-suitcase', '/app/admin/roles'),

@@ -7,7 +7,7 @@ import { Paginator } from 'primeng/components/paginator/paginator';
 import { LazyLoadEvent } from 'primeng/components/common/lazyloadevent';
 
 @Component({
-    selector: 'routeLookupTableModal',
+  
     styleUrls: ['./route-lookup-table-modal.component.less'],
     encapsulation: ViewEncapsulation.None,
     templateUrl: './route-lookup-table-modal.component.html'

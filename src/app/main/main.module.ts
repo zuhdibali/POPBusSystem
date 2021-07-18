@@ -2,6 +2,10 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppCommonModule } from '@app/shared/common/app-common.module';
+import { RuntimePeriodsComponent } from './trips/runtimePeriods/runtimePeriods.component';
+import { ViewRuntimePeriodModalComponent } from './trips/runtimePeriods/view-runtimePeriod-modal.component';
+import { CreateOrEditRuntimePeriodModalComponent } from './trips/runtimePeriods/create-or-edit-runtimePeriod-modal.component';
+
 import { TripsComponent } from './trips/trips/trips.component';
 import { ViewTripModalComponent } from './trips/trips/view-trip-modal.component';
 import { CreateOrEditTripModalComponent } from './trips/trips/create-or-edit-trip-modal.component';
@@ -128,6 +132,10 @@ NgxBootstrapDatePickerConfigService.registerNgxBootstrapDatePickerLocales();
         PopoverModule.forRoot()
     ],
     declarations: [
+		RuntimePeriodsComponent,
+
+		ViewRuntimePeriodModalComponent,
+		CreateOrEditRuntimePeriodModalComponent,
 		TripsComponent,
 
 		ViewTripModalComponent,

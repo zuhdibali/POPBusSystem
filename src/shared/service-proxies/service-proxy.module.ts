@@ -5,6 +5,7 @@ import * as ApiServiceProxies from './service-proxies';
 
 @NgModule({
     providers: [
+        ApiServiceProxies.RuntimePeriodsServiceProxy,        
         ApiServiceProxies.TripsServiceProxy,        
         ApiServiceProxies.ViwTripPlanedDailyServiceProxy,        
         ApiServiceProxies.TripActualRoutes_StationServiceProxy,        

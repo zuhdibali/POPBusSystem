@@ -1,13 +1,13 @@
 ﻿import {AppConsts} from '@shared/AppConsts';
 import { Component, Injector, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute , Router} from '@angular/router';
-import { EmployeeTypeServiceProxy, EmployeeTypeDto  } from '@shared/service-proxies/service-proxies';
+import { RuntimePeriodsServiceProxy, RuntimePeriodDto  } from '@shared/service-proxies/service-proxies';
 import { NotifyService } from '@abp/notify/notify.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { TokenAuthServiceProxy } from '@shared/service-proxies/service-proxies';
-import { CreateOrEditEmployeeTypeModalComponent } from '@app/main/dictionary/employeeType/create-or-edit-employeeType-modal.component';
+import { CreateOrEditRuntimePeriodModalComponent } from './create-or-edit-runtimePeriod-modal.component';
 
-import { ViewEmployeeTypeModalComponent } from './view-employeeType-modal.component';
+import { ViewRuntimePeriodModalComponent } from './view-runtimePeriod-modal.component';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { Table } from 'primeng/components/table/table';
 import { Paginator } from 'primeng/components/paginator/paginator';
@@ -19,33 +19,38 @@ import * as moment from 'moment';
 
 
 @Component({
-    templateUrl: './employeeType.component.html',
+    templateUrl: './runtimePeriods.component.html',
     encapsulation: ViewEncapsulation.None,
     animations: [appModuleAnimation()]
 })
-export class EmployeeTypeComponent extends AppComponentBase {
+export class RuntimePeriodsComponent extends AppComponentBase {
     
     
     @ViewChild('entityTypeHistoryModal', { static: true }) entityTypeHistoryModal: EntityTypeHistoryModalComponent;
-    @ViewChild('createOrEditEmployeeTypeModal', { static: true }) createOrEditEmployeeTypeModal: CreateOrEditEmployeeTypeModalComponent;
-    @ViewChild('viewEmployeeTypeModalComponent', { static: true }) viewEmployeeTypeModal: ViewEmployeeTypeModalComponent;   
+    @ViewChild('createOrEditRuntimePeriodModal', { static: true }) createOrEditRuntimePeriodModal: CreateOrEditRuntimePeriodModalComponent;
+    @ViewChild('viewRuntimePeriodModalComponent', { static: true }) viewRuntimePeriodModal: ViewRuntimePeriodModalComponent;   
     
     @ViewChild('dataTable', { static: true }) dataTable: Table;
     @ViewChild('paginator', { static: true }) paginator: Paginator;
 
     advancedFiltersAreShown = false;
     filterText = '';
-    descriptionFilter = '';
+    nameFilter = '';
+    maxstarttimeFilter : moment.Moment;
+		minstarttimeFilter : moment.Moment;
+    maxendtimeFilter : moment.Moment;
+		minendtimeFilter : moment.Moment;
+    traficJamFilter = -1;
 
 
-    _entityTypeFullName = 'BringitPal.POPBUS.Dictionary.EmployeeType';
+    _entityTypeFullName = 'BringitPal.POPBUS.Trips.RuntimePeriod';
     entityHistoryEnabled = false;
 
 
 
     constructor(
         injector: Injector,
-        private _employeeTypeServiceProxy: EmployeeTypeServiceProxy,
+        private _runtimePeriodsServiceProxy: RuntimePeriodsServiceProxy,
         private _notifyService: NotifyService,
         private _tokenAuth: TokenAuthServiceProxy,
         private _activatedRoute: ActivatedRoute,
@@ -63,7 +68,7 @@ export class EmployeeTypeComponent extends AppComponentBase {
         return this.isGrantedAny('Pages.Administration.AuditLogs') && customSettings.EntityHistory && customSettings.EntityHistory.isEnabled && _.filter(customSettings.EntityHistory.enabledEntities, entityType => entityType === this._entityTypeFullName).length === 1;
     }
 
-    getEmployeeType(event?: LazyLoadEvent) {
+    getRuntimePeriods(event?: LazyLoadEvent) {
         if (this.primengTableHelper.shouldResetPaging(event)) {
             this.paginator.changePage(0);
             return;
@@ -71,9 +76,14 @@ export class EmployeeTypeComponent extends AppComponentBase {
 
         this.primengTableHelper.showLoadingIndicator();
 
-        this._employeeTypeServiceProxy.getAll(
+        this._runtimePeriodsServiceProxy.getAll(
             this.filterText,
-            this.descriptionFilter,
+            this.nameFilter,
+            this.maxstarttimeFilter === undefined ? this.maxstarttimeFilter : moment(this.maxstarttimeFilter).endOf('day'),
+            this.minstarttimeFilter === undefined ? this.minstarttimeFilter : moment(this.minstarttimeFilter).startOf('day'),
+            this.maxendtimeFilter === undefined ? this.maxendtimeFilter : moment(this.maxendtimeFilter).endOf('day'),
+            this.minendtimeFilter === undefined ? this.minendtimeFilter : moment(this.minendtimeFilter).startOf('day'),
+            this.traficJamFilter,
             this.primengTableHelper.getSorting(this.dataTable),
             this.primengTableHelper.getSkipCount(this.paginator, event),
             this.primengTableHelper.getMaxResultCount(this.paginator, event)
@@ -88,26 +98,26 @@ export class EmployeeTypeComponent extends AppComponentBase {
         this.paginator.changePage(this.paginator.getPage());
     }
 
-    createEmployeeType(): void {
-        this.createOrEditEmployeeTypeModal.show();        
+    createRuntimePeriod(): void {
+        this.createOrEditRuntimePeriodModal.show();        
     }
 
 
-    showHistory(employeeType: EmployeeTypeDto): void {
+    showHistory(runtimePeriod: RuntimePeriodDto): void {
         this.entityTypeHistoryModal.show({
-            entityId: employeeType.id.toString(),
+            entityId: runtimePeriod.id.toString(),
             entityTypeFullName: this._entityTypeFullName,
             entityTypeDescription: ''
         });
     }
 
-    deleteEmployeeType(employeeType: EmployeeTypeDto): void {
+    deleteRuntimePeriod(runtimePeriod: RuntimePeriodDto): void {
         this.message.confirm(
             '',
             this.l('AreYouSure'),
             (isConfirmed) => {
                 if (isConfirmed) {
-                    this._employeeTypeServiceProxy.delete(employeeType.id)
+                    this._runtimePeriodsServiceProxy.delete(runtimePeriod.id)
                         .subscribe(() => {
                             this.reloadPage();
                             this.notify.success(this.l('SuccessfullyDeleted'));
@@ -118,9 +128,14 @@ export class EmployeeTypeComponent extends AppComponentBase {
     }
 
     exportToExcel(): void {
-        this._employeeTypeServiceProxy.getEmployeeTypeToExcel(
+        this._runtimePeriodsServiceProxy.getRuntimePeriodsToExcel(
         this.filterText,
-            this.descriptionFilter,
+            this.nameFilter,
+            this.maxstarttimeFilter === undefined ? this.maxstarttimeFilter : moment(this.maxstarttimeFilter).endOf('day'),
+            this.minstarttimeFilter === undefined ? this.minstarttimeFilter : moment(this.minstarttimeFilter).startOf('day'),
+            this.maxendtimeFilter === undefined ? this.maxendtimeFilter : moment(this.maxendtimeFilter).endOf('day'),
+            this.minendtimeFilter === undefined ? this.minendtimeFilter : moment(this.minendtimeFilter).startOf('day'),
+            this.traficJamFilter,
         )
         .subscribe(result => {
             this._fileDownloadService.downloadTempFile(result);

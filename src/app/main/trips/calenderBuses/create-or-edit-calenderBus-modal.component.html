@@ -92,7 +92,7 @@
 					
 								<div class="form-group">
 									<label for="CalenderBus_CalenderName">{{l("CalenderName")}} *</label>
-									<input type="text" #CalenderBus_CalenderName="ngModel" id="CalenderBus_CalenderName" class="form-control" [(ngModel)]="calenderBus.calenderName" name="CalenderName"   minlength="250"  maxlength="250"  required/>
+									<input type="text" #CalenderBus_CalenderName="ngModel" id="CalenderBus_CalenderName" class="form-control" [(ngModel)]="calenderBus.calenderName" name="CalenderName"   minlength="4"  maxlength="250"  required/>
 								    <validation-messages [formCtrl]="CalenderBus_CalenderName"></validation-messages>
 								</div>
 					

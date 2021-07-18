@@ -1,0 +1,55 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #runtimePeriodForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="runtimePeriod.id">{{l("EditRuntimePeriod")}}</span>
+                        <span *ngIf="!runtimePeriod.id">{{l("CreateNewRuntimePeriod")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                 
+
+
+								<div class="form-group">
+									<label for="RuntimePeriod_Name">{{l("Name")}} *</label>
+									<input type="text" #RuntimePeriod_Name="ngModel" id="RuntimePeriod_Name" class="form-control" [(ngModel)]="runtimePeriod.name" name="Name"   minlength="4"  maxlength="250"  required/>
+								    <validation-messages [formCtrl]="RuntimePeriod_Name"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="RuntimePeriod_starttime">{{l("starttime")}}</label>
+									 <input required class="form-control m-input" #RuntimePeriod_starttime type="datetime" bsDatepicker [(ngModel)]="runtimePeriod.starttime._d" id="RuntimePeriod_starttime" name="RuntimePeriod_starttime">
+									<validation-messages [formCtrl]="RuntimePeriod_starttime"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="RuntimePeriod_endtime">{{l("endtime")}}</label>
+									 <input required class="form-control m-input" #RuntimePeriod_endtime type="datetime" bsDatepicker [(ngModel)]="runtimePeriod.endtime._d" id="RuntimePeriod_endtime" name="RuntimePeriod_endtime">
+									<validation-messages [formCtrl]="RuntimePeriod_endtime"></validation-messages>
+								</div>
+					
+								<br/><div class="m-checkbox-list">
+									<label for="RuntimePeriod_TraficJam" class="kt-checkbox">
+										<input id="RuntimePeriod_TraficJam" #RuntimePeriod_TraficJam="ngModel" type="checkbox" name="TraficJam" [(ngModel)]="runtimePeriod.traficJam"> 
+										{{l("TraficJam")}}
+										<span></span>
+									</label>
+									<validation-messages [formCtrl]="RuntimePeriod_TraficJam"></validation-messages>
+								</div>
+					
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default" (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!runtimePeriodForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{l("Save")}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

@@ -1492,61 +1492,6 @@ export class BranchesServiceProxy {
     }
 
     /**
-     * @return Success
-     */
-    getAllHeaders(): Observable<string[]> {
-        let url_ = this.baseUrl + "/api/services/app/Branches/GetAllHeaders";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetAllHeaders(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetAllHeaders(<any>response_);
-                } catch (e) {
-                    return <Observable<string[]>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<string[]>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (resultData200 && resultData200.constructor === Array) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(item);
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<string[]>(<any>null);
-    }
-
-    /**
      * @param filter (optional) 
      * @param descriptionFilter (optional) 
      * @param sorting (optional) 
@@ -9496,6 +9441,60 @@ export class ProfileServiceProxy {
     }
 
     /**
+     * @param userId (optional) 
+     * @return Success
+     */
+    getProfilePictureByUser(userId: number | null | undefined): Observable<GetProfilePictureOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Profile/GetProfilePictureByUser?";
+        if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetProfilePictureByUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetProfilePictureByUser(<any>response_);
+                } catch (e) {
+                    return <Observable<GetProfilePictureOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetProfilePictureOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetProfilePictureByUser(response: HttpResponseBase): Observable<GetProfilePictureOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetProfilePictureOutput.fromJS(resultData200) : new GetProfilePictureOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetProfilePictureOutput>(<any>null);
+    }
+
+    /**
      * @return Success
      */
     getCurrentUserProfileForEdit(): Observable<CurrentUserProfileEditDto> {
@@ -10480,12 +10479,13 @@ export class RoutesServiceProxy {
      * @param routeIDGTFSFilter (optional) 
      * @param maxCatSedorFilter (optional) 
      * @param minCatSedorFilter (optional) 
+     * @param colorFilter (optional) 
      * @param sorting (optional) 
      * @param skipCount (optional) 
      * @param maxResultCount (optional) 
      * @return Success
      */
-    getAll(filter: string | null | undefined, maxLineNumberFilter: number | null | undefined, minLineNumberFilter: number | null | undefined, maxDirectionFilter: number | null | undefined, minDirectionFilter: number | null | undefined, maxLineCodeFilter: number | null | undefined, minLineCodeFilter: number | null | undefined, maxSignageFilter: number | null | undefined, minSignageFilter: number | null | undefined, maxagencyFilter: number | null | undefined, minagencyFilter: number | null | undefined, maxTotalKMFilter: number | null | undefined, minTotalKMFilter: number | null | undefined, maxTotalMinutesFilter: number | null | undefined, minTotalMinutesFilter: number | null | undefined, routeIDGTFSFilter: string | null | undefined, maxCatSedorFilter: number | null | undefined, minCatSedorFilter: number | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetRouteForView> {
+    getAll(filter: string | null | undefined, maxLineNumberFilter: number | null | undefined, minLineNumberFilter: number | null | undefined, maxDirectionFilter: number | null | undefined, minDirectionFilter: number | null | undefined, maxLineCodeFilter: number | null | undefined, minLineCodeFilter: number | null | undefined, maxSignageFilter: number | null | undefined, minSignageFilter: number | null | undefined, maxagencyFilter: number | null | undefined, minagencyFilter: number | null | undefined, maxTotalKMFilter: number | null | undefined, minTotalKMFilter: number | null | undefined, maxTotalMinutesFilter: number | null | undefined, minTotalMinutesFilter: number | null | undefined, routeIDGTFSFilter: string | null | undefined, maxCatSedorFilter: number | null | undefined, minCatSedorFilter: number | null | undefined, colorFilter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetRouteForViewDto> {
         let url_ = this.baseUrl + "/api/services/app/Routes/GetAll?";
         if (filter !== undefined)
             url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
@@ -10523,6 +10523,8 @@ export class RoutesServiceProxy {
             url_ += "MaxCatSedorFilter=" + encodeURIComponent("" + maxCatSedorFilter) + "&"; 
         if (minCatSedorFilter !== undefined)
             url_ += "MinCatSedorFilter=" + encodeURIComponent("" + minCatSedorFilter) + "&"; 
+        if (colorFilter !== undefined)
+            url_ += "ColorFilter=" + encodeURIComponent("" + colorFilter) + "&"; 
         if (sorting !== undefined)
             url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
         if (skipCount !== undefined)
@@ -10546,14 +10548,14 @@ export class RoutesServiceProxy {
                 try {
                     return this.processGetAll(<any>response_);
                 } catch (e) {
-                    return <Observable<PagedResultDtoOfGetRouteForView>><any>_observableThrow(e);
+                    return <Observable<PagedResultDtoOfGetRouteForViewDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<PagedResultDtoOfGetRouteForView>><any>_observableThrow(response_);
+                return <Observable<PagedResultDtoOfGetRouteForViewDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetRouteForView> {
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetRouteForViewDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -10564,7 +10566,7 @@ export class RoutesServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? PagedResultDtoOfGetRouteForView.fromJS(resultData200) : new PagedResultDtoOfGetRouteForView();
+            result200 = resultData200 ? PagedResultDtoOfGetRouteForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetRouteForViewDto();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -10572,7 +10574,7 @@ export class RoutesServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<PagedResultDtoOfGetRouteForView>(<any>null);
+        return _observableOf<PagedResultDtoOfGetRouteForViewDto>(<any>null);
     }
 
     /**
@@ -10627,6 +10629,60 @@ export class RoutesServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfGetStatoinDetailForRouteForView>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getRouteForView(id: number | null | undefined): Observable<GetRouteForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Routes/GetRouteForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRouteForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetRouteForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetRouteForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetRouteForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetRouteForView(response: HttpResponseBase): Observable<GetRouteForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetRouteForViewDto.fromJS(resultData200) : new GetRouteForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetRouteForViewDto>(<any>null);
     }
 
     /**
@@ -10804,9 +10860,10 @@ export class RoutesServiceProxy {
      * @param routeIDGTFSFilter (optional) 
      * @param maxCatSedorFilter (optional) 
      * @param minCatSedorFilter (optional) 
+     * @param colorFilter (optional) 
      * @return Success
      */
-    getRoutesToExcel(filter: string | null | undefined, maxLineNumberFilter: number | null | undefined, minLineNumberFilter: number | null | undefined, maxDirectionFilter: number | null | undefined, minDirectionFilter: number | null | undefined, maxLineCodeFilter: number | null | undefined, minLineCodeFilter: number | null | undefined, maxSignageFilter: number | null | undefined, minSignageFilter: number | null | undefined, maxagencyFilter: number | null | undefined, minagencyFilter: number | null | undefined, maxTotalKMFilter: number | null | undefined, minTotalKMFilter: number | null | undefined, maxTotalMinutesFilter: number | null | undefined, minTotalMinutesFilter: number | null | undefined, routeIDGTFSFilter: string | null | undefined, maxCatSedorFilter: number | null | undefined, minCatSedorFilter: number | null | undefined): Observable<FileDto> {
+    getRoutesToExcel(filter: string | null | undefined, maxLineNumberFilter: number | null | undefined, minLineNumberFilter: number | null | undefined, maxDirectionFilter: number | null | undefined, minDirectionFilter: number | null | undefined, maxLineCodeFilter: number | null | undefined, minLineCodeFilter: number | null | undefined, maxSignageFilter: number | null | undefined, minSignageFilter: number | null | undefined, maxagencyFilter: number | null | undefined, minagencyFilter: number | null | undefined, maxTotalKMFilter: number | null | undefined, minTotalKMFilter: number | null | undefined, maxTotalMinutesFilter: number | null | undefined, minTotalMinutesFilter: number | null | undefined, routeIDGTFSFilter: string | null | undefined, maxCatSedorFilter: number | null | undefined, minCatSedorFilter: number | null | undefined, colorFilter: string | null | undefined): Observable<FileDto> {
         let url_ = this.baseUrl + "/api/services/app/Routes/GetRoutesToExcel?";
         if (filter !== undefined)
             url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
@@ -10844,6 +10901,8 @@ export class RoutesServiceProxy {
             url_ += "MaxCatSedorFilter=" + encodeURIComponent("" + maxCatSedorFilter) + "&"; 
         if (minCatSedorFilter !== undefined)
             url_ += "MinCatSedorFilter=" + encodeURIComponent("" + minCatSedorFilter) + "&"; 
+        if (colorFilter !== undefined)
+            url_ += "ColorFilter=" + encodeURIComponent("" + colorFilter) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -11866,6 +11925,517 @@ export class SessionServiceProxy {
             }));
         }
         return _observableOf<UpdateUserSignInTokenOutput>(<any>null);
+    }
+}
+
+@Injectable()
+export class ShapesServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getAllHeaders(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/services/app/Shapes/GetAllHeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeaders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeaders(<any>response_);
+                } catch (e) {
+                    return <Observable<string[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllHeaders(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param maxshape_idFilter (optional) 
+     * @param minshape_idFilter (optional) 
+     * @param maxshape_pt_latFilter (optional) 
+     * @param minshape_pt_latFilter (optional) 
+     * @param maxshape_pt_lonFilter (optional) 
+     * @param minshape_pt_lonFilter (optional) 
+     * @param maxshape_pt_sequenceFilter (optional) 
+     * @param minshape_pt_sequenceFilter (optional) 
+     * @param routeRouteIDGTFSFilter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(filter: string | null | undefined, maxshape_idFilter: number | null | undefined, minshape_idFilter: number | null | undefined, maxshape_pt_latFilter: number | null | undefined, minshape_pt_latFilter: number | null | undefined, maxshape_pt_lonFilter: number | null | undefined, minshape_pt_lonFilter: number | null | undefined, maxshape_pt_sequenceFilter: number | null | undefined, minshape_pt_sequenceFilter: number | null | undefined, routeRouteIDGTFSFilter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfGetShapeForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Shapes/GetAll?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (maxshape_idFilter !== undefined)
+            url_ += "Maxshape_idFilter=" + encodeURIComponent("" + maxshape_idFilter) + "&"; 
+        if (minshape_idFilter !== undefined)
+            url_ += "Minshape_idFilter=" + encodeURIComponent("" + minshape_idFilter) + "&"; 
+        if (maxshape_pt_latFilter !== undefined)
+            url_ += "Maxshape_pt_latFilter=" + encodeURIComponent("" + maxshape_pt_latFilter) + "&"; 
+        if (minshape_pt_latFilter !== undefined)
+            url_ += "Minshape_pt_latFilter=" + encodeURIComponent("" + minshape_pt_latFilter) + "&"; 
+        if (maxshape_pt_lonFilter !== undefined)
+            url_ += "Maxshape_pt_lonFilter=" + encodeURIComponent("" + maxshape_pt_lonFilter) + "&"; 
+        if (minshape_pt_lonFilter !== undefined)
+            url_ += "Minshape_pt_lonFilter=" + encodeURIComponent("" + minshape_pt_lonFilter) + "&"; 
+        if (maxshape_pt_sequenceFilter !== undefined)
+            url_ += "Maxshape_pt_sequenceFilter=" + encodeURIComponent("" + maxshape_pt_sequenceFilter) + "&"; 
+        if (minshape_pt_sequenceFilter !== undefined)
+            url_ += "Minshape_pt_sequenceFilter=" + encodeURIComponent("" + minshape_pt_sequenceFilter) + "&"; 
+        if (routeRouteIDGTFSFilter !== undefined)
+            url_ += "RouteRouteIDGTFSFilter=" + encodeURIComponent("" + routeRouteIDGTFSFilter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetShapeForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetShapeForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfGetShapeForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetShapeForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetShapeForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetShapeForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getShapeForView(id: number | null | undefined): Observable<GetShapeForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Shapes/GetShapeForView?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetShapeForView(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetShapeForView(<any>response_);
+                } catch (e) {
+                    return <Observable<GetShapeForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetShapeForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetShapeForView(response: HttpResponseBase): Observable<GetShapeForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetShapeForViewDto.fromJS(resultData200) : new GetShapeForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetShapeForViewDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getShapeForEdit(id: number | null | undefined): Observable<GetShapeForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Shapes/GetShapeForEdit?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetShapeForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetShapeForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetShapeForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetShapeForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetShapeForEdit(response: HttpResponseBase): Observable<GetShapeForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetShapeForEditOutput.fromJS(resultData200) : new GetShapeForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetShapeForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createOrEdit(input: CreateOrEditShapeDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Shapes/CreateOrEdit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Shapes/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param maxshape_idFilter (optional) 
+     * @param minshape_idFilter (optional) 
+     * @param maxshape_pt_latFilter (optional) 
+     * @param minshape_pt_latFilter (optional) 
+     * @param maxshape_pt_lonFilter (optional) 
+     * @param minshape_pt_lonFilter (optional) 
+     * @param maxshape_pt_sequenceFilter (optional) 
+     * @param minshape_pt_sequenceFilter (optional) 
+     * @param routeRouteIDGTFSFilter (optional) 
+     * @return Success
+     */
+    getShapesToExcel(filter: string | null | undefined, maxshape_idFilter: number | null | undefined, minshape_idFilter: number | null | undefined, maxshape_pt_latFilter: number | null | undefined, minshape_pt_latFilter: number | null | undefined, maxshape_pt_lonFilter: number | null | undefined, minshape_pt_lonFilter: number | null | undefined, maxshape_pt_sequenceFilter: number | null | undefined, minshape_pt_sequenceFilter: number | null | undefined, routeRouteIDGTFSFilter: string | null | undefined): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/Shapes/GetShapesToExcel?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (maxshape_idFilter !== undefined)
+            url_ += "Maxshape_idFilter=" + encodeURIComponent("" + maxshape_idFilter) + "&"; 
+        if (minshape_idFilter !== undefined)
+            url_ += "Minshape_idFilter=" + encodeURIComponent("" + minshape_idFilter) + "&"; 
+        if (maxshape_pt_latFilter !== undefined)
+            url_ += "Maxshape_pt_latFilter=" + encodeURIComponent("" + maxshape_pt_latFilter) + "&"; 
+        if (minshape_pt_latFilter !== undefined)
+            url_ += "Minshape_pt_latFilter=" + encodeURIComponent("" + minshape_pt_latFilter) + "&"; 
+        if (maxshape_pt_lonFilter !== undefined)
+            url_ += "Maxshape_pt_lonFilter=" + encodeURIComponent("" + maxshape_pt_lonFilter) + "&"; 
+        if (minshape_pt_lonFilter !== undefined)
+            url_ += "Minshape_pt_lonFilter=" + encodeURIComponent("" + minshape_pt_lonFilter) + "&"; 
+        if (maxshape_pt_sequenceFilter !== undefined)
+            url_ += "Maxshape_pt_sequenceFilter=" + encodeURIComponent("" + maxshape_pt_sequenceFilter) + "&"; 
+        if (minshape_pt_sequenceFilter !== undefined)
+            url_ += "Minshape_pt_sequenceFilter=" + encodeURIComponent("" + minshape_pt_sequenceFilter) + "&"; 
+        if (routeRouteIDGTFSFilter !== undefined)
+            url_ += "RouteRouteIDGTFSFilter=" + encodeURIComponent("" + routeRouteIDGTFSFilter) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetShapesToExcel(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetShapesToExcel(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetShapesToExcel(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAllRouteForLookupTable(filter: string | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfShapeRouteLookupTableDto> {
+        let url_ = this.baseUrl + "/api/services/app/Shapes/GetAllRouteForLookupTable?";
+        if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllRouteForLookupTable(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllRouteForLookupTable(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfShapeRouteLookupTableDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfShapeRouteLookupTableDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllRouteForLookupTable(response: HttpResponseBase): Observable<PagedResultDtoOfShapeRouteLookupTableDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfShapeRouteLookupTableDto.fromJS(resultData200) : new PagedResultDtoOfShapeRouteLookupTableDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfShapeRouteLookupTableDto>(<any>null);
     }
 }
 
@@ -18990,6 +19560,138 @@ export class TripsServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param router (optional) 
+     * @param calenderId (optional) 
+     * @param formHourStr (optional) 
+     * @param toHourStr (optional) 
+     * @param interval (optional) 
+     * @param triptype (optional) 
+     * @return Success
+     */
+    createTrips(router: number | null | undefined, calenderId: number | null | undefined, formHourStr: string | null | undefined, toHourStr: string | null | undefined, interval: number | null | undefined, triptype: number | null | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/services/app/Trips/createTrips?";
+        if (router !== undefined)
+            url_ += "router=" + encodeURIComponent("" + router) + "&"; 
+        if (calenderId !== undefined)
+            url_ += "calenderId=" + encodeURIComponent("" + calenderId) + "&"; 
+        if (formHourStr !== undefined)
+            url_ += "formHourStr=" + encodeURIComponent("" + formHourStr) + "&"; 
+        if (toHourStr !== undefined)
+            url_ += "toHourStr=" + encodeURIComponent("" + toHourStr) + "&"; 
+        if (interval !== undefined)
+            url_ += "Interval=" + encodeURIComponent("" + interval) + "&"; 
+        if (triptype !== undefined)
+            url_ += "triptype=" + encodeURIComponent("" + triptype) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateTrips(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateTrips(<any>response_);
+                } catch (e) {
+                    return <Observable<string>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateTrips(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(<any>null);
+    }
+
+    /**
+     * @param fromstart (optional) 
+     * @param toStart (optional) 
+     * @param routesID (optional) 
+     * @param calenderBusId (optional) 
+     * @return Success
+     */
+    getTripsyCalnderbusId(fromstart: string | null | undefined, toStart: string | null | undefined, routesID: number | null | undefined, calenderBusId: number | null | undefined): Observable<PagedResultDtoOfGetTripForViewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Trips/GetTripsyCalnderbusId?";
+        if (fromstart !== undefined)
+            url_ += "fromstart=" + encodeURIComponent("" + fromstart) + "&"; 
+        if (toStart !== undefined)
+            url_ += "toStart=" + encodeURIComponent("" + toStart) + "&"; 
+        if (routesID !== undefined)
+            url_ += "routesID=" + encodeURIComponent("" + routesID) + "&"; 
+        if (calenderBusId !== undefined)
+            url_ += "CalenderBusId=" + encodeURIComponent("" + calenderBusId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTripsyCalnderbusId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTripsyCalnderbusId(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGetTripForViewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGetTripForViewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTripsyCalnderbusId(response: HttpResponseBase): Observable<PagedResultDtoOfGetTripForViewDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGetTripForViewDto.fromJS(resultData200) : new PagedResultDtoOfGetTripForViewDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGetTripForViewDto>(<any>null);
     }
 
     /**
@@ -33317,6 +34019,42 @@ export interface IFlatPermissionWithLevelDto {
     isGrantedByDefault: boolean | undefined;
 }
 
+export class GetProfilePictureOutput implements IGetProfilePictureOutput {
+    profilePicture!: string | undefined;
+
+    constructor(data?: IGetProfilePictureOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.profilePicture = data["profilePicture"];
+        }
+    }
+
+    static fromJS(data: any): GetProfilePictureOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetProfilePictureOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["profilePicture"] = this.profilePicture;
+        return data; 
+    }
+}
+
+export interface IGetProfilePictureOutput {
+    profilePicture: string | undefined;
+}
+
 export class CurrentUserProfileEditDto implements ICurrentUserProfileEditDto {
     name!: string;
     surname!: string;
@@ -33623,42 +34361,6 @@ export class GetPasswordComplexitySettingOutput implements IGetPasswordComplexit
 
 export interface IGetPasswordComplexitySettingOutput {
     setting: PasswordComplexitySetting | undefined;
-}
-
-export class GetProfilePictureOutput implements IGetProfilePictureOutput {
-    profilePicture!: string | undefined;
-
-    constructor(data?: IGetProfilePictureOutput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.profilePicture = data["profilePicture"];
-        }
-    }
-
-    static fromJS(data: any): GetProfilePictureOutput {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetProfilePictureOutput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["profilePicture"] = this.profilePicture;
-        return data; 
-    }
-}
-
-export interface IGetProfilePictureOutput {
-    profilePicture: string | undefined;
 }
 
 export class ChangeUserLanguageDto implements IChangeUserLanguageDto {
@@ -34005,11 +34707,11 @@ export interface ICreateOrUpdateRoleInput {
     grantedPermissionNames: string[];
 }
 
-export class PagedResultDtoOfGetRouteForView implements IPagedResultDtoOfGetRouteForView {
+export class PagedResultDtoOfGetRouteForViewDto implements IPagedResultDtoOfGetRouteForViewDto {
     totalCount!: number | undefined;
-    items!: GetRouteForView[] | undefined;
+    items!: GetRouteForViewDto[] | undefined;
 
-    constructor(data?: IPagedResultDtoOfGetRouteForView) {
+    constructor(data?: IPagedResultDtoOfGetRouteForViewDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -34024,14 +34726,14 @@ export class PagedResultDtoOfGetRouteForView implements IPagedResultDtoOfGetRout
             if (data["items"] && data["items"].constructor === Array) {
                 this.items = [] as any;
                 for (let item of data["items"])
-                    this.items!.push(GetRouteForView.fromJS(item));
+                    this.items!.push(GetRouteForViewDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): PagedResultDtoOfGetRouteForView {
+    static fromJS(data: any): PagedResultDtoOfGetRouteForViewDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PagedResultDtoOfGetRouteForView();
+        let result = new PagedResultDtoOfGetRouteForViewDto();
         result.init(data);
         return result;
     }
@@ -34048,15 +34750,15 @@ export class PagedResultDtoOfGetRouteForView implements IPagedResultDtoOfGetRout
     }
 }
 
-export interface IPagedResultDtoOfGetRouteForView {
+export interface IPagedResultDtoOfGetRouteForViewDto {
     totalCount: number | undefined;
-    items: GetRouteForView[] | undefined;
+    items: GetRouteForViewDto[] | undefined;
 }
 
-export class GetRouteForView implements IGetRouteForView {
+export class GetRouteForViewDto implements IGetRouteForViewDto {
     route!: RouteDto | undefined;
 
-    constructor(data?: IGetRouteForView) {
+    constructor(data?: IGetRouteForViewDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -34071,9 +34773,9 @@ export class GetRouteForView implements IGetRouteForView {
         }
     }
 
-    static fromJS(data: any): GetRouteForView {
+    static fromJS(data: any): GetRouteForViewDto {
         data = typeof data === 'object' ? data : {};
-        let result = new GetRouteForView();
+        let result = new GetRouteForViewDto();
         result.init(data);
         return result;
     }
@@ -34085,7 +34787,7 @@ export class GetRouteForView implements IGetRouteForView {
     }
 }
 
-export interface IGetRouteForView {
+export interface IGetRouteForViewDto {
     route: RouteDto | undefined;
 }
 
@@ -34099,6 +34801,7 @@ export class RouteDto implements IRouteDto {
     totalMinutes!: number | undefined;
     routeIDGTFS!: string | undefined;
     catSedor!: number | undefined;
+    color!: string | undefined;
     id!: number | undefined;
 
     constructor(data?: IRouteDto) {
@@ -34121,6 +34824,7 @@ export class RouteDto implements IRouteDto {
             this.totalMinutes = data["totalMinutes"];
             this.routeIDGTFS = data["routeIDGTFS"];
             this.catSedor = data["catSedor"];
+            this.color = data["color"];
             this.id = data["id"];
         }
     }
@@ -34143,6 +34847,7 @@ export class RouteDto implements IRouteDto {
         data["totalMinutes"] = this.totalMinutes;
         data["routeIDGTFS"] = this.routeIDGTFS;
         data["catSedor"] = this.catSedor;
+        data["color"] = this.color;
         data["id"] = this.id;
         return data; 
     }
@@ -34158,6 +34863,7 @@ export interface IRouteDto {
     totalMinutes: number | undefined;
     routeIDGTFS: string | undefined;
     catSedor: number | undefined;
+    color: string | undefined;
     id: number | undefined;
 }
 
@@ -34251,6 +34957,42 @@ export interface IGetStatoinDetailForRouteForView {
     route: GetRouteForView | undefined;
     station: GetStationForView | undefined;
     routes_Station: GetRoutes_StationForView | undefined;
+}
+
+export class GetRouteForView implements IGetRouteForView {
+    route!: RouteDto | undefined;
+
+    constructor(data?: IGetRouteForView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.route = data["route"] ? RouteDto.fromJS(data["route"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetRouteForView {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetRouteForView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["route"] = this.route ? this.route.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetRouteForView {
+    route: RouteDto | undefined;
 }
 
 export class GetStationForView implements IGetStationForView {
@@ -34523,6 +35265,7 @@ export class CreateOrEditRouteDto implements ICreateOrEditRouteDto {
     totalMinutes!: number | undefined;
     routeIDGTFS!: string | undefined;
     catSedor!: number | undefined;
+    color!: string | undefined;
     id!: number | undefined;
 
     constructor(data?: ICreateOrEditRouteDto) {
@@ -34545,6 +35288,7 @@ export class CreateOrEditRouteDto implements ICreateOrEditRouteDto {
             this.totalMinutes = data["totalMinutes"];
             this.routeIDGTFS = data["routeIDGTFS"];
             this.catSedor = data["catSedor"];
+            this.color = data["color"];
             this.id = data["id"];
         }
     }
@@ -34567,6 +35311,7 @@ export class CreateOrEditRouteDto implements ICreateOrEditRouteDto {
         data["totalMinutes"] = this.totalMinutes;
         data["routeIDGTFS"] = this.routeIDGTFS;
         data["catSedor"] = this.catSedor;
+        data["color"] = this.color;
         data["id"] = this.id;
         return data; 
     }
@@ -34582,6 +35327,7 @@ export interface ICreateOrEditRouteDto {
     totalMinutes: number | undefined;
     routeIDGTFS: string | undefined;
     catSedor: number | undefined;
+    color: string | undefined;
     id: number | undefined;
 }
 
@@ -35490,6 +36236,9 @@ export interface IThemeHeaderSettingsDto {
 export class ThemeSubHeaderSettingsDto implements IThemeSubHeaderSettingsDto {
     fixedSubHeader!: boolean | undefined;
     subheaderStyle!: string | undefined;
+    subheaderSize!: number | undefined;
+    titleStlye!: string | undefined;
+    containerStyle!: string | undefined;
 
     constructor(data?: IThemeSubHeaderSettingsDto) {
         if (data) {
@@ -35504,6 +36253,9 @@ export class ThemeSubHeaderSettingsDto implements IThemeSubHeaderSettingsDto {
         if (data) {
             this.fixedSubHeader = data["fixedSubHeader"];
             this.subheaderStyle = data["subheaderStyle"];
+            this.subheaderSize = data["subheaderSize"];
+            this.titleStlye = data["titleStlye"];
+            this.containerStyle = data["containerStyle"];
         }
     }
 
@@ -35518,6 +36270,9 @@ export class ThemeSubHeaderSettingsDto implements IThemeSubHeaderSettingsDto {
         data = typeof data === 'object' ? data : {};
         data["fixedSubHeader"] = this.fixedSubHeader;
         data["subheaderStyle"] = this.subheaderStyle;
+        data["subheaderSize"] = this.subheaderSize;
+        data["titleStlye"] = this.titleStlye;
+        data["containerStyle"] = this.containerStyle;
         return data; 
     }
 }
@@ -35525,6 +36280,9 @@ export class ThemeSubHeaderSettingsDto implements IThemeSubHeaderSettingsDto {
 export interface IThemeSubHeaderSettingsDto {
     fixedSubHeader: boolean | undefined;
     subheaderStyle: string | undefined;
+    subheaderSize: number | undefined;
+    titleStlye: string | undefined;
+    containerStyle: string | undefined;
 }
 
 export class ThemeMenuSettingsDto implements IThemeMenuSettingsDto {
@@ -35534,6 +36292,9 @@ export class ThemeMenuSettingsDto implements IThemeMenuSettingsDto {
     allowAsideMinimizing!: boolean | undefined;
     defaultMinimizedAside!: boolean | undefined;
     submenuToggle!: string | undefined;
+    searchActive!: boolean | undefined;
+    enableSecondary!: boolean | undefined;
+    hoverableAside!: boolean | undefined;
 
     constructor(data?: IThemeMenuSettingsDto) {
         if (data) {
@@ -35552,6 +36313,9 @@ export class ThemeMenuSettingsDto implements IThemeMenuSettingsDto {
             this.allowAsideMinimizing = data["allowAsideMinimizing"];
             this.defaultMinimizedAside = data["defaultMinimizedAside"];
             this.submenuToggle = data["submenuToggle"];
+            this.searchActive = data["searchActive"];
+            this.enableSecondary = data["enableSecondary"];
+            this.hoverableAside = data["hoverableAside"];
         }
     }
 
@@ -35570,6 +36334,9 @@ export class ThemeMenuSettingsDto implements IThemeMenuSettingsDto {
         data["allowAsideMinimizing"] = this.allowAsideMinimizing;
         data["defaultMinimizedAside"] = this.defaultMinimizedAside;
         data["submenuToggle"] = this.submenuToggle;
+        data["searchActive"] = this.searchActive;
+        data["enableSecondary"] = this.enableSecondary;
+        data["hoverableAside"] = this.hoverableAside;
         return data; 
     }
 }
@@ -35581,6 +36348,9 @@ export interface IThemeMenuSettingsDto {
     allowAsideMinimizing: boolean | undefined;
     defaultMinimizedAside: boolean | undefined;
     submenuToggle: string | undefined;
+    searchActive: boolean | undefined;
+    enableSecondary: boolean | undefined;
+    hoverableAside: boolean | undefined;
 }
 
 export class ThemeFooterSettingsDto implements IThemeFooterSettingsDto {
@@ -35661,6 +36431,334 @@ export interface IUpdateUserSignInTokenOutput {
     signInToken: string | undefined;
     encodedUserId: string | undefined;
     encodedTenantId: string | undefined;
+}
+
+export class PagedResultDtoOfGetShapeForViewDto implements IPagedResultDtoOfGetShapeForViewDto {
+    totalCount!: number | undefined;
+    items!: GetShapeForViewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetShapeForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetShapeForViewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetShapeForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetShapeForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetShapeForViewDto {
+    totalCount: number | undefined;
+    items: GetShapeForViewDto[] | undefined;
+}
+
+export class GetShapeForViewDto implements IGetShapeForViewDto {
+    shape!: ShapeDto | undefined;
+    routeRouteIDGTFS!: string | undefined;
+
+    constructor(data?: IGetShapeForViewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.shape = data["shape"] ? ShapeDto.fromJS(data["shape"]) : <any>undefined;
+            this.routeRouteIDGTFS = data["routeRouteIDGTFS"];
+        }
+    }
+
+    static fromJS(data: any): GetShapeForViewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetShapeForViewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["shape"] = this.shape ? this.shape.toJSON() : <any>undefined;
+        data["routeRouteIDGTFS"] = this.routeRouteIDGTFS;
+        return data; 
+    }
+}
+
+export interface IGetShapeForViewDto {
+    shape: ShapeDto | undefined;
+    routeRouteIDGTFS: string | undefined;
+}
+
+export class ShapeDto implements IShapeDto {
+    shape_id!: number | undefined;
+    shape_pt_lat!: number | undefined;
+    shape_pt_lon!: number | undefined;
+    shape_pt_sequence!: number | undefined;
+    routeId!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: IShapeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.shape_id = data["shape_id"];
+            this.shape_pt_lat = data["shape_pt_lat"];
+            this.shape_pt_lon = data["shape_pt_lon"];
+            this.shape_pt_sequence = data["shape_pt_sequence"];
+            this.routeId = data["routeId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): ShapeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ShapeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["shape_id"] = this.shape_id;
+        data["shape_pt_lat"] = this.shape_pt_lat;
+        data["shape_pt_lon"] = this.shape_pt_lon;
+        data["shape_pt_sequence"] = this.shape_pt_sequence;
+        data["routeId"] = this.routeId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IShapeDto {
+    shape_id: number | undefined;
+    shape_pt_lat: number | undefined;
+    shape_pt_lon: number | undefined;
+    shape_pt_sequence: number | undefined;
+    routeId: number | undefined;
+    id: number | undefined;
+}
+
+export class GetShapeForEditOutput implements IGetShapeForEditOutput {
+    shape!: CreateOrEditShapeDto | undefined;
+    routeRouteIDGTFS!: string | undefined;
+
+    constructor(data?: IGetShapeForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.shape = data["shape"] ? CreateOrEditShapeDto.fromJS(data["shape"]) : <any>undefined;
+            this.routeRouteIDGTFS = data["routeRouteIDGTFS"];
+        }
+    }
+
+    static fromJS(data: any): GetShapeForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetShapeForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["shape"] = this.shape ? this.shape.toJSON() : <any>undefined;
+        data["routeRouteIDGTFS"] = this.routeRouteIDGTFS;
+        return data; 
+    }
+}
+
+export interface IGetShapeForEditOutput {
+    shape: CreateOrEditShapeDto | undefined;
+    routeRouteIDGTFS: string | undefined;
+}
+
+export class CreateOrEditShapeDto implements ICreateOrEditShapeDto {
+    shape_id!: number | undefined;
+    shape_pt_lat!: number | undefined;
+    shape_pt_lon!: number | undefined;
+    shape_pt_sequence!: number | undefined;
+    routeId!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditShapeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.shape_id = data["shape_id"];
+            this.shape_pt_lat = data["shape_pt_lat"];
+            this.shape_pt_lon = data["shape_pt_lon"];
+            this.shape_pt_sequence = data["shape_pt_sequence"];
+            this.routeId = data["routeId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditShapeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditShapeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["shape_id"] = this.shape_id;
+        data["shape_pt_lat"] = this.shape_pt_lat;
+        data["shape_pt_lon"] = this.shape_pt_lon;
+        data["shape_pt_sequence"] = this.shape_pt_sequence;
+        data["routeId"] = this.routeId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditShapeDto {
+    shape_id: number | undefined;
+    shape_pt_lat: number | undefined;
+    shape_pt_lon: number | undefined;
+    shape_pt_sequence: number | undefined;
+    routeId: number | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfShapeRouteLookupTableDto implements IPagedResultDtoOfShapeRouteLookupTableDto {
+    totalCount!: number | undefined;
+    items!: ShapeRouteLookupTableDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfShapeRouteLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(ShapeRouteLookupTableDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfShapeRouteLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfShapeRouteLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfShapeRouteLookupTableDto {
+    totalCount: number | undefined;
+    items: ShapeRouteLookupTableDto[] | undefined;
+}
+
+export class ShapeRouteLookupTableDto implements IShapeRouteLookupTableDto {
+    id!: number | undefined;
+    displayName!: string | undefined;
+
+    constructor(data?: IShapeRouteLookupTableDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.displayName = data["displayName"];
+        }
+    }
+
+    static fromJS(data: any): ShapeRouteLookupTableDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ShapeRouteLookupTableDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        return data; 
+    }
+}
+
+export interface IShapeRouteLookupTableDto {
+    id: number | undefined;
+    displayName: string | undefined;
 }
 
 export class PagedResultDtoOfGetStaffForView implements IPagedResultDtoOfGetStaffForView {
@@ -36479,6 +37577,54 @@ export interface IOrganizationUnitLookupTableDto {
     displayName: string | undefined;
 }
 
+export class PagedResultDtoOfGetRouteForView implements IPagedResultDtoOfGetRouteForView {
+    totalCount!: number | undefined;
+    items!: GetRouteForView[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGetRouteForView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetRouteForView.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGetRouteForView {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGetRouteForView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfGetRouteForView {
+    totalCount: number | undefined;
+    items: GetRouteForView[] | undefined;
+}
+
 export class PagedResultDtoOfGetStationForView implements IPagedResultDtoOfGetStationForView {
     totalCount!: number | undefined;
     items!: GetStationForView[] | undefined;
@@ -36646,6 +37792,7 @@ export interface ICreateOrEditStationDto {
 export class StripeConfirmPaymentInput implements IStripeConfirmPaymentInput {
     paymentId!: number | undefined;
     stripeToken!: string | undefined;
+    stripeSessionId!: string | undefined;
 
     constructor(data?: IStripeConfirmPaymentInput) {
         if (data) {
@@ -36660,6 +37807,7 @@ export class StripeConfirmPaymentInput implements IStripeConfirmPaymentInput {
         if (data) {
             this.paymentId = data["paymentId"];
             this.stripeToken = data["stripeToken"];
+            this.stripeSessionId = data["stripeSessionId"];
         }
     }
 
@@ -36674,6 +37822,7 @@ export class StripeConfirmPaymentInput implements IStripeConfirmPaymentInput {
         data = typeof data === 'object' ? data : {};
         data["paymentId"] = this.paymentId;
         data["stripeToken"] = this.stripeToken;
+        data["stripeSessionId"] = this.stripeSessionId;
         return data; 
     }
 }
@@ -36681,6 +37830,7 @@ export class StripeConfirmPaymentInput implements IStripeConfirmPaymentInput {
 export interface IStripeConfirmPaymentInput {
     paymentId: number | undefined;
     stripeToken: string | undefined;
+    stripeSessionId: string | undefined;
 }
 
 export class StripeCreateSubscriptionInput implements IStripeCreateSubscriptionInput {
@@ -38523,6 +39673,8 @@ export interface IAuthenticateResultModel {
 
 export class RefreshTokenResult implements IRefreshTokenResult {
     accessToken!: string | undefined;
+    encryptedAccessToken!: string | undefined;
+    expireInSeconds!: number | undefined;
 
     constructor(data?: IRefreshTokenResult) {
         if (data) {
@@ -38536,6 +39688,8 @@ export class RefreshTokenResult implements IRefreshTokenResult {
     init(data?: any) {
         if (data) {
             this.accessToken = data["accessToken"];
+            this.encryptedAccessToken = data["encryptedAccessToken"];
+            this.expireInSeconds = data["expireInSeconds"];
         }
     }
 
@@ -38549,12 +39703,16 @@ export class RefreshTokenResult implements IRefreshTokenResult {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["accessToken"] = this.accessToken;
+        data["encryptedAccessToken"] = this.encryptedAccessToken;
+        data["expireInSeconds"] = this.expireInSeconds;
         return data; 
     }
 }
 
 export interface IRefreshTokenResult {
     accessToken: string | undefined;
+    encryptedAccessToken: string | undefined;
+    expireInSeconds: number | undefined;
 }
 
 export class SendTwoFactorAuthCodeModel implements ISendTwoFactorAuthCodeModel {

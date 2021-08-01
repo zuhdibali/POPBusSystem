@@ -2,6 +2,15 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppCommonModule } from '@app/shared/common/app-common.module';
+import { ShapesComponent } from './road/shapes/shapes.component';
+import { ViewShapeModalComponent } from './road/shapes/view-shape-modal.component';
+import { CreateOrEditShapeModalComponent } from './road/shapes/create-or-edit-shape-modal.component';
+import { ShapeRouteLookupTableModalComponent } from './road/shapes/shape-route-lookup-table-modal.component';
+
+import { BranchesComponent } from './dictionary/branches/branches.component';
+import { ViewBranchesModalComponent } from './dictionary/branches/view-branches-modal.component';
+import { CreateOrEditBranchesModalComponent } from './dictionary/branches/create-or-edit-branches-modal.component';
+
 import { RuntimePeriodsComponent } from './trips/runtimePeriods/runtimePeriods.component';
 import { ViewRuntimePeriodModalComponent } from './trips/runtimePeriods/view-runtimePeriod-modal.component';
 import { CreateOrEditRuntimePeriodModalComponent } from './trips/runtimePeriods/create-or-edit-runtimePeriod-modal.component';
@@ -132,6 +141,15 @@ NgxBootstrapDatePickerConfigService.registerNgxBootstrapDatePickerLocales();
         PopoverModule.forRoot()
     ],
     declarations: [
+		ShapesComponent,
+
+		ViewShapeModalComponent,
+		CreateOrEditShapeModalComponent,
+    ShapeRouteLookupTableModalComponent,
+		BranchesComponent,
+
+		ViewBranchesModalComponent,
+		CreateOrEditBranchesModalComponent,
 		RuntimePeriodsComponent,
 
 		ViewRuntimePeriodModalComponent,

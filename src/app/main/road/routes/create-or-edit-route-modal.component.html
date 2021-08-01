@@ -1,4 +1,4 @@
-<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form *ngIf="active" #routeForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
@@ -7,7 +7,7 @@
                         <span *ngIf="route.id">{{l("EditRoute")}}</span>
                         <span *ngIf="!route.id">{{l("CreateNewRoute")}}</span>
                     </h4>
-                    <button type="button" class="close" (click)="close()" aria-label="Close">
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -17,47 +17,62 @@
 
 								<div class="form-group">
 									<label for="Route_LineNumber">{{l("LineNumber")}}</label>
-									<input type="number" id="Route_LineNumber" class="form-control" [(ngModel)]="route.lineNumber" name="LineNumber"  />
+									<input type="number" #Route_LineNumber="ngModel" id="Route_LineNumber" class="form-control" [(ngModel)]="route.lineNumber" name="LineNumber"   />
+									<validation-messages [formCtrl]="Route_LineNumber"></validation-messages>
 								</div>
 					
 								<div class="form-group">
 									<label for="Route_Direction">{{l("Direction")}}</label>
-									<input type="number" id="Route_Direction" class="form-control" [(ngModel)]="route.direction" name="Direction"  />
+									<input type="number" #Route_Direction="ngModel" id="Route_Direction" class="form-control" [(ngModel)]="route.direction" name="Direction"   />
+									<validation-messages [formCtrl]="Route_Direction"></validation-messages>
 								</div>
 					
 								<div class="form-group">
 									<label for="Route_LineCode">{{l("LineCode")}}</label>
-									<input type="number" id="Route_LineCode" class="form-control" [(ngModel)]="route.lineCode" name="LineCode"  />
+									<input type="number" #Route_LineCode="ngModel" id="Route_LineCode" class="form-control" [(ngModel)]="route.lineCode" name="LineCode"   />
+									<validation-messages [formCtrl]="Route_LineCode"></validation-messages>
 								</div>
 					
 								<div class="form-group">
 									<label for="Route_Signage">{{l("Signage")}}</label>
-									<input type="number" id="Route_Signage" class="form-control" [(ngModel)]="route.signage" name="Signage"  />
+									<input type="number" #Route_Signage="ngModel" id="Route_Signage" class="form-control" [(ngModel)]="route.signage" name="Signage"   />
+									<validation-messages [formCtrl]="Route_Signage"></validation-messages>
 								</div>
 					
 								<div class="form-group">
 									<label for="Route_agency">{{l("agency")}}</label>
-									<input type="number" id="Route_agency" class="form-control" [(ngModel)]="route.agency" name="agency"  />
+									<input type="number" #Route_agency="ngModel" id="Route_agency" class="form-control" [(ngModel)]="route.agency" name="agency"   />
+									<validation-messages [formCtrl]="Route_agency"></validation-messages>
 								</div>
 					
 								<div class="form-group">
 									<label for="Route_TotalKM">{{l("TotalKM")}}</label>
-									<input type="number" id="Route_TotalKM" class="form-control" [(ngModel)]="route.totalKM" name="TotalKM"  />
+									<input type="number" #Route_TotalKM="ngModel" id="Route_TotalKM" class="form-control" [(ngModel)]="route.totalKM" name="TotalKM"   />
+									<validation-messages [formCtrl]="Route_TotalKM"></validation-messages>
 								</div>
 					
 								<div class="form-group">
 									<label for="Route_TotalMinutes">{{l("TotalMinutes")}}</label>
-									<input type="number" id="Route_TotalMinutes" class="form-control" [(ngModel)]="route.totalMinutes" name="TotalMinutes"  />
+									<input type="number" #Route_TotalMinutes="ngModel" id="Route_TotalMinutes" class="form-control" [(ngModel)]="route.totalMinutes" name="TotalMinutes"   />
+									<validation-messages [formCtrl]="Route_TotalMinutes"></validation-messages>
 								</div>
 					
 								<div class="form-group">
 									<label for="Route_RouteIDGTFS">{{l("RouteIDGTFS")}}</label>
-									<input type="text" id="Route_RouteIDGTFS" class="form-control" [(ngModel)]="route.routeIDGTFS" name="RouteIDGTFS"    />
+									<input type="text" #Route_RouteIDGTFS="ngModel" id="Route_RouteIDGTFS" class="form-control" [(ngModel)]="route.routeIDGTFS" name="RouteIDGTFS"    />
+								    <validation-messages [formCtrl]="Route_RouteIDGTFS"></validation-messages>
 								</div>
 					
 								<div class="form-group">
 									<label for="Route_CatSedor">{{l("CatSedor")}}</label>
-									<input type="number" id="Route_CatSedor" class="form-control" [(ngModel)]="route.catSedor" name="CatSedor"  />
+									<input type="number" #Route_CatSedor="ngModel" id="Route_CatSedor" class="form-control" [(ngModel)]="route.catSedor" name="CatSedor"   />
+									<validation-messages [formCtrl]="Route_CatSedor"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Route_Color">{{l("Color")}}</label>
+									<input type="text" #Route_Color="ngModel" id="Route_Color" class="form-control" [(ngModel)]="route.color" name="Color"    />
+								    <validation-messages [formCtrl]="Route_Color"></validation-messages>
 								</div>
 					
 

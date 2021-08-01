@@ -1,0 +1,66 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #shapeForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="shape.id">{{l("EditShape")}}</span>
+                        <span *ngIf="!shape.id">{{l("CreateNewShape")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                 
+
+					<div class="form-group m-form__group">
+                        <label for="RouteRouteIDGTFS">{{l("Route")}}</label>
+                        <div class="input-group">
+                            <input class="form-control" id="RouteRouteIDGTFS" name="routeRouteIDGTFS" [(ngModel)]="routeRouteIDGTFS" type="text" disabled>     
+                            <div class="input-group-append">
+                                <button class="btn btn-primary blue" (click)="openSelectRouteModal()" type="button"><i class="fa fa-search"></i> {{l("Pick")}}</button>
+                            </div> <div class="input-group-prepend">
+                                <button class="btn btn-danger btn-icon" type="button" (click)="setRouteIdNull()"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <input class="form-control" name="shape.routeId" [(ngModel)]="shape.routeId" type="text"  hidden>
+		 
+
+								<div class="form-group">
+									<label for="Shape_shape_id">{{l("shape_id")}}</label>
+									<input type="number" #Shape_shape_id="ngModel" id="Shape_shape_id" class="form-control" [(ngModel)]="shape.shape_id" name="shape_id"   />
+									<validation-messages [formCtrl]="Shape_shape_id"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Shape_shape_pt_lat">{{l("shape_pt_lat")}}</label>
+									<input type="number" #Shape_shape_pt_lat="ngModel" id="Shape_shape_pt_lat" class="form-control" [(ngModel)]="shape.shape_pt_lat" name="shape_pt_lat"   />
+									<validation-messages [formCtrl]="Shape_shape_pt_lat"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Shape_shape_pt_lon">{{l("shape_pt_lon")}}</label>
+									<input type="number" #Shape_shape_pt_lon="ngModel" id="Shape_shape_pt_lon" class="form-control" [(ngModel)]="shape.shape_pt_lon" name="shape_pt_lon"   />
+									<validation-messages [formCtrl]="Shape_shape_pt_lon"></validation-messages>
+								</div>
+					
+								<div class="form-group">
+									<label for="Shape_shape_pt_sequence">{{l("shape_pt_sequence")}}</label>
+									<input type="number" #Shape_shape_pt_sequence="ngModel" id="Shape_shape_pt_sequence" class="form-control" [(ngModel)]="shape.shape_pt_sequence" name="shape_pt_sequence"   />
+									<validation-messages [formCtrl]="Shape_shape_pt_sequence"></validation-messages>
+								</div>
+					
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default" (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!shapeForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{l("Save")}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+<shapeRouteLookupTableModal #shapeRouteLookupTableModal (modalSave)="getNewRouteId()"></shapeRouteLookupTableModal>
+		 
+</div>

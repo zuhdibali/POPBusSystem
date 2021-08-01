@@ -1,14 +1,14 @@
 ﻿import {AppConsts} from "@shared/AppConsts";
 import { Component, ViewChild, Injector, Output, EventEmitter } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
-import { GetRouteForViewDto, RouteDto } from '@shared/service-proxies/service-proxies';
+import { GetShapeForViewDto, ShapeDto } from '@shared/service-proxies/service-proxies';
 import { AppComponentBase } from '@shared/common/app-component-base';
 
 @Component({
-    selector: 'viewRouteModal',
-    templateUrl: './view-route-modal.component.html'
+    selector: 'viewShapeModal',
+    templateUrl: './view-shape-modal.component.html'
 })
-export class ViewRouteModalComponent extends AppComponentBase {
+export class ViewShapeModalComponent extends AppComponentBase {
 
     @ViewChild('createOrEditModal', { static: true }) modal: ModalDirective;
     @Output() modalSave: EventEmitter<any> = new EventEmitter<any>();
@@ -16,18 +16,18 @@ export class ViewRouteModalComponent extends AppComponentBase {
     active = false;
     saving = false;
 
-    item: GetRouteForViewDto;
+    item: GetShapeForViewDto;
 
 
     constructor(
         injector: Injector
     ) {
         super(injector);
-        this.item = new GetRouteForViewDto();
-        this.item.route = new RouteDto();
+        this.item = new GetShapeForViewDto();
+        this.item.shape = new ShapeDto();
     }
 
-    show(item: GetRouteForViewDto): void {
+    show(item: GetShapeForViewDto): void {
         this.item = item;
         this.active = true;
         this.modal.show();

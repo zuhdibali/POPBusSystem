@@ -1,10 +1,12 @@
-﻿import { Component, Injector, ViewEncapsulation, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+﻿import {AppConsts} from '@shared/AppConsts';
+import { Component, Injector, ViewEncapsulation, ViewChild } from '@angular/core';
+import { ActivatedRoute , Router} from '@angular/router';
 import { RoutesServiceProxy, RouteDto  } from '@shared/service-proxies/service-proxies';
 import { NotifyService } from '@abp/notify/notify.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { TokenAuthServiceProxy } from '@shared/service-proxies/service-proxies';
 import { CreateOrEditRouteModalComponent } from './create-or-edit-route-modal.component';
+
 import { ViewRouteModalComponent } from './view-route-modal.component';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { Table } from 'primeng/components/table/table';
@@ -15,18 +17,21 @@ import { EntityTypeHistoryModalComponent } from '@app/shared/common/entityHistor
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
+
 @Component({
     templateUrl: './routes.component.html',
     encapsulation: ViewEncapsulation.None,
     animations: [appModuleAnimation()]
 })
 export class RoutesComponent extends AppComponentBase {
-
-    @ViewChild('createOrEditRouteModal', {static: true}) createOrEditRouteModal: CreateOrEditRouteModalComponent;
-    @ViewChild('viewRouteModalComponent', {static: true}) viewRouteModal: ViewRouteModalComponent;
-    @ViewChild('entityTypeHistoryModal', {static: true}) entityTypeHistoryModal: EntityTypeHistoryModalComponent;
-    @ViewChild('dataTable', {static: true}) dataTable: Table;
-    @ViewChild('paginator', {static: true}) paginator: Paginator;
+    
+    
+    @ViewChild('entityTypeHistoryModal', { static: true }) entityTypeHistoryModal: EntityTypeHistoryModalComponent;
+    @ViewChild('createOrEditRouteModal', { static: true }) createOrEditRouteModal: CreateOrEditRouteModalComponent;
+    @ViewChild('viewRouteModalComponent', { static: true }) viewRouteModal: ViewRouteModalComponent;   
+    
+    @ViewChild('dataTable', { static: true }) dataTable: Table;
+    @ViewChild('paginator', { static: true }) paginator: Paginator;
 
     advancedFiltersAreShown = false;
     filterText = '';
@@ -63,10 +68,13 @@ export class RoutesComponent extends AppComponentBase {
 		maxCatSedorFilterEmpty : number;
 		minCatSedorFilter : number;
 		minCatSedorFilterEmpty : number;
+    colorFilter = '';
 
 
     _entityTypeFullName = 'BringitPal.POPBUS.Road.Route';
     entityHistoryEnabled = false;
+
+
 
     constructor(
         injector: Injector,
@@ -85,7 +93,7 @@ export class RoutesComponent extends AppComponentBase {
 
     private setIsEntityHistoryEnabled(): boolean {
         let customSettings = (abp as any).custom;
-        return customSettings.EntityHistory && customSettings.EntityHistory.isEnabled && _.filter(customSettings.EntityHistory.enabledEntities, entityType => entityType === this._entityTypeFullName).length === 1;
+        return this.isGrantedAny('Pages.Administration.AuditLogs') && customSettings.EntityHistory && customSettings.EntityHistory.isEnabled && _.filter(customSettings.EntityHistory.enabledEntities, entityType => entityType === this._entityTypeFullName).length === 1;
     }
 
     getRoutes(event?: LazyLoadEvent) {
@@ -115,6 +123,7 @@ export class RoutesComponent extends AppComponentBase {
             this.routeIDGTFSFilter,
             this.maxCatSedorFilter == null ? this.maxCatSedorFilterEmpty: this.maxCatSedorFilter,
             this.minCatSedorFilter == null ? this.minCatSedorFilterEmpty: this.minCatSedorFilter,
+            this.colorFilter,
             this.primengTableHelper.getSorting(this.dataTable),
             this.primengTableHelper.getSkipCount(this.paginator, event),
             this.primengTableHelper.getMaxResultCount(this.paginator, event)
@@ -130,8 +139,9 @@ export class RoutesComponent extends AppComponentBase {
     }
 
     createRoute(): void {
-        this.createOrEditRouteModal.show();
+        this.createOrEditRouteModal.show();        
     }
+
 
     showHistory(route: RouteDto): void {
         this.entityTypeHistoryModal.show({
@@ -144,6 +154,7 @@ export class RoutesComponent extends AppComponentBase {
     deleteRoute(route: RouteDto): void {
         this.message.confirm(
             '',
+            this.l('AreYouSure'),
             (isConfirmed) => {
                 if (isConfirmed) {
                     this._routesServiceProxy.delete(route.id)
@@ -176,9 +187,15 @@ export class RoutesComponent extends AppComponentBase {
             this.routeIDGTFSFilter,
             this.maxCatSedorFilter == null ? this.maxCatSedorFilterEmpty: this.maxCatSedorFilter,
             this.minCatSedorFilter == null ? this.minCatSedorFilterEmpty: this.minCatSedorFilter,
+            this.colorFilter,
         )
         .subscribe(result => {
             this._fileDownloadService.downloadTempFile(result);
          });
     }
+    
+    
+    
+    
+    
 }

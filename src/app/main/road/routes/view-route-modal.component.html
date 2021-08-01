@@ -1,9 +1,9 @@
-<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">
-                    <span>{{l("")}}</span>
+                    <span>{{l("Details")}}</span>
                 </h4>
                 <button type="button" class="close" (click)="close()" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -11,52 +11,47 @@
             </div>
             <div class="modal-body">
 
-                <div class="m-stack m-stack--hor m-stack--general m-stack--demo">
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                <div class="row">
+                    <div class="col-6 mb-3">
                         <h6>{{l("LineNumber")}} :</h6>
-                        {{item.route.lineNumber}}
+                        {{ item.route.lineNumber }}
                     </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                    <div class="col-6 mb-3">
                         <h6>{{l("Direction")}} :</h6>
-                        {{item.route.direction}}
+                        {{ item.route.direction }}
                     </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                    <div class="col-6 mb-3">
                         <h6>{{l("LineCode")}} :</h6>
-                        {{item.route.lineCode}}
+                        {{ item.route.lineCode }}
                     </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                    <div class="col-6 mb-3">
                         <h6>{{l("Signage")}} :</h6>
-                        {{item.route.signage}}
+                        {{ item.route.signage }}
                     </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                    <div class="col-6 mb-3">
                         <h6>{{l("agency")}} :</h6>
-                        {{item.route.agency}}
+                        {{ item.route.agency }}
                     </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                    <div class="col-6 mb-3">
                         <h6>{{l("TotalKM")}} :</h6>
-                        {{item.route.totalKM}}
+                        {{ item.route.totalKM }}
                     </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                    <div class="col-6 mb-3">
                         <h6>{{l("TotalMinutes")}} :</h6>
-                        {{item.route.totalMinutes}}
+                        {{ item.route.totalMinutes }}
                     </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                    <div class="col-6 mb-3">
                         <h6>{{l("RouteIDGTFS")}} :</h6>
-                        {{item.route.routeIDGTFS}}
+                        {{ item.route.routeIDGTFS }}
                     </div>
-                    <div class="m-separator m-separator--dashed"></div>
-                    <div class="m-stack__item m-stack__item--center m-stack__item--middle">
+                    <div class="col-6 mb-3">
                         <h6>{{l("CatSedor")}} :</h6>
-                        {{item.route.catSedor}}
+                        {{ item.route.catSedor }}
                     </div>
-                    <div class="m-separator m-separator--dashed"></div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Color")}} :</h6>
+                        {{ item.route.color }}
+                    </div>
 
 
                 </div>

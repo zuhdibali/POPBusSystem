@@ -59,6 +59,10 @@ export class AppNavigationService {
             new AppMenuItem('Trips', 'Pages.Trips', 'flaticon-more', '/app/main/trips/trips'),
             
             new AppMenuItem('RuntimePeriods', 'Pages.RuntimePeriods', 'flaticon-more', '/app/main/trips/runtimePeriods'),
+            
+            new AppMenuItem('Branches', 'Pages.Branches', 'flaticon-more', '/app/main/dictionary/branches'),
+            
+            new AppMenuItem('Shapes', 'Pages.Shapes', 'flaticon-more', '/app/main/road/shapes'),
              new AppMenuItem('Administration', '', 'flaticon-interface-8', '', [
                 new AppMenuItem('OrganizationUnits', 'Pages.Administration.OrganizationUnits', 'flaticon-map', '/app/admin/organization-units'),
                 new AppMenuItem('Roles', 'Pages.Administration.Roles', 'flaticon-suitcase', '/app/admin/roles'),

@@ -1,7 +1,7 @@
 ﻿import { Component, ViewChild, Injector, Output, EventEmitter, OnInit} from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
 import { finalize } from 'rxjs/operators';
-import { RoutesServiceProxy, CreateOrEditRouteDto } from '@shared/service-proxies/service-proxies';
+import { BranchesServiceProxy, CreateOrEditBranchesDto } from '@shared/service-proxies/service-proxies';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import * as moment from 'moment';
 
@@ -9,10 +9,10 @@ import * as moment from 'moment';
 
 
 @Component({
-    selector: 'createOrEditRouteModal',
-    templateUrl: './create-or-edit-route-modal.component.html'
+    selector: 'createOrEditBranchesModal',
+    templateUrl: './create-or-edit-branches-modal.component.html'
 })
-export class CreateOrEditRouteModalComponent extends AppComponentBase implements OnInit{
+export class CreateOrEditBranchesModalComponent extends AppComponentBase implements OnInit{
    
     @ViewChild('createOrEditModal', { static: true }) modal: ModalDirective;
 
@@ -21,31 +21,31 @@ export class CreateOrEditRouteModalComponent extends AppComponentBase implements
     active = false;
     saving = false;
 
-    route: CreateOrEditRouteDto = new CreateOrEditRouteDto();
+    branches: CreateOrEditBranchesDto = new CreateOrEditBranchesDto();
 
 
 
 
     constructor(
         injector: Injector,
-        private _routesServiceProxy: RoutesServiceProxy
+        private _branchesServiceProxy: BranchesServiceProxy
     ) {
         super(injector);
     }
     
-    show(routeId?: number): void {
+    show(branchesId?: number): void {
     
 
-        if (!routeId) {
-            this.route = new CreateOrEditRouteDto();
-            this.route.id = routeId;
+        if (!branchesId) {
+            this.branches = new CreateOrEditBranchesDto();
+            this.branches.id = branchesId;
 
 
             this.active = true;
             this.modal.show();
         } else {
-            this._routesServiceProxy.getRouteForEdit(routeId).subscribe(result => {
-                this.route = result.route;
+            this._branchesServiceProxy.getBranchesForEdit(branchesId).subscribe(result => {
+                this.branches = result.branches;
 
 
 
@@ -62,7 +62,7 @@ export class CreateOrEditRouteModalComponent extends AppComponentBase implements
             
 			
 			
-            this._routesServiceProxy.createOrEdit(this.route)
+            this._branchesServiceProxy.createOrEdit(this.branches)
              .pipe(finalize(() => { this.saving = false;}))
              .subscribe(() => {
                 this.notify.info(this.l('SavedSuccessfully'));

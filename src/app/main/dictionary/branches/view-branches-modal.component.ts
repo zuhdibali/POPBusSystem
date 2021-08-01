@@ -1,14 +1,14 @@
 ﻿import {AppConsts} from "@shared/AppConsts";
 import { Component, ViewChild, Injector, Output, EventEmitter } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
-import { GetRouteForViewDto, RouteDto } from '@shared/service-proxies/service-proxies';
+import { GetBranchesForViewDto, BranchesDto } from '@shared/service-proxies/service-proxies';
 import { AppComponentBase } from '@shared/common/app-component-base';
 
 @Component({
-    selector: 'viewRouteModal',
-    templateUrl: './view-route-modal.component.html'
+    selector: 'viewBranchesModal',
+    templateUrl: './view-branches-modal.component.html'
 })
-export class ViewRouteModalComponent extends AppComponentBase {
+export class ViewBranchesModalComponent extends AppComponentBase {
 
     @ViewChild('createOrEditModal', { static: true }) modal: ModalDirective;
     @Output() modalSave: EventEmitter<any> = new EventEmitter<any>();
@@ -16,18 +16,18 @@ export class ViewRouteModalComponent extends AppComponentBase {
     active = false;
     saving = false;
 
-    item: GetRouteForViewDto;
+    item: GetBranchesForViewDto;
 
 
     constructor(
         injector: Injector
     ) {
         super(injector);
-        this.item = new GetRouteForViewDto();
-        this.item.route = new RouteDto();
+        this.item = new GetBranchesForViewDto();
+        this.item.branches = new BranchesDto();
     }
 
-    show(item: GetRouteForViewDto): void {
+    show(item: GetBranchesForViewDto): void {
         this.item = item;
         this.active = true;
         this.modal.show();

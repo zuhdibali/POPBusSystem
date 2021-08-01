@@ -1,5 +1,7 @@
 ﻿import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ShapesComponent } from './road/shapes/shapes.component';
+import { BranchesComponent } from './dictionary/branches/branches.component';
 import { RuntimePeriodsComponent } from './trips/runtimePeriods/runtimePeriods.component';
 import { TripsComponent } from './trips/trips/trips.component';
 import { ViwTripPlanedDailyComponent } from './trips/viwTripPlanedDaily/viwTripPlanedDaily.component';
@@ -26,6 +28,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
             {
                 path: '',
                 children: [
+                    { path: 'road/shapes', component: ShapesComponent, data: { permission: 'Pages.Shapes' }  },
+                    { path: 'dictionary/branches', component: BranchesComponent, data: { permission: 'Pages.Branches' }  },
                     { path: 'trips/runtimePeriods', component: RuntimePeriodsComponent, data: { permission: 'Pages.RuntimePeriods' }  },
                     { path: 'trips/trips', component: TripsComponent, data: { permission: 'Pages.Trips' }  },
                     { path: 'trips/viwTripPlanedDaily', component: ViwTripPlanedDailyComponent, data: { permission: 'Pages.ViwTripPlanedDaily' }  },

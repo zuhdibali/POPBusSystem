@@ -1,13 +1,13 @@
 ﻿import {AppConsts} from '@shared/AppConsts';
 import { Component, Injector, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute , Router} from '@angular/router';
-import { EmployeeTypeServiceProxy, EmployeeTypeDto  } from '@shared/service-proxies/service-proxies';
+import { BranchesServiceProxy, BranchesDto  } from '@shared/service-proxies/service-proxies';
 import { NotifyService } from '@abp/notify/notify.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { TokenAuthServiceProxy } from '@shared/service-proxies/service-proxies';
-import { CreateOrEditEmployeeTypeModalComponent } from './create-or-edit-employeeType-modal.component';
+import { CreateOrEditBranchesModalComponent } from './create-or-edit-branches-modal.component';
 
-import { ViewEmployeeTypeModalComponent } from './view-employeeType-modal.component';
+import { ViewBranchesModalComponent } from './view-branches-modal.component';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { Table } from 'primeng/components/table/table';
 import { Paginator } from 'primeng/components/paginator/paginator';
@@ -19,16 +19,16 @@ import * as moment from 'moment';
 
 
 @Component({
-    templateUrl: './employeeType.component.html',
+    templateUrl: './branches.component.html',
     encapsulation: ViewEncapsulation.None,
     animations: [appModuleAnimation()]
 })
-export class EmployeeTypeComponent extends AppComponentBase {
+export class BranchesComponent extends AppComponentBase {
     
     
     @ViewChild('entityTypeHistoryModal', { static: true }) entityTypeHistoryModal: EntityTypeHistoryModalComponent;
-    @ViewChild('createOrEditEmployeeTypeModal', { static: true }) createOrEditEmployeeTypeModal: CreateOrEditEmployeeTypeModalComponent;
-    @ViewChild('viewEmployeeTypeModalComponent', { static: true }) viewEmployeeTypeModal: ViewEmployeeTypeModalComponent;   
+    @ViewChild('createOrEditBranchesModal', { static: true }) createOrEditBranchesModal: CreateOrEditBranchesModalComponent;
+    @ViewChild('viewBranchesModalComponent', { static: true }) viewBranchesModal: ViewBranchesModalComponent;   
     
     @ViewChild('dataTable', { static: true }) dataTable: Table;
     @ViewChild('paginator', { static: true }) paginator: Paginator;
@@ -38,14 +38,14 @@ export class EmployeeTypeComponent extends AppComponentBase {
     descriptionFilter = '';
 
 
-    _entityTypeFullName = 'BringitPal.POPBUS.Dictionary.EmployeeType';
+    _entityTypeFullName = 'BringitPal.POPBUS.Dictionary.Branches';
     entityHistoryEnabled = false;
 
 
 
     constructor(
         injector: Injector,
-        private _employeeTypeServiceProxy: EmployeeTypeServiceProxy,
+        private _branchesServiceProxy: BranchesServiceProxy,
         private _notifyService: NotifyService,
         private _tokenAuth: TokenAuthServiceProxy,
         private _activatedRoute: ActivatedRoute,
@@ -63,7 +63,7 @@ export class EmployeeTypeComponent extends AppComponentBase {
         return this.isGrantedAny('Pages.Administration.AuditLogs') && customSettings.EntityHistory && customSettings.EntityHistory.isEnabled && _.filter(customSettings.EntityHistory.enabledEntities, entityType => entityType === this._entityTypeFullName).length === 1;
     }
 
-    getEmployeeType(event?: LazyLoadEvent) {
+    getBranches(event?: LazyLoadEvent) {
         if (this.primengTableHelper.shouldResetPaging(event)) {
             this.paginator.changePage(0);
             return;
@@ -71,7 +71,7 @@ export class EmployeeTypeComponent extends AppComponentBase {
 
         this.primengTableHelper.showLoadingIndicator();
 
-        this._employeeTypeServiceProxy.getAll(
+        this._branchesServiceProxy.getAll(
             this.filterText,
             this.descriptionFilter,
             this.primengTableHelper.getSorting(this.dataTable),
@@ -88,26 +88,26 @@ export class EmployeeTypeComponent extends AppComponentBase {
         this.paginator.changePage(this.paginator.getPage());
     }
 
-    createEmployeeType(): void {
-        this.createOrEditEmployeeTypeModal.show();        
+    createBranches(): void {
+        this.createOrEditBranchesModal.show();        
     }
 
 
-    showHistory(employeeType: EmployeeTypeDto): void {
+    showHistory(branches: BranchesDto): void {
         this.entityTypeHistoryModal.show({
-            entityId: employeeType.id.toString(),
+            entityId: branches.id.toString(),
             entityTypeFullName: this._entityTypeFullName,
             entityTypeDescription: ''
         });
     }
 
-    deleteEmployeeType(employeeType: EmployeeTypeDto): void {
+    deleteBranches(branches: BranchesDto): void {
         this.message.confirm(
             '',
             this.l('AreYouSure'),
             (isConfirmed) => {
                 if (isConfirmed) {
-                    this._employeeTypeServiceProxy.delete(employeeType.id)
+                    this._branchesServiceProxy.delete(branches.id)
                         .subscribe(() => {
                             this.reloadPage();
                             this.notify.success(this.l('SuccessfullyDeleted'));
@@ -118,7 +118,7 @@ export class EmployeeTypeComponent extends AppComponentBase {
     }
 
     exportToExcel(): void {
-        this._employeeTypeServiceProxy.getEmployeeTypeToExcel(
+        this._branchesServiceProxy.getBranchesToExcel(
         this.filterText,
             this.descriptionFilter,
         )
